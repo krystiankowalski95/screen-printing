@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - openjdk14
+
+
+before_install:
+  - cd sitodruk-ws
+  - chmod +x mvnw
+
+install:
+  - mvn clean package
+
+cache:
+  directories:
+    - $HOME/.m2
