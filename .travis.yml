@@ -10,9 +10,10 @@ before_install:
 install:
   - mvn clean package
   
-# deploy:
-#   provider: heroku
-#   api_key: <api_key>
+deploy:
+   provider: heroku
+     api_key: 
+        secure: lPE3d4NjylwdS28GKSiiv4nwbYeMUBLDxShbO3CqSFp1FjhbNTfrvlopX1VruhhXyAsnxaa4FLbDSD2IjgywxgfL0+PSdq6KxtXb5USymHDyNyjzVny4G5dtfXHumFbmUYP3kOi1dlRrujRhDy5qtnjxuVOfYdWgdPXSDUKONuQEOknSYiGuBcZcGQFyxcKGqjMjAr+komm6AyjQhPm5TdYXxGQLa/arldI6U8CUqzLOmjCOCNdN+jv7k0HC/QqSXAEIPKkkCtlinuIBnXi2dx0hMlS5lv07dnou19CgPlGHdtJ1Ei7E61KNQJH9FHlbugIAsnsgXd0vl3hoeNCckpOTZYdv2grhaLManYOrqDzjwddkuKoCxVu1zZdS/Ok/KEqbHW8I7RUK8JjZXmIxL8vhgbpE4z6hBtP/VcsVOXSYydthWL3FxZ2r43vXh1IIEfKQNMl5NmCOoPoGp24hQ36swnhQI5XUI1IDYOsNSx+082diUDXFEktWhsLskkOgp9bKW9j+NZEbuFu744ZzccgYSEvWVR6bXCZcYijb0FR1ERobLQPArLomjDV0eZ6OE2AT5p3nXAitV+IheYzZO8M4e9oCJnL+SnKJnZqlDYVsU02D9WHcLkaUsWSu/6SWa5zKv8z0wkCJyneDYIrCQZ+uZwQzOnUrMLPB3oglhxY
 
 cache:
   directories:
