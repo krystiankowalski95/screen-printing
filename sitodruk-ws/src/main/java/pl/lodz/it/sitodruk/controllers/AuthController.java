@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.it.sitodruk.config.JwtUtils;
 import pl.lodz.it.sitodruk.dto.UserDTO;
+import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.impl.UserDetailsImpl;
 import pl.lodz.it.sitodruk.model.UserEntity;
 import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
@@ -39,6 +42,7 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = BaseException.class)
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
