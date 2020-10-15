@@ -89,6 +89,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.3.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
@@ -96,7 +108,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <mkdir dir="src/main/sitodruk-web/target" />
+                                <mkdir dir="src/main/sitodruk-web/target"/>
                                 <copy todir="target/classes/public">
                                     <fileset dir="src/main/sitodruk-web/target"/>
                                 </copy>
