@@ -108,9 +108,9 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <mkdir dir="src/main/sitodruk-web/target"/>
-                                <copy todir="target/classes/public">
-                                    <fileset dir="src/main/sitodruk-web/target"/>
+                                <mkdir dir="${project.basedir}/src/main/sitodruk-web/target"/>
+                                <copy todir="${project.build.directory}/classes/public">
+                                    <fileset dir="${project.basedir}/src/main/sitodruk-web/target"/>
                                 </copy>
                             </target>
                         </configuration>
