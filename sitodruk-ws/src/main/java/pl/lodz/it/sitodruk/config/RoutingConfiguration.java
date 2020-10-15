@@ -27,7 +27,7 @@ public class RoutingConfiguration implements WebMvcConfigurer {
                                                    Resource location) throws IOException {
                         Resource requestedResource = location.createRelative(resourcePath);
                         return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
-                                : new ClassPathResource("/public/dist/index.html");
+                                : new ClassPathResource("public/dist/index.html");
                     }
                 });
     }
