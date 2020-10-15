@@ -89,16 +89,23 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <outputDirectory>target/classes/public</outputDirectory>
-                    <resources>
-                        <resource>
-                            <directory>src/main/sitodruk-web/target</directory>
-                        </resource>
-                    </resources>
-                </configuration>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="target/classes/public">
+                                    <fileset dir="src/main/sitodruk-web/target"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
