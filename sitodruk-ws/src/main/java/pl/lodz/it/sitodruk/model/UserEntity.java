@@ -57,6 +57,9 @@ public class UserEntity implements Serializable {
     @Column(name = "phone_number", table = "user_personal_data", nullable = false, length = 15)
     private String phoneNumber;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private AddressEntity addressEntity;
+
     @Basic
     @Version
     @Column(name = "version", table = "user_personal_data", nullable = false)

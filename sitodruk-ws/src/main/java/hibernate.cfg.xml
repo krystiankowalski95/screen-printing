@@ -9,6 +9,14 @@
         <mapping class="pl.lodz.it.sitodruk.model.UserEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.UserAccessLevelEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.UserPersonalDataEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.AddressEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.CategoryEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.OrderEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.ProductEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.ProductEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.LoginDataEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.OrdersEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.OrderStatusEntity"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 
