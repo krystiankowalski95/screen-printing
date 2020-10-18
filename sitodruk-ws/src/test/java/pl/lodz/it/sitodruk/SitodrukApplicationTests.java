@@ -14,23 +14,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.it.sitodruk.model.UserEntity;
 import pl.lodz.it.sitodruk.repositories.UserRepository;
 import pl.lodz.it.sitodruk.service.UserService;
-
-@RunWith(SpringRunner.class)
-@DataJpaTest
-class SitodrukApplicationTests {
-
-	@Autowired
-	UserRepository userRepository;
-
-	UserEntity userEntity;
-
-	@Before
-	void init(){
-	}
-
-	@Test
-	void testMethod() {
-		Assert.assertEquals(1,userRepository.findAll().size());
-	}
-
-}
+//
+//@RunWith(SpringRunner.class)
+//@DataJpaTest
+//class SitodrukApplicationTests {
+//
+//	@Autowired
+//	UserRepository userRepository;
+//
+//	UserEntity userEntity;
+//
+//	@Before
+//	void init(){
+//	}
+//
+//	@Test
+//	void testMethod() {
+//		Assert.assertEquals(1,userRepository.findAll().size());
+//	}
+//
+//}
