@@ -13,10 +13,6 @@ import java.util.Objects;
 public class OrderEntity {
     @Id@Column(name = "id", nullable = false)
     private long id;
-    @Basic@Column(name = "user_id", nullable = false)
-    private long userId;
-    @Basic@Column(name = "address_id", nullable = false)
-    private long addressId;
     @Basic@Column(name = "timestamp", nullable = true)
     private Date timestamp;
     @Basic@Column(name = "version", nullable = false)

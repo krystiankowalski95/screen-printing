@@ -16,6 +16,5 @@ public class OrderStatusEntity {
     @Basic@Column(name = "status_name", nullable = false, length = -1)
     private String statusName;
     @OneToOne
-    @JoinColumn(name = "status_name", referencedColumnName = "order_status", nullable = false)
     private OrderEntity orderEntity;
 }

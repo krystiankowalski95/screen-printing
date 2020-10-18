@@ -18,7 +18,6 @@ public class CategoryEntity {
     @Column(name = "category_name", nullable = false, length = -1)
     private String categoryName;
     @OneToOne
-    @JoinColumn(name = "category_name", referencedColumnName = "category_name", nullable = false)
     private ProductEntity productsEntity;
 
 }
