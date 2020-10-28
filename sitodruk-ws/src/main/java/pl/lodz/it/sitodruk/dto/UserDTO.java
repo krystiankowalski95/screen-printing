@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Data
 public class UserDTO {
+    private String id;
     private String username;
     private String firstName;
     private String lastName;

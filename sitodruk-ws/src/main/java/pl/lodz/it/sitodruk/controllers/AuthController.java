@@ -42,7 +42,6 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
-@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = BaseException.class)
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
