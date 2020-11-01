@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -57,12 +58,18 @@ public class UserEntity implements Serializable {
     @Column(name = "phone_number", table = "user_personal_data", nullable = false, length = 15)
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private AddressEntity addressEntity;
+    @OneToMany(mappedBy = "userEntity")
+    private Collection<AddressEntity> addresses = new ArrayList<>();
+
 
     @Basic
     @Version
     @Column(name = "version", table = "user_personal_data", nullable = false)
     private long version;
+
+    public UserEntity(){
+        this.active = true;
+        this.token = UUID.randomUUID().toString().replace("-", "");
+    }
 
 }

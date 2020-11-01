@@ -9,32 +9,32 @@
       <form name="form" @submit.prevent="handleRegister">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="firstName">Firstname</label>
+            <label for="firstname">Firstname</label>
             <input
-              v-model="user.firstName"
+              v-model="user.firstname"
               v-validate="'required|min:3|max:20'"
               type="text"
               class="form-control"
-              name="firstName"
+              name="firstname"
             />
             <div
-              v-if="submitted && errors.has('firstName')"
+              v-if="submitted && errors.has('firstname')"
               class="alert-danger"
-            >{{errors.first('firstName')}}</div>
+            >{{errors.first('firstname')}}</div>
           </div>
           <div class="form-group">
-            <label for="lastName">Lastname</label>
+            <label for="lastname">Lastname</label>
             <input
-              v-model="user.lastName"
+              v-model="user.lastname"
               v-validate="'required|min:2|max:20'"
               type="text"
               class="form-control"
-              name="lastName"
+              name="lastname"
             />
             <div
               v-if="submitted && errors.has('lastName')"
               class="alert-danger"
-            >{{errors.first('lastName')}}</div>
+            >{{errors.first('lastame')}}</div>
           </div>
           <div class="form-group">
             <label for="username">Username</label>

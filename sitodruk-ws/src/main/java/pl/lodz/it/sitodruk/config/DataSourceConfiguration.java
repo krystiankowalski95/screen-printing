@@ -44,7 +44,7 @@ public class DataSourceConfiguration {
     }
 
     @Primary
-    @Bean
+    @Bean(name = "mokTransactionManager")
     public PlatformTransactionManager memberTransactionManager(
             final @Qualifier("mokEntityManagerFactory") LocalContainerEntityManagerFactoryBean userEntityManagerFactory) {
         return new JpaTransactionManager(userEntityManagerFactory.getObject());

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -37,6 +38,7 @@ import pl.lodz.it.sitodruk.payload.SignupRequest;
 import pl.lodz.it.sitodruk.repositories.UserAccessLevelRepository;
 import pl.lodz.it.sitodruk.repositories.UserRepository;
 import pl.lodz.it.sitodruk.service.EmailSenderService;
+import pl.lodz.it.sitodruk.service.UserService;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -47,21 +49,13 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    EmailSenderService emailSenderService;
-
-    @Autowired
-    UserAccessLevelRepository userAccessLevelRepository;
-
-    @Autowired
-    PasswordEncoder encoder;
+    private UserService userService;
 
     @Autowired
     JwtUtils jwtUtils;
 
     @PostMapping("/signin")
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> authenticateUser(@RequestBody UserDTO userDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -75,18 +69,18 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        if(userRepository.existsByUsernameAndPasswordAndConfirmed(userDTO.getUsername(), userDTO.getPassword(), false)){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Account is not confirmed!"));
-        }
-
-        if(userRepository.existsByUsernameAndPasswordAndActive(userDTO.getUsername(), userDTO.getPassword(), false)){
-            userRepository.existsByUsernameAndPasswordAndConfirmed("is active= "+userDTO.getUsername(),userDTO.getPassword(),true);
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Account is not active!"));
-        }
+//        if(userRepository.existsByUsernameAndPasswordAndConfirmed(userDTO.getUsername(), userDTO.getPassword(), false)){
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Account is not confirmed!"));
+//        }
+//
+//        if(userRepository.existsByUsernameAndPasswordAndActive(userDTO.getUsername(), userDTO.getPassword(), false)){
+//            userRepository.existsByUsernameAndPasswordAndConfirmed("is active= "+userDTO.getUsername(),userDTO.getPassword(),true);
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Account is not active!"));
+//        }
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -96,35 +90,27 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+    @Transactional(propagation = Propagation.NEVER)
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+//        if (userRepository.existsByUsername(userDTO.getUsername())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Username is already taken!"));
+//        }
+//
+//        if (userRepository.existsByEmail(userDTO.getEmail())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Email is already in use!"));
+//        }
+        System.out.println(userDTO);
+        System.out.println(request);
+        try {
+            userService.createUser(userDTO,request);
+        } catch (BaseException e) {
+            e.printStackTrace();
         }
 
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-        UserEntity user = new UserEntity();
-        user.setConfirmed(false);
-        user.setPassword(encoder.encode(userDTO.getPassword()));
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setFirstname(userDTO.getFirstName());
-        user.setLastname(userDTO.getLastName());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setConfirmed(false);
-        user.setActive(true);
-        UserAccessLevelEntity userAccessLevelEntity = new UserAccessLevelEntity();
-        userAccessLevelEntity.setAccessLevelName("ROLE_CLIENT");
-        userAccessLevelEntity.setActive(true);
-        userAccessLevelEntity.setLoginDataByUserId(user);
-        user.getUserAccessLevelsById().add(userAccessLevelEntity);
-        userRepository.save(user);
-        emailSenderService.sendSimpleMessage(user.getEmail(),"Witaj","Witaj w naszym systemie rozdawaniu hajsu");
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

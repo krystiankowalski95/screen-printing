@@ -2,16 +2,22 @@ package pl.lodz.it.sitodruk.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.UserDTO;
+import pl.lodz.it.sitodruk.dto.mappers.UserMapper;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.exceptions.UserNotFoundException;
+import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
 import pl.lodz.it.sitodruk.model.UserEntity;
 import pl.lodz.it.sitodruk.repositories.UserRepository;
+import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -20,20 +26,32 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    PasswordEncoder encoder;
+
     @Override
-    @Transactional(propagation = Propagation.MANDATORY)
-    public void createUser(UserDTO userDTO) {
-        //TODO Zmienić UserEntity na DTO i dodać mapowanie
-        //userRepository.saveAndFlush(userEntity);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) {
+        UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
+        user.setPassword(encoder.encode(userDTO.getPassword()));
+        user.setFirstname(userDTO.getFirstname());
+        user.setLastname(userDTO.getLastname());
+        UserAccessLevelEntity userAccessLevelEntity = new UserAccessLevelEntity();
+        userAccessLevelEntity.setAccessLevelName("ROLE_CLIENT");
+        userAccessLevelEntity.setActive(true);
+        userAccessLevelEntity.setLoginDataByUserId(user);
+        user.getUserAccessLevelsById().add(userAccessLevelEntity);
+        userRepository.saveAndFlush(user);
+        emailSenderService.sendRegistrationEmail(user.getEmail(),requestUrl,user.getToken());
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
-    public void createUser(UserEntity userEntity) {
-        //TODO Zmienić UserEntity na DTO i dodać mapowanie
-        userRepository.saveAndFlush(userEntity);
-    }
-
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void modifyUser(UserDTO userDTO) throws BaseException{
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
@@ -42,12 +60,22 @@ public class UserServiceImpl implements UserService {
         }else throw new UserNotFoundException();
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public UserEntity findUserByUsername(String username) throws BaseException {
+    public UserDTO findUserByUsername(String username) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isPresent()){
-            return user.get();
+            return userMapper.toUserDTO(user.get());
+        }else throw new UserNotFoundException();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void confirmUser(String token) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByToken(token);
+        if(user.isPresent()){
+            user.get().setConfirmed(true);
+            userRepository.saveAndFlush(user.get());
         }else throw new UserNotFoundException();
     }
 }

@@ -6,10 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.model.UserEntity;
 import pl.lodz.it.sitodruk.repositories.UserRepository;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -18,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, pl.lodz.it.si
     UserRepository userRepository;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isPresent()){

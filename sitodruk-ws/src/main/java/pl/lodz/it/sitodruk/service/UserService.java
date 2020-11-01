@@ -6,9 +6,11 @@ import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.exceptions.UserNotFoundException;
 import pl.lodz.it.sitodruk.model.UserEntity;
 
-public interface UserService {
-    void createUser(UserDTO userDTO) throws BaseException;
-    void modifyUser(UserDTO userDTO) throws BaseException;
-    UserEntity findUserByUsername(String username) throws BaseException;
+import javax.servlet.http.HttpServletRequest;
 
+public interface UserService {
+    void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException;
+    void modifyUser(UserDTO userDTO) throws BaseException;
+    UserDTO findUserByUsername(String username) throws BaseException;
+    void confirmUser(String token) throws BaseException;
 }

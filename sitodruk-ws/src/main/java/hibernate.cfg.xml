@@ -13,6 +13,8 @@
         <mapping class="pl.lodz.it.sitodruk.model.OrderEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.ProductEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.OrderStatusEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.AddressEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.LoginDataEntity"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 

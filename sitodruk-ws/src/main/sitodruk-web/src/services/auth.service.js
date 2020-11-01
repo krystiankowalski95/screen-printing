@@ -27,8 +27,8 @@ class AuthService {
       username: user.username,
       email: user.email,
       password: user.password,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstname: user.firstname,
+      lastname: user.lastname,
       phoneNumber: user.phoneNumber,
       confirmPassword: user.confirmPassword
     });

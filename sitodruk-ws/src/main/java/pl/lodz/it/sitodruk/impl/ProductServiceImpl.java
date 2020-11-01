@@ -2,6 +2,8 @@ package pl.lodz.it.sitodruk.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.dto.mappers.ProductMapper;
 import pl.lodz.it.sitodruk.dto.mappers.UserMapper;
@@ -20,6 +22,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createProduct(ProductDTO productDTO) throws BaseException {
         productRepository.saveAndFlush(ProductMapper.INSTANCE.createNewProduct(productDTO));
 
