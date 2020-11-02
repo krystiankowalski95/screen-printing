@@ -6,7 +6,12 @@ import org.springframework.stereotype.Component;
 import pl.lodz.it.sitodruk.config.MailSenderConfig;
 import pl.lodz.it.sitodruk.service.EmailSenderService;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.mail.javamail.MimeMessageHelper;
+
 
 @Component
 public class EmailSenderServiceImpl implements EmailSenderService {
@@ -26,15 +31,20 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public void sendRegistrationEmail(String to , HttpServletRequest request,String token) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreplay@mail.com");
-        message.setReplyTo("noreplay@mail.com");
-        message.setTo(to);
-        message.setSubject("Welcome");
-        String link = request.getRequestURL()
-                .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/cofirmAccount?token=");
-        String body = "<a href=\"" + link + token + "\">"+ "</a>";
-        message.setText(body);
-        emailSender.getJavaMailSender().send(message);
+        try {
+            MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            String link = request.getRequestURL()
+                    .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/cofirmAccount?token=");
+            String body = "<a href=\"" + link + token + "\">"+"Verify Account"+ "</a>";
+//mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
+            helper.setText(body, true); // Use this or above line.
+            helper.setTo(to);
+            helper.setSubject("Welcome");
+            helper.setFrom("noreplay@gmail.com");
+            emailSender.getJavaMailSender().send(mimeMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 }

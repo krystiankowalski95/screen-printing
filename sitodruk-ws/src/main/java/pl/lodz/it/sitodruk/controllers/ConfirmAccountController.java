@@ -29,17 +29,17 @@ public class ConfirmAccountController {
     @PermitAll
     public ResponseEntity<?> confirmAccount(HttpServletRequest request){
         String url = request.getRequestURL().toString();
-        String token;
+        String token = "";
         if (url.contains("token=")){
-            System.out.println(request.getRequestURL());
             token = url.substring(url.indexOf("token=") + 6);
-            System.out.println(token);
             try {
                 userService.confirmUser(token);
+                return new ResponseEntity(HttpStatus.OK);
             } catch (BaseException e) {
                 e.printStackTrace();
             }
-        }
-        return new ResponseEntity(HttpStatus.OK);
+        }else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return null;
     }
+
 }
