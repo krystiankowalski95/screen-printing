@@ -1,11 +1,16 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark" style="height:">
       <a href class="navbar-brand" @click.prevent></a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <router-link to="/home" class="nav-link">
-            <font-awesome-icon icon="home" />Home
+            <font-awesome-icon icon="house-user" />Home
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/products" class="nav-link">
+            <font-awesome-icon icon="gifts" />Products
           </router-link>
         </li>
         <li v-if="showAdminBoard" class="nav-item">
@@ -14,8 +19,8 @@
         <li v-if="showModeratorBoard" class="nav-item">
           <router-link to="/mod" class="nav-link">Manager Board</router-link>
         </li>
-        <li class="nav-item">
-          <router-link v-if="currentUser" to="/user" class="nav-link">User</router-link>
+        <li  v-if="showUserBoard" class="nav-item">
+          <router-link to="/user" class="nav-link">User</router-link>
         </li>
       </div>
 
@@ -72,7 +77,14 @@ export default {
       }
 
       return false;
+    },showClientBoard() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes('ROLE_CLIENT');
+      }
+
+      return false;
     }
+  
   },
   methods: {
     logOut() {

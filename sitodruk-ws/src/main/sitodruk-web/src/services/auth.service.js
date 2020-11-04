@@ -33,6 +33,11 @@ class AuthService {
       confirmPassword: user.confirmPassword
     });
   }
+
+  confirmAccount(token) {
+    return axios.get(API_URL + 'activateUser?'+ token, {
+    });
+  }
 }
 
 export default new AuthService();
