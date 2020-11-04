@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
+import i18n from './i18n';
 import { router } from './router';
 import store from './store';
 import 'bootstrap';
@@ -15,10 +16,11 @@ import {
   faSignInAlt,
   faSignOutAlt,
   faHouseUser,
-  faGifts
+  faGifts,
+  faFlag,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag);
 
 Vue.config.productionTip = false;
 
@@ -28,6 +30,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(Vuex);
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

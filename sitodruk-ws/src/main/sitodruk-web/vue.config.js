@@ -1,6 +1,14 @@
 
 // vue.config.js
 module.exports = {
+      pluginOptions: {
+            i18n: {
+              locale: 'pl',
+              fallbackLocale: 'en',
+              localeDir: 'locales',
+              enableInSFC: true
+            }
+          },
       // proxy all webpack dev-server requests starting with /api
       // to our Spring Boot backend (localhost:8098) using http-proxy-middleware
       // see https://cli.vuejs.org/config/#devserver-proxy

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark" style="height:">
+    <nav class="navbar navbar-expand navbar-dark bg-dark" style="height: ">
       <a href class="navbar-brand" @click.prevent></a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -19,10 +19,12 @@
         <li v-if="showModeratorBoard" class="nav-item">
           <router-link to="/mod" class="nav-link">Manager Board</router-link>
         </li>
-        <li  v-if="showUserBoard" class="nav-item">
+        <li v-if="showUserBoard" class="nav-item">
           <router-link to="/user" class="nav-link">User</router-link>
         </li>
       </div>
+
+     
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
         <li class="nav-item">
@@ -50,7 +52,15 @@
           </a>
         </li>
       </div>
+       <div class="navbar-nav">
+        
+        <select v-model="$i18n.locale">
+          <option key="pl" value="pl">Polski</option>
+          <option key="en" value="en">English</option>
+        </select>
+      </div>
     </nav>
+    
 
     <div class="container">
       <router-view />
@@ -77,20 +87,24 @@ export default {
       }
 
       return false;
-    },showClientBoard() {
+    },
+    showClientBoard() {
       if (this.currentUser && this.currentUser.roles) {
         return this.currentUser.roles.includes('ROLE_CLIENT');
       }
 
       return false;
-    }
-  
+    },
+  },
+  name: 'locale-changer',
+  data () {
+    return { langs: ['pl', 'en'] }
   },
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
-    }
-  }
+    },
+  },
 };
 </script>

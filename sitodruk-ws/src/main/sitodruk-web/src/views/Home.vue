@@ -2,6 +2,7 @@
   <div class="container">
     <header class="jumbotron">
       <h3>{{content}}</h3>
+      <h3>{{ $t('hello') }}</h3>
     </header>
   </div>
 </template>
@@ -18,15 +19,15 @@ export default {
   },
   mounted() {
     UserService.getPublicContent().then(
-      // response => {
-      //   this.content = response.data;
-      // },
-      // error => {
-      //   this.content =
-      //     (error.response && error.response.data) ||
-      //     error.message ||
-      //     error.toString();
-      // }
+    //   response => {
+    //     this.content = response.data;
+    //   },
+    //   error => {
+    //     this.content =
+    //       (error.response && error.response.data) ||
+    //       error.message ||
+    //       error.toString();
+    //   }
     );
   }
 };
