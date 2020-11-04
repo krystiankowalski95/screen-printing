@@ -1,23 +1,19 @@
 package pl.lodz.it.sitodruk.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
-
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,24 +21,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.config.JwtUtils;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.impl.UserDetailsImpl;
-import pl.lodz.it.sitodruk.model.UserEntity;
-import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
 import pl.lodz.it.sitodruk.payload.JwtResponse;
-import pl.lodz.it.sitodruk.payload.LoginRequest;
 import pl.lodz.it.sitodruk.payload.MessageResponse;
-import pl.lodz.it.sitodruk.payload.SignupRequest;
-import pl.lodz.it.sitodruk.repositories.UserAccessLevelRepository;
-import pl.lodz.it.sitodruk.repositories.UserRepository;
-import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
+import pl.lodz.it.sitodruk.utils.ResourceBundles;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
@@ -53,6 +45,17 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    private Properties exceptionProperties;
+
+    @PostConstruct
+    private void init() {
+        try {
+            exceptionProperties = ResourceBundles.loadProperties("exception.properties");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
+    }
 
     @PostMapping("/signin")
     @Transactional(propagation = Propagation.NEVER)
@@ -68,20 +71,15 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
-//        if(userRepository.existsByUsernameAndPasswordAndConfirmed(userDTO.getUsername(), userDTO.getPassword(), false)){
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Account is not confirmed!"));
-//        }
-//
-//        if(userRepository.existsByUsernameAndPasswordAndActive(userDTO.getUsername(), userDTO.getPassword(), false)){
-//            userRepository.existsByUsernameAndPasswordAndConfirmed("is active= "+userDTO.getUsername(),userDTO.getPassword(),true);
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Account is not active!"));
-//        }
-
+        try {
+            if (userService.isUserConfirmed(userDTO)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("account.notconfirmed"));
+            } else if (userService.isUserActive(userDTO)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("account.notactive"));
+            }
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
@@ -92,25 +90,11 @@ public class AuthController {
     @PostMapping("/signup")
     @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-//        if (userRepository.existsByUsername(userDTO.getUsername())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Username is already taken!"));
-//        }
-//
-//        if (userRepository.existsByEmail(userDTO.getEmail())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Email is already in use!"));
-//        }
-        System.out.println(userDTO);
-        System.out.println(request);
         try {
-            userService.createUser(userDTO,request);
+            userService.createUser(userDTO, request);
         } catch (BaseException e) {
-            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
-
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

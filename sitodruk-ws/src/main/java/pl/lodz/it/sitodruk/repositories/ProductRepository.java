@@ -12,5 +12,6 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.MANDATORY)
 public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
     ProductEntity findByNameAndCategoryName(String name,String categoryName);
+    Boolean existsByNameAndCategoryName(String name,String categoryName);
     Optional<ProductEntity> findByName(String productName);
 }
