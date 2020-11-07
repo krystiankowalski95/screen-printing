@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.OrderStatusDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.repositories.OrderStatusRepository;
+import pl.lodz.it.sitodruk.repositories.moz.OrderStatusRepository;
 import pl.lodz.it.sitodruk.service.OrderStatusService;
 
 @Service

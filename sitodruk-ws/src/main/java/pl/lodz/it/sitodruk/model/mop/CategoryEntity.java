@@ -1,10 +1,10 @@
-package pl.lodz.it.sitodruk.model;
+package pl.lodz.it.sitodruk.model.mop;
 
 import lombok.*;
 import org.hibernate.annotations.Immutable;
+import pl.lodz.it.sitodruk.model.mop.ProductEntity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @Entity
@@ -17,7 +17,4 @@ public class CategoryEntity {
     @Basic
     @Column(name = "category_name", nullable = false, length = -1)
     private String categoryName;
-    @OneToOne
-    private ProductEntity productsEntity;
-
 }

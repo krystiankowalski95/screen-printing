@@ -6,13 +6,13 @@
     <session-factory>
         <property name="connection.url">jdbc:postgresql://35.246.149.248:5432/postgres</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <mapping class="pl.lodz.it.sitodruk.model.UserEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.UserAccessLevelEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.AddressEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.CategoryEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.OrderEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.ProductEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.OrderStatusEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.mok.UserEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.moz.AddressEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.mop.CategoryEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.moz.OrderEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.mop.ProductEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.moz.OrderStatusEntity"/>
         <mapping class="pl.lodz.it.sitodruk.AddressEntity"/>
         <mapping class="pl.lodz.it.sitodruk.LoginDataEntity"/>
         <!-- <property name="connection.username"/> -->

@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import pl.lodz.it.sitodruk.dto.UserDTO;
-import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
-import pl.lodz.it.sitodruk.model.UserEntity;
+import pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity;
+import pl.lodz.it.sitodruk.model.mok.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;

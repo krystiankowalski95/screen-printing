@@ -1,10 +1,9 @@
-package pl.lodz.it.sitodruk.model;
+package pl.lodz.it.sitodruk.model.moz;
 
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Objects;
 
 @Data
 @Entity

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.AddressDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.repositories.AddressRepository;
+import pl.lodz.it.sitodruk.repositories.mok.AddressRepository;
 import pl.lodz.it.sitodruk.service.AddressService;
 
 @Service

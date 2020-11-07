@@ -1,20 +1,16 @@
 package pl.lodz.it.sitodruk.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
-import pl.lodz.it.sitodruk.model.UserEntity;
+import pl.lodz.it.sitodruk.model.mok.UserEntity;
 
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
@@ -118,8 +114,8 @@ public class UserDetailsImpl implements UserDetails {
 //import org.springframework.security.core.userdetails.UserDetails;
 //
 //import com.fasterxml.jackson.annotation.JsonIgnore;
-//import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
-//import pl.lodz.it.sitodruk.model.UserEntity;
+//import pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity;
+//import pl.lodz.it.sitodruk.model.mok.UserEntity;
 //
 //    @Getter
 //    @Setter

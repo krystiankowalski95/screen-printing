@@ -1,10 +1,9 @@
-package pl.lodz.it.sitodruk.model;
+package pl.lodz.it.sitodruk.model.mok;
 
-import lombok.*;
+import lombok.Data;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @Entity

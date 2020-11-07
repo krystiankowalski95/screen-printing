@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.dto.mappers.UserMapper;
 import pl.lodz.it.sitodruk.exceptions.*;
-import pl.lodz.it.sitodruk.model.UserAccessLevelEntity;
-import pl.lodz.it.sitodruk.model.UserEntity;
-import pl.lodz.it.sitodruk.repositories.UserRepository;
+import pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity;
+import pl.lodz.it.sitodruk.model.mok.UserEntity;
+import pl.lodz.it.sitodruk.repositories.mok.UserRepository;
 import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 

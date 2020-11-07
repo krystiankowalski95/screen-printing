@@ -1,15 +1,14 @@
 package pl.lodz.it.sitodruk.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.it.sitodruk.model.UserEntity;
-import pl.lodz.it.sitodruk.repositories.UserRepository;
+import pl.lodz.it.sitodruk.model.mok.UserEntity;
+import pl.lodz.it.sitodruk.repositories.mok.UserRepository;
 
 import java.util.Optional;
 

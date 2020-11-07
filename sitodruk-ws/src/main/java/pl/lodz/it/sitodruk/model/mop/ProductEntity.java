@@ -1,9 +1,8 @@
-package pl.lodz.it.sitodruk.model;
+package pl.lodz.it.sitodruk.model.mop;
 
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Data
 @Entity
@@ -20,10 +19,8 @@ public class ProductEntity {
     @Basic
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
-    @Basic@Column(name = "category_name", nullable = false, length = -1)
+    @Basic@Column(name = "category", nullable = false, length = -1)
     private String categoryName;
     @Basic@Column(name = "version", nullable = false)
     private long version;
-    @OneToOne(mappedBy = "productsEntity")
-    private CategoryEntity categoryEntity;
 }

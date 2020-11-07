@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.model;
+package pl.lodz.it.sitodruk.model.moz;
 
 import lombok.Data;
 

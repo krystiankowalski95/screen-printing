@@ -1,12 +1,7 @@
 package pl.lodz.it.sitodruk.service;
 
-import org.apache.catalina.User;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.exceptions.UserNotFoundException;
-import pl.lodz.it.sitodruk.model.UserEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
