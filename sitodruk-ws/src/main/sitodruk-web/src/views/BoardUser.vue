@@ -27,7 +27,9 @@ export default {
           error.message ||
           error.toString();
       }
-    );
+      
+    ).then(
+    )
   }
 };
 </script>
