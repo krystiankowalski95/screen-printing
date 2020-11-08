@@ -14,6 +14,7 @@
     "@vue/cli-service": "^4.5.4",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.18.1",
     "core-js": "^2.6.11",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",

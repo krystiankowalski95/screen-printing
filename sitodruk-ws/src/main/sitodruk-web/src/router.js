@@ -4,7 +4,7 @@ import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import ActivateUser from './views/ActivateUser.vue';
-
+import ProductDetails from './views/ProductDetails.vue';
 Vue.use(Router);
 
 export const router = new Router({
@@ -42,6 +42,13 @@ export const router = new Router({
       name: 'products',
       // lazy-loaded
       component: () => import('./views/Products.vue')
+    },
+    {
+      path: '/productDetails',
+      name: 'productDetails',
+      // lazy-loaded
+      component: ProductDetails,
+      props: true
     },
     {
       path: '/admin',

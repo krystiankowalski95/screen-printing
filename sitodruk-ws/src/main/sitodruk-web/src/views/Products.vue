@@ -1,24 +1,31 @@
 <template>
   <div class="container">
-    <header class="jumbotron">
+    <header class="jumbotron" style="height:100px">
       <h3>Product list</h3>
     </header>
-    <div class="container">
-        <ul id="product-list" >
-        <li v-for="product in productList" :key="product.id" style="background-color: grey;">
-          <div class="circle">
-            {{product.id }} {{product.name }} {{product.categoryName }}
-          </div>
-          
-        </li>
-      </ul>
+      <b-container>
+        <b-row >
+          <b-col >Id</b-col>
+          <b-col>Product name</b-col>
+          <b-col>Product Category</b-col>
+          <b-col>Go to details page</b-col>
+        </b-row>
+      </b-container>
+      <b-container class="bv-example-row" v-for="(product,index) in productList" :key="index">
+        <b-row style="padding: 5px">
+          <b-col draggable="true">{{product.id }}</b-col>
+          <b-col>{{product.name }}</b-col>
+          <b-col>{{product.categoryName }}</b-col>
+          <b-col><b-button pill variant="primary" @click="getDetails(index)">Details</b-button></b-col>
+        </b-row>
+      </b-container>
     </div>
-  </div>
 </template>
 
 <script>
 import ProductService from '../services/product.service';
 import Product from '../models/product';
+
 
 export default {
   name: 'Products',
@@ -55,5 +62,11 @@ export default {
       }
     );
   },
+  methods: {
+    getDetails(index) {
+      (this.productList[index]);
+      this.$router.push({path: '/productDetails', params: {productName: this.productList[index].name}});
+    }
+  }
 };
 </script>
