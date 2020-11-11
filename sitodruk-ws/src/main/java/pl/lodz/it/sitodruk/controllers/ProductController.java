@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
@@ -40,6 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/findAll")
+    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
@@ -51,6 +54,7 @@ public class ProductController {
     }
 
     @GetMapping("/findByName/{name}")
+    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
@@ -63,9 +67,14 @@ public class ProductController {
 
 
     @PostMapping("/addNew")
+    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
+        System.out.println(productDTO.getId());
+        System.out.println(productDTO.getName());
+        System.out.println(productDTO.getCategoryName());
+        System.out.println(productDTO.getPrice());
         try {
             productService.createProduct(productDTO);
             return ResponseEntity.ok("");
@@ -75,6 +84,7 @@ public class ProductController {
     }
 
     @PostMapping("/removeProduct/")
+    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<?> removeProductByName(@RequestBody String name) {

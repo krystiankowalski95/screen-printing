@@ -1,10 +1,9 @@
 export default class Product {
-    constructor(id,name, categoryName,price,active,dtoVersion) {
+    constructor(id,name, categoryName,price,dtoVersion) {
       this.id = id;
       this.name = name;
       this.categoryName = categoryName;
       this.price = price;
-      this.active = active;
       this.dtoVersion = dtoVersion;
     }
   }

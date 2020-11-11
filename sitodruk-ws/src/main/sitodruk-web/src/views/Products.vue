@@ -2,6 +2,14 @@
   <div class="container">
     <header class="jumbotron" style="height:100px">
       <h3>Product list</h3>
+      <!-- <div v-if="showModeratorBoard" class="navbar-nav ml-auto"> -->
+       <div class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <router-link to="/addProduct" class="nav-link">
+            <font-awesome-icon icon="plus-square" />Sign Up
+          </router-link>
+        </li>
+      </div>
     </header>
       <b-container>
         <b-row >
@@ -46,8 +54,7 @@ export default {
               product.id,
               product.name,
               product.categoryName,
-              product.prime,
-              product.active,
+              product.price,
               product.dtoVersion
             ),
           );

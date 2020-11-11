@@ -2,5 +2,13 @@
     "hello": "Cześć , test i18n ",
     "welcome": "Witaj!",
     "yes-button": "Tak",
-    "no-button": "Nie!"
+    "no-button": "Nie!",
+    "addProduct": "Dodaj produkt",
+    "productName": "Nazwa produktu",
+    "active": "Czy aktywny?",
+    "price": "Cena",
+    "categoryName": "Kategoria",
+    "name": "Nazwa"
+
+
 }

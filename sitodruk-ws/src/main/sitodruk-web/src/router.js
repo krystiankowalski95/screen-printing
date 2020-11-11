@@ -5,6 +5,7 @@ import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import ActivateUser from './views/ActivateUser.vue';
 import ProductDetails from './views/ProductDetails.vue';
+import AddProduct from './views/AddProduct.vue';
 Vue.use(Router);
 
 export const router = new Router({
@@ -30,6 +31,10 @@ export const router = new Router({
     {
       path: '/register',
       component: Register
+    },
+    {
+      path: '/addProduct',
+      component: AddProduct
     },
     {
       path: '/profile',

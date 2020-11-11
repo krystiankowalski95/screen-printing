@@ -2,5 +2,9 @@
     "hello": "Bonjour, test i18n",
     "welcome": "Welcome!",
     "yes-button": "Yes",
-    "no-button": "No!"
+    "no-button": "No!",
+    "addProduct": "Add product",
+    "price": "Price",
+    "categoryName": "Category name",
+    "name": "Name"
 }

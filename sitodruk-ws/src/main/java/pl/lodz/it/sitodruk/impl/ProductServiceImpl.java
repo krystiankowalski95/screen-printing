@@ -26,11 +26,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createProduct(ProductDTO productDTO) throws BaseException {
-        if(productRepository.existsByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName())){
-            throw new ProductAlreadyExistsException();
-        }else {
+//        if(productRepository.existsByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName())){
+//            throw new ProductAlreadyExistsException();
+//        }else {
             productRepository.saveAndFlush(ProductMapper.INSTANCE.createNewProduct(productDTO));
-        }
+//        }
     }
 
     @Override

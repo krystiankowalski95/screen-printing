@@ -19,9 +19,10 @@ import {
   faHouseUser,
   faGifts,
   faFlag,
+  faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag,faPlusSquare);
 
 Vue.config.productionTip = false;
 
