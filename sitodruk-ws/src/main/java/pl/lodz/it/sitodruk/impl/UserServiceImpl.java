@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -33,7 +34,6 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void modifyUser(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
@@ -65,7 +64,6 @@ public class UserServiceImpl implements UserService {
         } else throw new UserNotFoundException();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public UserDTO findUserByUsername(String username) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
@@ -75,7 +73,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void confirmUser(String token) throws BaseException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
@@ -85,13 +82,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean isUserConfirmed(UserDTO userDTO) {
         return userRepository.existsByUsernameAndPasswordAndConfirmed(userDTO.getUsername(), userDTO.getPassword(), false);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean isUserActive(UserDTO userDTO) {
         return userRepository.existsByUsernameAndPasswordAndActive(userDTO.getUsername(), userDTO.getPassword(), false);
     }

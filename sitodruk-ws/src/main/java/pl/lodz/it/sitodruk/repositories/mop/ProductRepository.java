@@ -9,7 +9,7 @@ import pl.lodz.it.sitodruk.model.mop.ProductEntity;
 import java.util.Optional;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY, transactionManager = "mopTransactionManager")
 public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
     ProductEntity findByNameAndCategoryName(String name,String categoryName);
     Boolean existsByNameAndCategoryName(String name,String categoryName);

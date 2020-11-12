@@ -9,7 +9,7 @@ import pl.lodz.it.sitodruk.model.mok.UserEntity;
 import java.util.Optional;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY, transactionManager = "mokTransactionManager")
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
     Optional<UserEntity> findByUsername(String username);
     Optional<UserEntity> findByToken(String token);

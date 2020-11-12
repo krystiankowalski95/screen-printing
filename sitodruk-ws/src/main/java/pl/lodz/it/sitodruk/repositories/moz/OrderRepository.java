@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.model.moz.OrderEntity;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY, transactionManager = "mozTransactionManager")
 public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
 }

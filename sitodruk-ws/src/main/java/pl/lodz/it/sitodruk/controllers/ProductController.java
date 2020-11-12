@@ -25,6 +25,7 @@ import java.util.Properties;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/products")
+@Transactional(propagation = Propagation.NEVER, transactionManager = "mopTransactionManager")
 public class ProductController {
 
     @Autowired
@@ -42,7 +43,6 @@ public class ProductController {
     }
 
     @GetMapping("/findAll")
-    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
@@ -54,7 +54,6 @@ public class ProductController {
     }
 
     @GetMapping("/findByName/{name}")
-    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
@@ -67,7 +66,6 @@ public class ProductController {
 
 
     @PostMapping("/addNew")
-    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
@@ -84,7 +82,6 @@ public class ProductController {
     }
 
     @PostMapping("/removeProduct/")
-    @Transactional(propagation = Propagation.NEVER)
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<?> removeProductByName(@RequestBody String name) {

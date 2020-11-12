@@ -9,7 +9,7 @@ import pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity;
 import java.util.Optional;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY, transactionManager = "mokTransactionManager")
 public interface UserAccessLevelRepository extends JpaRepository<UserAccessLevelEntity,Long> {
     Optional<UserAccessLevelEntity> findAllByLoginDataByUserId(Long userId);
 }

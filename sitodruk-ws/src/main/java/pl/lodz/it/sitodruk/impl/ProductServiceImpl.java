@@ -18,29 +18,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createProduct(ProductDTO productDTO) throws BaseException {
-//        if(productRepository.existsByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName())){
-//            throw new ProductAlreadyExistsException();
-//        }else {
+        if(productRepository.existsByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName())){
+            throw new ProductAlreadyExistsException();
+        }else {
             productRepository.saveAndFlush(ProductMapper.INSTANCE.createNewProduct(productDTO));
-//        }
+        }
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void modifyProduct(ProductDTO productDTO) throws BaseException {
         productRepository.findByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName());
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void removeProductByName(String name) throws BaseException {
         Optional<ProductEntity> productEntity = productRepository.findByName(name);
         if(productEntity.isPresent()){
@@ -52,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ProductDTO findProductByName(String productName) throws BaseException {
         Optional<ProductEntity> product = productRepository.findByName(productName);
         if(product.isPresent()){
@@ -63,7 +60,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<ProductDTO> findAllProducts() throws BaseException {
         List<ProductDTO> products = new ArrayList<>();
         List<ProductEntity> productEntities = productRepository.findAll();

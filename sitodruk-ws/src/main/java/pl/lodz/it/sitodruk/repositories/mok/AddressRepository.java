@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.model.mok.AddressEntity;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY, transactionManager = "mokTransactionManager")
 public interface AddressRepository extends JpaRepository<AddressEntity,Long> {
 }

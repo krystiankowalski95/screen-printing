@@ -10,24 +10,22 @@ import pl.lodz.it.sitodruk.repositories.moz.OrderRepository;
 import pl.lodz.it.sitodruk.service.OrderService;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mozTransactionManager")
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createOrder(OrderDTO orderDTO) throws BaseException {
 
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void modifyOrder(OrderDTO orderDTO) throws BaseException {
 
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public OrderDTO findOrderBy(String username) throws BaseException {
         return null;
     }

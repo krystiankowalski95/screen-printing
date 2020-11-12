@@ -10,25 +10,22 @@ import pl.lodz.it.sitodruk.repositories.mok.AddressRepository;
 import pl.lodz.it.sitodruk.service.AddressService;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
 public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private AddressRepository addressRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createAddress(AddressDTO addressDTO) throws BaseException {
-
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void modifyAddress(AddressDTO addressDTO) throws BaseException {
 
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AddressDTO findAddressByUsername(String username) throws BaseException {
         return null;
     }

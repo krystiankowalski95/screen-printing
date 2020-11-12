@@ -8,10 +8,10 @@ import pl.lodz.it.sitodruk.dto.CategoryDTO;
 import pl.lodz.it.sitodruk.service.CategoryService;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mopTransactionManager")
 public class CategoryServiceImpl implements CategoryService {
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CategoryDTO findCategoryByCategoryName(String category) {
         return null;
     }

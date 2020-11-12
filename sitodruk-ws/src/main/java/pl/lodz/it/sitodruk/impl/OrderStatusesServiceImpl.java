@@ -10,13 +10,13 @@ import pl.lodz.it.sitodruk.repositories.moz.OrderStatusRepository;
 import pl.lodz.it.sitodruk.service.OrderStatusService;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mozTransactionManager")
 public class OrderStatusesServiceImpl implements OrderStatusService {
 
     @Autowired
     private OrderStatusRepository orderStatusRepository;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public OrderStatusDTO findOrderStatusByName(String orderStatus) throws BaseException {
         return null;
     }
