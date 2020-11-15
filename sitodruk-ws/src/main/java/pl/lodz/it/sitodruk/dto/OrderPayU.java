@@ -18,5 +18,5 @@ public class OrderPayU implements Serializable {
     private BuyerPayU buyer;
     private String continueUrl;
     private List<ProductPayU> products = new ArrayList<>();
-    private List<PayMethodPayU> payMethods = new ArrayList<>();
+    private PayMethodsPayU payMethods;
 }

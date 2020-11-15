@@ -1,6 +1,6 @@
 package pl.lodz.it.sitodruk;
 
-
+import io.jsonwebtoken.lang.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import pl.lodz.it.sitodruk.dto.*;
 
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -28,7 +27,9 @@ public class SitodrukApplicationTests {
     @Value("${thesis.app.payu.client.secret}")
     private String client_secret;
     @Value("${thesis.app.payu.url}")
-    private String url;
+    private String OauthUrl;
+    @Value("${thesis.app.payu.api.url}")
+    private String payuApiUrl;
 
     @Test
     public void hasAPIGeneratedToken()   {
@@ -37,7 +38,7 @@ public class SitodrukApplicationTests {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         String postingString = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret;
         HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(url,HttpMethod.POST,entity,Map.class);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
         Assertions.assertEquals(HttpStatus.OK.toString(),responseEntity.getStatusCode().toString());
     }
 
@@ -48,9 +49,11 @@ public class SitodrukApplicationTests {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         String postingString = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret;
         HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(url,HttpMethod.POST,entity,Map.class);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
         String token = responseEntity.getBody().get("access_token").toString();
+
         System.out.println(token);
+
         HttpHeaders paymentHeaders = new HttpHeaders();
         paymentHeaders.setContentType(MediaType.APPLICATION_JSON);
         paymentHeaders.setBearerAuth(token);
@@ -59,10 +62,10 @@ public class SitodrukApplicationTests {
         order.setCurrencyCode("PLN");
         order.setTotalAmount("10");
         order.setDescription("Testowa transakcja");
-        order.setNotifyUrl("https://screen-printing-application.herokuapp.com/home");
+        order.setNotifyUrl("https://screen-printing-application.herokuapp.com/platnosci");
         order.setCustomerIp("127.0.0.1");
         order.setMerchantPosId(client_id);
-        order.setBuyer(new BuyerPayU("ikriss95@gmail.com","","Krystian","Kowalski","PL"));
+        order.setBuyer(new BuyerPayU("","ikriss95@gmail.com","","Krystian","Kowalski","pl"));
         ProductPayU productPayU = new ProductPayU();
         productPayU.setName("Siatka 60 10mb");
         productPayU.setQuantity("1");
@@ -70,15 +73,54 @@ public class SitodrukApplicationTests {
         order.getProducts().add(productPayU);
         PayMethodPayU payMethod = new PayMethodPayU();
         payMethod.setBlikData(new BlikData(true));
-        payMethod.setAuthorizationCode("098921");
+        payMethod.setAuthorizationCode("500500");
         payMethod.setType("BLIK_TOKEN");
-        order.getPayMethods().add(payMethod);
+        order.setPayMethods(new PayMethodsPayU());
+        order.getPayMethods().setPayMethod(payMethod);
         HttpEntity<?> paymentEntity = new HttpEntity<>(order, paymentHeaders);
-//        ResponseEntity<Map> paymentResponseEntity = restTemplate.exchange("https://secure.snd.payu.com/api/v2_1/orders",HttpMethod.POST,paymentEntity,Map.class);
-//        System.out.println(paymentResponseEntity.getBody());
-//        System.out.println(paymentResponseEntity.getStatusCode());
+        ResponseEntity<Map> paymentResponseEntity = restTemplate.exchange(payuApiUrl+"/orders",HttpMethod.POST,paymentEntity,Map.class);
+        Assert.hasText("statusCode=SUCCESS",paymentResponseEntity.getBody().toString());
+        System.out.println(paymentResponseEntity.getBody());
+        System.out.println(paymentResponseEntity.getStatusCode());
+    }
 
+    @Test
+    public void testRetrieveOrderStatus(){
+        RestTemplate restTemplate = new RestTemplate();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        String postingString = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret;
+        HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
+        String token = responseEntity.getBody().get("access_token").toString();
+
+        HttpHeaders orderStatusHeaders = new HttpHeaders();
+        orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
+        orderStatusHeaders.setBearerAuth(token);
+        HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
+        Assert.hasText("6BXHLNS8MZ201115GUEST000P01",orderStatusResponse.getBody().toString());
+    }
+
+    @Test
+    public void testTransactionDetails(){
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        String postingString = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret;
+        HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
+        String token = responseEntity.getBody().get("access_token").toString();
+
+        HttpHeaders orderStatusHeaders = new HttpHeaders();
+        orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
+        orderStatusHeaders.setBearerAuth(token);
+        HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01/transactions",HttpMethod.GET,httpEntity,Map.class);
+        System.out.println(orderStatusResponse.getBody());
+        System.out.println(orderStatusResponse.getStatusCode());
     }
 
 }
