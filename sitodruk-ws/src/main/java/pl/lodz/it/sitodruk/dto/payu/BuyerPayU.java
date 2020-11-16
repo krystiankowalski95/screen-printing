@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.dto;
+package pl.lodz.it.sitodruk.dto.payu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
