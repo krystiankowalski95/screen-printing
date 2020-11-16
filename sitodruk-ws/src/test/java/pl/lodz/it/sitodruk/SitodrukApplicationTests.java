@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import pl.lodz.it.sitodruk.dto.*;
+import pl.lodz.it.sitodruk.dto.payu.*;
 
 
 import java.util.Map;
@@ -73,7 +73,7 @@ public class SitodrukApplicationTests {
         order.getProducts().add(productPayU);
         PayMethodPayU payMethod = new PayMethodPayU();
         payMethod.setBlikData(new BlikData(true));
-        payMethod.setAuthorizationCode("500500");
+        payMethod.setAuthorizationCode("700701");
         payMethod.setType("BLIK_TOKEN");
         order.setPayMethods(new PayMethodsPayU());
         order.getPayMethods().setPayMethod(payMethod);
@@ -99,8 +99,10 @@ public class SitodrukApplicationTests {
         orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
         orderStatusHeaders.setBearerAuth(token);
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
-        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
-        Assert.hasText("6BXHLNS8MZ201115GUEST000P01",orderStatusResponse.getBody().toString());
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/C1HQQF9VZZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
+        ResponseEntity<Map> orderStatusResponse1 = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
+        System.out.println(orderStatusResponse.getBody().get("orders"));
+        System.out.println(orderStatusResponse1.getBody().get("status"));
     }
 
     @Test
@@ -118,7 +120,7 @@ public class SitodrukApplicationTests {
         orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
         orderStatusHeaders.setBearerAuth(token);
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
-        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01/transactions",HttpMethod.GET,httpEntity,Map.class);
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/C1HQQF9VZZ201115GUEST000P01/transactions",HttpMethod.GET,httpEntity,Map.class);
         System.out.println(orderStatusResponse.getBody());
         System.out.println(orderStatusResponse.getStatusCode());
     }
