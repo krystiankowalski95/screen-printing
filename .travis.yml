@@ -1,6 +1,6 @@
 language: java
 jdk:
-- openjdk14
+- openjdk15
 before_install:
 - cd sitodruk-ws
 - chmod +x mvnw
