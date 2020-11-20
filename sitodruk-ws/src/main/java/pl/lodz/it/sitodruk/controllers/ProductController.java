@@ -69,10 +69,6 @@ public class ProductController {
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
-        System.out.println(productDTO.getId());
-        System.out.println(productDTO.getName());
-        System.out.println(productDTO.getCategoryName());
-        System.out.println(productDTO.getPrice());
         try {
             productService.createProduct(productDTO);
             return ResponseEntity.ok("");
@@ -81,12 +77,12 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/removeProduct/")
+    @PostMapping("/removeProduct")
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll
-    public ResponseEntity<?> removeProductByName(@RequestBody String name) {
+    public ResponseEntity<?> removeProductByName(@RequestBody ProductDTO productDTO) {
         try {
-            productService.removeProductByName(name);
+            productService.removeProductByName(productDTO.getName());
             return ResponseEntity.ok("");
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));

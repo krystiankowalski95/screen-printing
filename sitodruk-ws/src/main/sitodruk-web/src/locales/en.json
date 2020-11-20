@@ -4,7 +4,15 @@
     "yes-button": "Yes",
     "no-button": "No!",
     "addProduct": "Add product",
+    "productName": "Product name",
     "price": "Price",
     "categoryName": "Category name",
-    "name": "Name"
+    "name": "Name",
+    "productId": "Id",
+    "goToDetails": "Navigate to product details page",
+    "removeSelectedProduct":"Remove selected product",
+    "details":"Details",
+    "removeButton":"Remove",
+    "productList":"Product list",
+    "productDetails":"Product details"
 }

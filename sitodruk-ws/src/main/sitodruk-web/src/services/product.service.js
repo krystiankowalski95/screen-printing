@@ -19,6 +19,20 @@ class ProductService {
     // , { headers: authHeader() }
     );
   }
+
+  removeProduct(product) {
+    return axios.post(API_URL + '/removeProduct', {
+      name: product.name,
+    }
+    // , { headers: authHeader() }
+    );
+  }
+
+  findProductByName(name) {
+    return axios.post(API_URL + '/findByName/' + name, {}
+    // , { headers: authHeader() }
+    );
+  }
 }
 
 export default new ProductService();

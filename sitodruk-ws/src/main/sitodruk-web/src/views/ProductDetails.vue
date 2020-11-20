@@ -1,25 +1,25 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height:100px">
-      <h3>Product details</h3>
+      <h3>{{ $t('productDetails') }}</h3>
     </header>
       <b-container>
         <b-row >
-          <b-col>Id</b-col>
-          <!-- <b-col>{{product.id}}</b-col> -->
+          <b-col>{{ $t('productId') }}</b-col>
+          <b-col>{{product.id}}</b-col>
         </b-row>
         <b-row>
-             <b-col>Product name</b-col>
-              <b-col>{{this.product}}</b-col>
-        </b-row>
-        <!-- <b-row>
-            <b-col>Product Category</b-col>
-            <b-col>{{product.name}}</b-col>
+             <b-col>{{ $t('productName') }}</b-col>
+              <b-col>{{product.name}}</b-col>
         </b-row>
          <b-row>
-            <b-col>Price</b-col>
+            <b-col>{{ $t('categoryName') }}</b-col>
+            <b-col>{{product.categoryName}}</b-col>
+        </b-row>
+         <b-row>
+            <b-col>{{ $t('price') }}</b-col>
             <b-col>{{product.price}}</b-col>
-        </b-row> -->
+        </b-row>
       </b-container>
     </div>
 </template>
@@ -31,16 +31,13 @@ export default {
   name: 'Product details',
   props: ['productName'],
   data() {
-    console.log(this.$props.productName)
     return {
-      product: this.$props.productName
+      product: this.$store.product
     };
   },
+  mounted() {
+  },
   methods: {
-    // getDetails(index) {
-    //   (this.productList[index]);
-    //   this.$router.push({path: '/productDetails', params: {product: this.productList[index]}});
-    // }
   }
 };
 </script>

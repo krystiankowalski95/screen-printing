@@ -8,7 +8,14 @@
     "active": "Czy aktywny?",
     "price": "Cena",
     "categoryName": "Kategoria",
-    "name": "Nazwa"
+    "name": "Nazwa",
+    "productId": "Id",
+    "goToDetails": "Przejdź do szczegółów produktu",
+    "removeSelectedProduct":"Usuń wybrany produkt",
+    "details":"Szczegóły",
+    "removeButton":"Usuń",
+    "productList": "Lista produktów",
+    "productDetails":"Szczegóły produktu"
 
 
 }
