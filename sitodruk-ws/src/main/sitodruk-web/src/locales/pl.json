@@ -15,7 +15,29 @@
     "details":"Szczegóły",
     "removeButton":"Usuń",
     "productList": "Lista produktów",
-    "productDetails":"Szczegóły produktu"
-
+    "productDetails":"Szczegóły produktu",
+    "polish":"Polski",
+    "english":"English",
+    "homePage":"Strona główna",
+    "products":"Produkty",
+    "signup":"Zarejestruj się",
+    "signin":"Logowanie",
+    "logout":"Wyloguj",
+    "signinButton":"Zaloguj",
+    "passwordRequired":"Podanie hasła jest wymagane",
+    "usernameRequired":"Podanie nazwy użytkownika jest wymagane",
+    "password":"Hasło",
+    "username":"Nazwa użytkownika",
+    "firstname":"Imię",
+    "lastname":"Nazwisko",
+    "email":"Adres email",
+    "phoneNumber":"Numer telefonu",
+    "confirmPassword":"Potwierdź hasło",
+    "roleClient":"Klient",
+    "roleManager":"Menadżer",
+    "roleAdmin":"Administrator",
+    "confirmAccount":"Potwierdź konto",
+    "changePasswordButton":"Zmień hasło",
+    "changePassword":"Formularz zmiany hasła"
 
 }

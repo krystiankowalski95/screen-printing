@@ -10,16 +10,18 @@ import java.sql.Date;
 @Table(name = "orders", schema = "public", catalog = "postgres")
 public class OrderEntity {
     @Id@Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_generator")
+    @SequenceGenerator(name = "order_generator", sequenceName = "orders_seq", allocationSize = 1)
     private long id;
     @Basic@Column(name = "timestamp", nullable = true)
     private Date timestamp;
     @Basic@Column(name = "version", nullable = false)
     private int version;
-    @ManyToOne@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private UserEntity loginDataByUserId;
+    @Basic@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private String userId;
     @ManyToOne@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private AddressEntity addressByAddressId;
-    @OneToOne
-    private OrderEntity orderEntity;
+    @Basic@Column(name = "order_status", nullable = false, length = -1)
+    private String order;
 
 }

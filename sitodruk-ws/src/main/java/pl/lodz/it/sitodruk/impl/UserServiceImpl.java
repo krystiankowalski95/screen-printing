@@ -15,6 +15,7 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -65,6 +66,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changePassword(UserDTO userDTO) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if(user.isPresent()){
+            user.get().setPassword(encoder.encode(userDTO.getPassword()));
+            userRepository.saveAndFlush(user.get());
+        }else throw new UserNotFoundException();
+    }
+
+    @Override
     public UserDTO findUserByUsername(String username) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
@@ -76,8 +86,13 @@ public class UserServiceImpl implements UserService {
     public void confirmUser(String token) throws BaseException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
-            user.get().setConfirmed(true);
-            userRepository.saveAndFlush(user.get());
+            if(user.get().isConfirmed()){
+                throw new UserAlreadyConfirmedException();
+            }else{
+                user.get().setConfirmed(true);
+                user.get().setActive(true);
+                userRepository.saveAndFlush(user.get());
+            }
         } else throw new UserNotFoundException();
     }
 

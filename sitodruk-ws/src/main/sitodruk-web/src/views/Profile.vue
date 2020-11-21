@@ -2,40 +2,47 @@
   <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>{{currentUser.username}}</strong> Profile
+        <strong>{{ currentUser.username }}</strong> Profile
       </h3>
+        <div class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <router-link to="/changePassword" class="nav-link">
+            <font-awesome-icon icon="plus-square" />{{ $t('changePassword') }}
+          </router-link>
+        </li>
+      </div>
     </header>
     <p>
-      <strong>Token:</strong>
-      {{currentUser.accessToken.substring(0, 20)}} ... {{currentUser.accessToken.substr(currentUser.accessToken.length - 20)}}
-    </p>
-    <p>
-      <strong>Id:</strong>
-      {{currentUser.id}}
-    </p>
-    <p>
       <strong>Email:</strong>
-      {{currentUser.email}}
+      {{ currentUser.email }}
     </p>
     <strong>Authorities:</strong>
-    <ul>
-      <li v-for="(role,index) in currentUser.roles" :key="index">{{role}}</li>
+    <ul v-for="(role,index) in currentUser.roles" :key="index">
+      <li v-if="(role == 'ROLE_CLIENT')">
+        {{ $t("roleClient") }}
+      </li>
+      <li v-if="(role == 'ROLE_MANAGER')">
+        {{ $t("roleManager") }}
+      </li>
+      <li v-if="(role == 'ROLE_ADMIN')">
+        {{ $t("roleAdmin") }}
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Profile',
+  name: "Profile",
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
-    }
+    },
   },
   mounted() {
     if (!this.currentUser) {
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
-  }
+  },
 };
 </script>

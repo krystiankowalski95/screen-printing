@@ -64,7 +64,7 @@ public class UserEntity implements Serializable {
 
     @Basic
     @Version
-    @Column(name = "version", table = "user_personal_data", nullable = false)
+    @Column(name = "version", table = "login_data", nullable = false)
     private long version;
 
     public UserEntity(){

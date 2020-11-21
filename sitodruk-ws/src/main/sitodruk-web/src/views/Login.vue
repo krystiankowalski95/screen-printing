@@ -8,7 +8,7 @@
       />
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">{{ $t('username') }}</label>
           <input
             v-model="user.username"
             v-validate="'required'"
@@ -20,10 +20,10 @@
             v-if="errors.has('username')"
             class="alert alert-danger"
             role="alert"
-          >Username is required!</div>
+          >{{ $t('usernameRequired') }}</div>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ $t('password') }}</label>
           <input
             v-model="user.password"
             v-validate="'required'"
@@ -35,12 +35,12 @@
             v-if="errors.has('password')"
             class="alert alert-danger"
             role="alert"
-          >Password is required!</div>
+          >{{ $t('passwordRequired') }}</div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-            <span>Login</span>
+            <span>{{ $t('signinButton') }}</span>
           </button>
         </div>
         <div class="form-group">

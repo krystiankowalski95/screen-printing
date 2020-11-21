@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
     void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException;
     void modifyUser(UserDTO userDTO) throws BaseException;
+    void changePassword(UserDTO userDTO) throws BaseException;
     UserDTO findUserByUsername(String username) throws BaseException;
     void confirmUser(String token) throws BaseException;
     Boolean isUserConfirmed(UserDTO userDTO) throws BaseException;

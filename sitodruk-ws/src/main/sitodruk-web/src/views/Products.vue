@@ -2,7 +2,7 @@
   <div class="container">
     <header class="jumbotron" style="height:150px">
       <h3>{{ $t('productList') }}</h3>
-      <!-- <div v-if="showModeratorBoard" class="navbar-nav ml-auto"> -->
+      <!-- <div v-if="isManagerInRole" class="navbar-nav ml-auto"> -->
        <div class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/addProduct" class="nav-link">
@@ -18,7 +18,7 @@
           <b-col>{{ $t('categoryName') }}</b-col>
           <b-col >{{ $t('goToDetails') }}</b-col>
            <b-col>{{ $t('removeSelectedProduct') }}</b-col> 
-          <!-- <b-col v-if="showModeratorBoard">{{ $t('removeSelectedProduct') }}</b-col> -->
+          <!-- <b-col v-if="isManagerInRole">{{ $t('removeSelectedProduct') }}</b-col> -->
         </b-row>
       </b-container>
       <b-container class="bv-example-row" v-for="(product,index) in productList" :key="index">
@@ -27,7 +27,7 @@
           <b-col>{{product.name }}</b-col>
           <b-col>{{product.categoryName }}</b-col>
           <b-col><b-button pill variant="primary" @click="getDetails(index)">{{ $t('details') }}</b-button></b-col>
-        <!--  <b-col v-if="showModeratorBoard"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
+        <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
           <b-col><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col>
         </b-row>
       </b-container>

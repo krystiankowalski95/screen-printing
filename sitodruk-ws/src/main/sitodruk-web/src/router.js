@@ -3,9 +3,11 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
-import ActivateUser from './views/ActivateUser.vue';
+import ConfirmUser from './views/ConfirmUser.vue';
 import ProductDetails from './views/ProductDetails.vue';
 import AddProduct from './views/AddProduct.vue';
+import ChangePassword from './views/ChangePassword.vue';
+
 Vue.use(Router);
 
 export const router = new Router({
@@ -17,12 +19,16 @@ export const router = new Router({
       component: Home
     },
     {
+      path: '/changePassword',
+      component: ChangePassword
+    },
+    {
       path: '/home',
       component: Home
     },
     {
-      path: '/activateUser',
-      component: ActivateUser
+      path: '/confirmAccount',
+      component: ConfirmUser
     },
     {
       path: '/login',
@@ -76,16 +82,16 @@ export const router = new Router({
   ]
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ['/login', '/register', '/home'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem('user');
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register', '/home','/products','/productDetails','/confirmAccount'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('user');
 
-//   // trying to access a restricted page + not logged in
-//   // redirect to login page
-//   if (authRequired && !loggedIn) {
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next('/login');
+  } else {
+    next();
+  }
+});

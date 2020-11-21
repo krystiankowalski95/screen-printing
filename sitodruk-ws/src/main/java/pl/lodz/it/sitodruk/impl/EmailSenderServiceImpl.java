@@ -35,7 +35,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = request.getRequestURL()
-                    .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/cofirmAccount?token=");
+                    .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/confirmAccount?token=");
             String body = "<a href=\"" + link + token + "\">"+"Verify Account"+ "</a>";
 //mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
             helper.setText(body, true); // Use this or above line.

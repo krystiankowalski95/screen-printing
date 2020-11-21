@@ -13,13 +13,13 @@
             <font-awesome-icon icon="gifts" />Products
           </router-link>
         </li>
-        <li v-if="showAdminBoard" class="nav-item">
+        <li v-if="isAdminInRole" class="nav-item">
           <router-link to="/admin" class="nav-link">Admin Board</router-link>
         </li>
-        <li v-if="showModeratorBoard" class="nav-item">
+        <li v-if="isManagerInRole" class="nav-item">
           <router-link to="/mod" class="nav-link">Manager Board</router-link>
         </li>
-        <li v-if="showUserBoard" class="nav-item">
+        <li v-if="isClientInRole" class="nav-item">
           <router-link to="/user" class="nav-link">User</router-link>
         </li>
       </div>
@@ -74,21 +74,21 @@ export default {
     currentUser() {
       return this.$store.state.auth.user;
     },
-    showAdminBoard() {
+    isAdminInRole() {
       if (this.currentUser && this.currentUser.roles) {
         return this.currentUser.roles.includes('ROLE_ADMIN');
       }
 
       return false;
     },
-    showModeratorBoard() {
+    isManagerInRole() {
       if (this.currentUser && this.currentUser.roles) {
         return this.currentUser.roles.includes('ROLE_MANAGER');
       }
 
       return false;
     },
-    showClientBoard() {
+    isClientInRole() {
       if (this.currentUser && this.currentUser.roles) {
         return this.currentUser.roles.includes('ROLE_CLIENT');
       }
