@@ -17,6 +17,7 @@ import pl.lodz.it.sitodruk.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
@@ -66,6 +67,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void setNewPassword(UserDTO userDTO) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
+        if(user.isPresent()){
+            user.get().setPassword(encoder.encode(userDTO.getPassword()));
+            userRepository.saveAndFlush(user.get());
+        }else throw new UserNotFoundException();
+    }
+
+    @Override
     public void changePassword(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if(user.isPresent()){
@@ -80,6 +90,16 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             return userMapper.toUserDTO(user.get());
         } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void resetPassword(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
+        if(user.isPresent()){
+            user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+            userRepository.saveAndFlush(user.get());
+            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(),requestUrl,user.get().getToken());
+        }else throw new UserNotFoundException();
     }
 
     @Override

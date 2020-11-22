@@ -54,12 +54,12 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = request.getRequestURL()
-                    .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/resetPassword?token=");
+                    .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/setNewPassword?token=");
             String body = "<a href=\"" + link + token + "\">"+"Reset password"+ "</a>";
 //mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
             helper.setText(body, true); // Use this or above line.
             helper.setTo(to);
-            helper.setSubject("Welcome");
+            helper.setSubject("Reset password");
             helper.setFrom("noreplay@gmail.com");
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {

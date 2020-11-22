@@ -22,5 +22,6 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
     private String confirmPassword;
+    private String token;
     private Set<String> roles;
 }

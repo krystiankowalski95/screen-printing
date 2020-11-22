@@ -34,6 +34,20 @@ class UserService {
       confirmPassword: user.confirmPassword
     });
   }
+
+  resetPassword(user) {
+    return axios.post(API_URL + 'resetPassword', {
+      email: user.email,
+    });
+  }
+
+  setNewPassword(user) {
+    return axios.post(API_URL + 'setNewPassword', {
+      token: user.token,
+      password: user.password,
+      confirmPassword: user.password
+    });
+  }
 }
 
 export default new UserService();

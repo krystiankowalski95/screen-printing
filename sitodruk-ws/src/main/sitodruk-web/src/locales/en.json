@@ -37,6 +37,10 @@
     "roleAdmin":"Admin",
     "confirmAccount":"Confirm account",
     "changePasswordButton":"Change password",
-    "changePassword":"Password change form"
+    "changePassword":"Password change form",
+    "resetPasswordLink":"Forgot password? Navigate to resetting password form",
+    "emailRequired":"Email is required",
+    "sendResetPasswordMail":"Reset password"
+
     
 }

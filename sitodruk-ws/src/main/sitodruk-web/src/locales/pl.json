@@ -38,6 +38,9 @@
     "roleAdmin":"Administrator",
     "confirmAccount":"Potwierdź konto",
     "changePasswordButton":"Zmień hasło",
-    "changePassword":"Formularz zmiany hasła"
+    "changePassword":"Formularz zmiany hasła",
+    "resetPasswordLink":"Zapomniałeś hasła? Przejdź do formularza resetowania hasła",
+    "emailRequired":"Podanie adresu email jest wymagane",
+    "sendResetPasswordMail":"Resetuj hasło"
 
 }

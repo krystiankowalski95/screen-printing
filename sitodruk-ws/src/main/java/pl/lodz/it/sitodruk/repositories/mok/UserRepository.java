@@ -12,6 +12,7 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.MANDATORY, transactionManager = "mokTransactionManager")
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
     Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByToken(String token);
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);

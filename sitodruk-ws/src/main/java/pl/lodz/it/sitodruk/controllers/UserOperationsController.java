@@ -62,4 +62,26 @@ public class UserOperationsController {
         }
         return  ResponseEntity.ok(new MessageResponse("Password has been changed"));
     }
+
+    @PostMapping("/resetPassword")
+    @PermitAll
+    public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO,HttpServletRequest requestUrl){
+        try {
+            userService.resetPassword(userDTO,requestUrl);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
+        return  ResponseEntity.ok(new MessageResponse("Email with further information has been sent"));
+    }
+
+    @PostMapping("/setNewPassword")
+    @PermitAll
+    public ResponseEntity<?> setNewPassword(@RequestBody UserDTO userDTO){
+        try {
+            userService.setNewPassword(userDTO);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
+        return  ResponseEntity.ok(new MessageResponse("Password has been changed"));
+    }
 }

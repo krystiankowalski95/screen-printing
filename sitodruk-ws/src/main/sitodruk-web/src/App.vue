@@ -5,12 +5,12 @@
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <router-link to="/home" class="nav-link">
-            <font-awesome-icon icon="house-user" />Home
+            <font-awesome-icon icon="house-user" />{{ $t('homePage') }}
           </router-link>
         </li>
         <li class="nav-item">
           <router-link to="/products" class="nav-link">
-            <font-awesome-icon icon="gifts" />Products
+            <font-awesome-icon icon="gifts" />{{ $t('products') }}
           </router-link>
         </li>
         <li v-if="isAdminInRole" class="nav-item">
@@ -29,12 +29,12 @@
       <div v-if="!currentUser" class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" />Sign Up
+            <font-awesome-icon icon="user-plus" />{{ $t('signup') }}
           </router-link>
         </li>
         <li class="nav-item">
           <router-link to="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" />Login
+            <font-awesome-icon icon="sign-in-alt" />{{ $t('signin') }}
           </router-link>
         </li>
       </div>
@@ -48,15 +48,15 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href @click.prevent="logOut">
-            <font-awesome-icon icon="sign-out-alt" />LogOut
+            <font-awesome-icon icon="sign-out-alt" />{{ $t('logout') }}
           </a>
         </li>
       </div>
        <div class="navbar-nav">
         
         <select v-model="$i18n.locale">
-          <option key="pl" value="pl">Polski</option>
-          <option key="en" value="en">English</option>
+          <option key="pl" value="pl">{{ $t('polish') }}</option>
+          <option key="en" value="en">{{ $t('english') }}</option>
         </select>
       </div>
     </nav>

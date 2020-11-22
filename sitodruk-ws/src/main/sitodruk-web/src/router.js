@@ -7,6 +7,8 @@ import ConfirmUser from './views/ConfirmUser.vue';
 import ProductDetails from './views/ProductDetails.vue';
 import AddProduct from './views/AddProduct.vue';
 import ChangePassword from './views/ChangePassword.vue';
+import ResetPassword from './views/ResetPassword.vue';
+import ResetPasswordForm from './views/ResetPasswordForm.vue';
 
 Vue.use(Router);
 
@@ -25,6 +27,14 @@ export const router = new Router({
     {
       path: '/home',
       component: Home
+    },
+    {
+      path: '/setNewPassword',
+      component: ResetPasswordForm
+    },
+    {
+      path: '/resetPassword',
+      component: ResetPassword
     },
     {
       path: '/confirmAccount',
@@ -83,7 +93,7 @@ export const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register', '/home','/products','/productDetails','/confirmAccount'];
+  const publicPages = ['/login', '/register', '/home','/products','/productDetails','/confirmAccount','/resetPassword','/setNewPassword'];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('user');
 

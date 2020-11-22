@@ -1,52 +1,27 @@
 <template>
   <div class="col-md-12">
     <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
-      />
-      <form name="form" @submit.prevent="handleLogin">
+      <form name="form" @submit.prevent="sendEmail">
         <div class="form-group">
-          <label for="username">{{ $t('username') }}</label>
+          <label for="email">{{ $t('email') }}</label>
           <input
-            v-model="user.username"
+            v-model="user.email"
             v-validate="'required'"
             type="text"
             class="form-control"
-            name="username"
+            name="email"
           />
           <div
-            v-if="errors.has('username')"
+            v-if="errors.has('email')"
             class="alert alert-danger"
             role="alert"
-          >{{ $t('usernameRequired') }}</div>
-        </div>
-        <div class="form-group">
-          <label for="password">{{ $t('password') }}</label>
-          <input
-            v-model="user.password"
-            v-validate="'required'"
-            type="password"
-            class="form-control"
-            name="password"
-          />
-          <div
-            v-if="errors.has('password')"
-            class="alert alert-danger"
-            role="alert"
-          >{{ $t('passwordRequired') }}</div>
+          >{{ $t('emailRequired') }}</div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-            <span>{{ $t('signinButton') }}</span>
+            <span>{{ $t('sendResetPasswordMail') }}</span>
           </button>
-        </div>
-         <div class="form-group">
-          <router-link to="/resetPassword" class="nav-link">
-            <font-awesome-icon icon="key" />{{ $t('resetPasswordLink') }}
-          </router-link>
         </div>
         <div class="form-group">
           <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
@@ -58,28 +33,19 @@
 
 <script>
 import User from '../models/user';
+import UserService from '../services/user.service';
 
 export default {
   name: 'Login',
   data() {
     return {
-      user: new User('', ''),
+      user: new User(''),
       loading: false,
       message: ''
     };
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    }
-  },
-  created() {
-    if (this.loggedIn) {
-      this.$router.push('/profile');
-    }
-  },
   methods: {
-    handleLogin() {
+    sendEmail() {
       this.loading = true;
       this.$validator.validateAll().then(isValid => {
         if (!isValid) {
@@ -87,11 +53,8 @@ export default {
           return;
         }
 
-        if (this.user.username && this.user.password) {
-          this.$store.dispatch('auth/login', this.user).then(
-            () => {
-              this.$router.push('/profile');
-            },
+        if (this.user.email) {
+          UserService.resetPassword(this.user).then(
             error => {
               this.loading = false;
               this.message =
@@ -131,13 +94,4 @@ label {
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
-.profile-img-card {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 10px;
-  display: block;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-}
 </style>
