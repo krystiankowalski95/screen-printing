@@ -25,13 +25,10 @@
 
           <div class="form-group">
             <label for="categoryName">{{ $t('categoryName') }}</label>
-            <input
-              v-model="product.categoryName"
-              v-validate="'required|min:2|max:20'"
-              type="text"
-              class="form-control"
-              name="categoryName"
-            />
+             <select class="form-control" @changeProductCategory="($event)">
+                <option value="" selected disabled></option>
+                <option v-for="(category,index) in productCategories" :value="category.category" :key="index">{{ category.category }}</option>
+              </select>
             <div
               v-if="submitted && errors.has('categoryName')"
               class="alert-danger"
@@ -69,6 +66,7 @@
 
 <script>
 import Product from '../models/product';
+import Category from '../models/category';
 import ProductService from '../services/product.service';
 
 export default {
@@ -76,10 +74,26 @@ export default {
   data() {
     return {
       product: new Product('','', '', ''),
+      productCategories: [],
+      selectedProductCategory: null,
       submitted: false,
       successful: false,
       message: ''
     };
+  },
+  mounted() {
+    ProductService.getAllProductCategories().then(
+      data => {
+        let responseList = data.data;
+         responseList.map((category) => {
+          this.productCategories.push(
+            new Category(
+              category.categoryName,
+            ),
+          );
+      }
+    )
+  })
   },
   methods: {
     addProduct() {
@@ -102,6 +116,10 @@ export default {
           );
         }
       });
+    },
+
+    changeProductCategory (event) {
+      this.selectedProductCategory = event.target.options[event.target.options.selectedIndex].text
     }
   }
 };

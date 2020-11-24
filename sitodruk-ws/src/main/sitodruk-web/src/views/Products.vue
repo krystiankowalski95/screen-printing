@@ -52,7 +52,7 @@ export default {
       (data) => {
         this.responseList = data.data;
 
-        this.responseList.map((product,index) => {
+        this.responseList.map((product) => {
           this.productList.push(
             new Product(
               product.id,
@@ -62,7 +62,7 @@ export default {
               product.dtoVersion
             ),
           );
-          console.log(this.productList[index]);
+
         });
       },
       (error) => {

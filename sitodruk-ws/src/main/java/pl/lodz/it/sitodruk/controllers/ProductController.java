@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.lodz.it.sitodruk.dto.CategoryDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.payload.MessageResponse;
+import pl.lodz.it.sitodruk.service.ProductCategoryService;
 import pl.lodz.it.sitodruk.service.ProductService;
 import pl.lodz.it.sitodruk.utils.ResourceBundles;
 
@@ -31,12 +33,27 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductCategoryService productCategoryService;
+
     private Properties exceptionProperties;
 
     @PostConstruct
     private void init() {
         try {
             exceptionProperties = ResourceBundles.loadProperties("exception.properties");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
+    }
+
+
+    @GetMapping("/categories")
+//    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PermitAll
+    public ResponseEntity<List<CategoryDTO>> getAllProductCategories() {
+        try {
+            return new ResponseEntity(productCategoryService.getAllProductCategories(), HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
