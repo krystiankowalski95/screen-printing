@@ -40,7 +40,11 @@
     "changePassword":"Password change form",
     "resetPasswordLink":"Forgot password? Navigate to resetting password form",
     "emailRequired":"Email is required",
-    "sendResetPasswordMail":"Reset password"
+    "sendResetPasswordMail":"Reset password",
+    "choose":"Choose",
+    "siatki":"Mesh",
+    "emulsje":"Emulsion",
+    "edit":"Edit"
 
     
 }

@@ -9,6 +9,7 @@ import AddProduct from './views/AddProduct.vue';
 import ChangePassword from './views/ChangePassword.vue';
 import ResetPassword from './views/ResetPassword.vue';
 import ResetPasswordForm from './views/ResetPasswordForm.vue';
+import EditProduct from './views/EditProduct.vue';
 
 Vue.use(Router);
 
@@ -69,6 +70,13 @@ export const router = new Router({
       name: 'productDetails',
       // lazy-loaded
       component: ProductDetails,
+      props: true
+    },
+    {
+      path: '/editProduct',
+      name: 'editProduct',
+      // lazy-loaded
+      component: EditProduct,
       props: true
     },
     {

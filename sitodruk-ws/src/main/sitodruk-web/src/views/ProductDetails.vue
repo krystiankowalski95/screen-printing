@@ -20,6 +20,9 @@
             <b-col>{{ $t('price') }}</b-col>
             <b-col>{{product.price}}</b-col>
         </b-row>
+        <b-row>
+            <b-button pill variant="primary" @click="edit()">{{ $t('edit') }}</b-button>
+        </b-row>
       </b-container>
     </div>
 </template>
@@ -38,6 +41,10 @@ export default {
   mounted() {
   },
   methods: {
+    edit() {
+      this.$store.productName = this.product.name;
+      this.$router.push({path: '/editProduct', params: {productName: this.product.productName}});
+    },
   }
 };
 </script>

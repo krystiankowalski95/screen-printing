@@ -23,7 +23,7 @@
       </b-container>
       <b-container class="bv-example-row" v-for="(product,index) in productList" :key="index">
         <b-row style="padding: 5px">
-          <b-col draggable="true">{{product.id }}</b-col>
+          <b-col draggable="true">{{index + 1}}</b-col>
           <b-col>{{product.name }}</b-col>
           <b-col>{{product.categoryName }}</b-col>
           <b-col><b-button pill variant="primary" @click="getDetails(index)">{{ $t('details') }}</b-button></b-col>

@@ -34,7 +34,7 @@ class ProductService {
   }
 
   findProductByName(name) {
-    return axios.post(API_URL + '/findByName/' + name, {}
+    return axios.get(API_URL + '/findByName/' + name, {}
     // , { headers: authHeader() }
     );
   }
