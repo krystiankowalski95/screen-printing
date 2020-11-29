@@ -51,6 +51,7 @@
     "productadded":"Produkt dodany do zamówienia",
     "addProcutToCart":"Dodaj produkt do zamówienia",
     "quantity":"Liczba dostępnych produktów",
-    "amount":"Liczba"
+    "amount":"Liczba",
+    "cart":"Koszyk"
 
 }

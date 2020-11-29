@@ -41,7 +41,12 @@
         </li>
       </div>
       <div class="navbar-nav">
-        <span class="nav-item"> {{ this.$store.getters.shoppingListSize }}</span>
+        <li class="nav-item">
+          <router-link to="/cart" class="nav-link">
+            <font-awesome-icon icon="shopping-cart" />
+            {{ $t("cart") }}
+          </router-link>
+        </li>
         <select v-model="$i18n.locale">
           <option key="pl" value="pl">{{ $t("polish") }}</option>
           <option key="en" value="en">{{ $t("english") }}</option>

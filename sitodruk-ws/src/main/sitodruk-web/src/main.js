@@ -22,10 +22,12 @@ import {
   faFlag,
   faPlusSquare,
   faKey,
-  faCartPlus
+  faCartPlus,
+  faCartArrowDown,
+  faShoppingCart
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag,faPlusSquare,faKey,faCartPlus);
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag,faPlusSquare,faKey,faCartPlus,faCartArrowDown,faShoppingCart);
 
 Vue.config.productionTip = false;
 
