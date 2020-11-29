@@ -21,6 +21,8 @@ public class ProductEntity {
     private boolean isActive;
     @Basic@Column(name = "category", nullable = false, length = -1)
     private String categoryName;
+    @Basic@Column(name = "stock", nullable = false)
+    private  long quantity;
     @Basic@Column(name = "version", nullable = false)
     private long version;
 }

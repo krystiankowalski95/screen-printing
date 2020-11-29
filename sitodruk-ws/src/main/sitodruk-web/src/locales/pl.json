@@ -45,6 +45,12 @@
     "choose":"Wybierz",
     "siatki":"Siatka",
     "emulsje":"Emulsja",
-    "edit":"Edytuj"
+    "edit":"Edytuj",
+    "deletingmsg":"Za chwilę usuniesz produkt o nazwie ",
+    "areyousure":"Czy jesteś pewny?",
+    "productadded":"Produkt dodany do zamówienia",
+    "addProcutToCart":"Dodaj produkt do zamówienia",
+    "quantity":"Liczba dostępnych produktów",
+    "amount":"Liczba"
 
 }

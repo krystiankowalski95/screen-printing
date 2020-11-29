@@ -14,11 +14,25 @@ class ProductService {
     );
   }
 
+  editProduct(product) {
+    return axios.post(API_URL + '/edit' ,{
+      name: product.name,
+      categoryName: product.categoryName,
+      price: product.price,
+      active: true,
+      quantity: product.quantity,
+      dtoVersion: product.dtoVersion
+    },
+    // , { headers: authHeader() }
+    );
+  }
+
   addProduct(product) {
     return axios.post(API_URL + '/addNew', {
       name: product.name,
       categoryName: product.categoryName,
       price: product.price,
+      quantity: product.quantity,
       active: true,
     }
     // , { headers: authHeader() }

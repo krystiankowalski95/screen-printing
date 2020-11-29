@@ -44,7 +44,14 @@
     "choose":"Choose",
     "siatki":"Mesh",
     "emulsje":"Emulsion",
-    "edit":"Edit"
+    "edit":"Edit",
+    "deletingmsg":"You are about to delete the product named ",
+    "areyousure":"Are you sure?",
+    "productadded":"Product has been added to the order",
+    "addProcutToCart":"Add product to cart",
+    "quantity":"Liczba dostępnych produktów",
+    "amount":"Quantity"
+
 
     
 }

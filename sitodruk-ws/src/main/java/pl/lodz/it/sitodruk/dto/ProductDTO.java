@@ -10,4 +10,6 @@ public class ProductDTO {
     private boolean isActive;
     private String categoryName;
     private String dtoVersion;
+    private Long quantity;
+    private String payUOrderId;
 }

@@ -59,6 +59,18 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/edit")
+//    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PermitAll
+    public ResponseEntity<?> editProduct(@RequestBody ProductDTO productDTO) {
+        try {
+            productService.modifyProduct(productDTO);
+            return ResponseEntity.ok("");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+        }
+    }
+
     @GetMapping("/findAll")
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @PermitAll

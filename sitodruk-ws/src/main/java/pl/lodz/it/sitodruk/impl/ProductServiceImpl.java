@@ -13,6 +13,7 @@ import pl.lodz.it.sitodruk.model.mop.ProductEntity;
 import pl.lodz.it.sitodruk.repositories.mop.ProductRepository;
 import pl.lodz.it.sitodruk.service.ProductService;
 
+import javax.persistence.OptimisticLockException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void modifyProduct(ProductDTO productDTO) throws BaseException {
-        productRepository.findByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName());
+        ProductEntity productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName());
+        if(String.valueOf(productEntity.getVersion()).equals(productDTO.getDtoVersion())){
+
+        }else {
+            throw new OptimisticLockException();
+        }
     }
 
     @Override

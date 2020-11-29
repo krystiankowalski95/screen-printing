@@ -39,7 +39,7 @@
 
           <div class="form-group">
             <label for="price">{{ $t('price') }}</label>
-            <money v-model="price" v-bind="money"
+            <money v-model="product.price" v-bind="money"
             v-validate="'required'"
             class="form-control"
               name="price"/>
