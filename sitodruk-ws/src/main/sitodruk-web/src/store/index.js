@@ -16,9 +16,6 @@ export default new Vuex.Store({
   getters: {
     shoppingListSize: state => {
       return state.shoppingList.length;
-    },
-    shoppingList: state => {
-      return state.shoppingList;
     }
   },
   mutations: {
@@ -34,11 +31,6 @@ export default new Vuex.Store({
       if(changed == false){ 
         state.shoppingList.push({product: product});
       }
-    },
-    removeProduct(state, index){
-      console.log(state.shoppingList.length);
-      state.shoppingList.splice(state.shoppingList[index],1);
-      console.log(state.shoppingList.length);
     }
   }
 });

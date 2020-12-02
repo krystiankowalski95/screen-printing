@@ -27,12 +27,13 @@
       >
       <b-row style="padding: 5px" />
       <b-row>
+        <b-col
+          ><font-awesome-icon :icon="['fas', 'fa-cart-plus']" @click="addProductToCart()">
+            <button style="transparent" />
+            {{ $t("addProcutToCart") }}
+          </font-awesome-icon></b-col
+        >
         <b-col>
-          <v-button>
-            <a class="nav-link" href @click="addProductToCart()"> <font-awesome-icon icon="cart-arrow-down" />{{ $t("addProcutToCart") }} </a>
-          </v-button>
-        </b-col>
-        <b-col style="padding: 5px">
           <label>{{ $t("amount") }}</label>
           <select v-model="selected">
             <option v-for="(quantity, index) in quantityList" v-bind:key="index">
@@ -40,8 +41,6 @@
             </option>
           </select>
         </b-col>
-        <b-col></b-col>
-        <b-col></b-col>
       </b-row>
     </b-container>
   </div>
@@ -57,7 +56,7 @@ export default {
   props: ["productName"],
   data() {
     return {
-      selected: 1,
+      selected: null,
       quantityList: [],
       product: this.$store.product,
       money: {
