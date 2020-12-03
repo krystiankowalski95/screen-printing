@@ -32,7 +32,7 @@ export default new Vuex.Store({
         }
       }
       if(changed == false){ 
-        state.shoppingList.push({product: product});
+        state.shoppingList.push({product});
       }
     },
     removeProduct(state, index){

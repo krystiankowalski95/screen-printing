@@ -51,7 +51,9 @@
     "addProcutToCart":"Add product to cart",
     "quantity":"Liczba dostępnych produktów",
     "amount":"Quantity",
-    "cart":"Shopping Cart"
+    "cart":"Shopping Cart",
+    "numberOf":"Quantity",
+    "cartempty":"Shopping cart is empty"
 
 
     

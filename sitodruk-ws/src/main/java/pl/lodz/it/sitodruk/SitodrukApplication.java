@@ -10,4 +10,4 @@ public class SitodrukApplication {
 		SpringApplication.run(SitodrukApplication.class, args);
 	}
 
-}
+}		
