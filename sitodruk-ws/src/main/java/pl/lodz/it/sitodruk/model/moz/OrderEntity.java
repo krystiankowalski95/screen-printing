@@ -1,9 +1,12 @@
 package pl.lodz.it.sitodruk.model.moz;
 
 import lombok.*;
+import pl.lodz.it.sitodruk.model.mop.ProductEntity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,5 +26,7 @@ public class OrderEntity {
     private AddressEntity addressByAddressId;
     @Basic@Column(name = "order_status", nullable = false, length = -1)
     private String order;
+    @ManyToOne
+    private List<ProductEntity> productEntityList = new ArrayList<>();
 
 }
