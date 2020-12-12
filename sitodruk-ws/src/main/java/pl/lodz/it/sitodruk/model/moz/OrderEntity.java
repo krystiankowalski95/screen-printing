@@ -26,7 +26,7 @@ public class OrderEntity {
     private AddressEntity addressByAddressId;
     @Basic@Column(name = "order_status", nullable = false, length = -1)
     private String order;
-    @ManyToOne
-    private List<ProductEntity> productEntityList = new ArrayList<>();
+//    @ManyToOne
+//    private List<ProductEntity> productEntityList = new ArrayList<>();
 
 }
