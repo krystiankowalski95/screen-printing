@@ -11,6 +11,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueSimpleAlert from "vue-simple-alert";
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 import {
   faHome,
   faUser,
@@ -32,6 +33,7 @@ library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,f
 Vue.config.productionTip = false;
 
 Vue.use(VeeValidate);
+Vue.use(VueNumberInput);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(VueSimpleAlert);
 Vue.use(Vuex);

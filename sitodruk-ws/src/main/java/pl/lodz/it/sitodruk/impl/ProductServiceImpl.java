@@ -37,11 +37,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void modifyProduct(ProductDTO productDTO) throws BaseException {
         ProductEntity productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(),productDTO.getCategoryName());
-        if(String.valueOf(productEntity.getVersion()).equals(productDTO.getDtoVersion())){
-
-        }else {
-            throw new OptimisticLockException();
-        }
+//        if(String.valueOf(productEntity.getVersion()).equals(productDTO.getDtoVersion())){
+//
+//        }else {
+//            throw new OptimisticLockException();
+//        }
+        productEntity.setPrice(productDTO.getPrice());
+        productEntity.setQuantity(productDTO.getQuantity());
+        productRepository.save(productEntity);
     }
 
     @Override

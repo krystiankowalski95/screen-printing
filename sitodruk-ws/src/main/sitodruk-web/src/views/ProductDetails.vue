@@ -38,7 +38,7 @@
             }}
           </b-button>
         </b-col>
-        <b-col style="padding: 10px">
+        <!-- <b-col style="padding: 10px">
           <label>{{ $t('amount') }}</label>
           <select v-model="selected">
             <option
@@ -48,7 +48,7 @@
               {{ quantity.option }}
             </option>
           </select>
-        </b-col>
+        </b-col> -->
         <b-col></b-col>
       </b-row>
     </b-container>

@@ -37,6 +37,16 @@
             >{{errors.first('categoryName')}}</div>
           </div>
 
+            <div class="form-group">
+            <label for="quantity">{{ $t('quantity') }}</label>
+             <number-input name="quantity"  v-model="product.quantity" :min="0" :max="99" inline controls></number-input>
+            <div
+              v-if="submitted && errors.has('quantity')"
+              class="alert-danger"
+            >{{errors.first('quantity')}}</div>
+          </div>
+
+
           <div class="form-group">
             <label for="price">{{ $t('price') }}</label>
             <money v-model="product.price" v-bind="money"
@@ -74,7 +84,7 @@ export default {
   name: 'AddProduct',
   data() {
     return {
-      product: new Product('','', '', ''),
+      product: new Product('','', '', '',''),
       productCategories: [],
       selectedProductCategory: null,
       submitted: false,

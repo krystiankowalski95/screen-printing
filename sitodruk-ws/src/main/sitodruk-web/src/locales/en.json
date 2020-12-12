@@ -53,7 +53,8 @@
     "amount":"Quantity",
     "cart":"Shopping Cart",
     "numberOf":"Quantity",
-    "cartempty":"Shopping cart is empty"
+    "cartempty":"Shopping cart is empty",
+    "totalcost":"Total cost"
 
 
     

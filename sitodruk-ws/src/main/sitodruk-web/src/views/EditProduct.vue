@@ -24,6 +24,16 @@
             </div>
           </div>
 
+            <div class="form-group">
+            <label for="quantity">{{ $t('quantity') }}</label>
+             <number-input name="quantity"  v-model="product.quantity" :min="0" :max="99" inline controls></number-input>
+            <div
+              v-if="submitted && errors.has('quantity')"
+              class="alert-danger"
+            >{{errors.first('quantity')}}</div>
+          </div>
+
+
           <div class="form-group">
             <label for="price">{{ $t("price") }}</label>
             <money v-model="product.price" v-bind="money" v-validate="'required'" class="form-control" name="price" />
@@ -53,7 +63,7 @@ import { Money } from "v-money";
 
 export default {
   components: { Money },
-  name: "Products",
+  name: "products",
   data() {
     return {
       productName: this.$store.productName,
@@ -74,8 +84,8 @@ export default {
   mounted() {
     ProductService.findProductByName(this.productName).then((data) => {
       let prod = data.data;
-      this.product = new Product(prod.id, prod.name, prod.categoryName, prod.price, prod.quantity, prod.dtoVersion);
-    });
+      this.product = new Product(prod.id, prod.name, prod.categoryName, prod.price,prod.dtoVersion ,prod.quantity);
+      });
     (error) => {
       this.content = (error.response && error.response.data) || error.message || error.toString();
     };

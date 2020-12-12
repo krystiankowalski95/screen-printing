@@ -18,8 +18,9 @@ public class OrderEntity {
     private long id;
     @Basic@Column(name = "timestamp", nullable = true)
     private Date timestamp;
+    @Version
     @Basic@Column(name = "version", nullable = false)
-    private int version;
+    private Long version;
     @Basic@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private String userId;
     @ManyToOne@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)

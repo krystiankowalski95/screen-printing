@@ -23,6 +23,7 @@ public class ProductEntity {
     private String categoryName;
     @Basic@Column(name = "stock", nullable = false)
     private  long quantity;
+    @Version
     @Basic@Column(name = "version", nullable = false)
-    private long version;
+    private Long version;
 }

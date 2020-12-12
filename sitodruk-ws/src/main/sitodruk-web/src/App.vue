@@ -43,7 +43,6 @@
       <div class="navbar-nav">
         <li class="nav-item">
           <router-link to="/cart" class="nav-link">
-            Liczba {{ this.$store.getters.shoppingListSize}}
             <font-awesome-icon icon="shopping-cart" />
             {{ $t("cart") }}
           </router-link>

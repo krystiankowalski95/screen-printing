@@ -65,7 +65,7 @@ public class UserEntity implements Serializable {
     @Basic
     @Version
     @Column(name = "version", table = "user_personal_data", nullable = false)
-    private long version;
+    private Long version;
 
     public UserEntity(){
         this.active = true;

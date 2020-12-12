@@ -34,7 +34,8 @@ public class AddressEntity {
     private String streetNumber;
     @Basic
     @Column(name = "version", nullable = false)
-    private long version;
+    @Version
+    private Long version;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserEntity userEntity;

@@ -22,7 +22,7 @@ public class UserAccessLevelEntity {
     @Basic
     @Column(name = "version", nullable = false)
     @Version
-    private long version;
+    private Long version;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserEntity loginDataByUserId;

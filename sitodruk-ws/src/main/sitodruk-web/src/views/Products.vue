@@ -27,8 +27,11 @@
         <b-col>{{ product.name }}</b-col>
         <b-col>{{ product.categoryName }}</b-col>
         <b-col>{{ product.quantity }}</b-col>
-        <b-col
+        <b-col v-if="product.quantity > 0"
           ><b-button pill variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
+        >
+         <b-col v-if="product.quantity === 0"
+          ><b-button pill disabled variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
         >
         <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
         <b-col

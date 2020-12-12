@@ -25,7 +25,18 @@
           <b-col draggable="true">{{ index + 1 }}</b-col>
           <b-col>{{ product.product.name }}</b-col>
           <b-col>{{ product.product.categoryName }}</b-col>
-          <b-col>{{ product.product.quantity }}</b-col>
+          <b-col>
+            <number-input
+               @change="calculatePrice()"
+              size="small"
+              name="quantity"
+              v-model="product.product.quantity"
+              :min="1"
+              :max="10"
+              inline
+              controls
+            ></number-input
+          ></b-col>
           <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
           <b-col
             ><b-button pill variant="danger" @click="removeProduct(index)">{{
@@ -36,8 +47,11 @@
       </b-container>
       <b-container>
         <b-row>
-          <b-col>{{ $t('totalcost') }}</b-col>
-          <b-col>{{ this.totalcost }}</b-col>
+          <b-col style="font-weight:bold;">{{ $t('totalcost') }}</b-col>
+          <b-col><money disabled v-model=" this.totalcost" v-bind="money" v-validate="'required'" class="form-control" name="price" /></b-col>
+          <b-col/>
+          <b-col/>
+          <b-col/>
         </b-row>
       </b-container>
     </div>
@@ -48,12 +62,23 @@
 </template>
 
 <script>
+import { Money } from "v-money";
+
 export default {
+  components: { Money },
   name: 'Products',
   data() {
     return {
       productList: this.$store.getters.shoppingList,
       totalcost: null,
+      money: {
+        decimal: ".",
+        thousands: "",
+        prefix: "",
+        suffix: " PLN",
+        precision: 2,
+        masked: false,
+      },
     };
   },
   mounted() {
@@ -72,6 +97,7 @@ export default {
         .catch(() => console.log());
     },
     calculatePrice() {
+      this.totalcost = 0;
       for (let i = 0; i < this.$store.getters.shoppingListSize; i++) {
         let price =
           this.productList[i].product.price *
