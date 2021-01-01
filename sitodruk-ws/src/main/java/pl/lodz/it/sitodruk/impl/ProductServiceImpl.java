@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 //            throw new OptimisticLockException();
 //        }
         productEntity.setPrice(productDTO.getPrice());
-        productEntity.setQuantity(productDTO.getQuantity());
+        productEntity.setStock(productDTO.getStock());
         productRepository.save(productEntity);
     }
 

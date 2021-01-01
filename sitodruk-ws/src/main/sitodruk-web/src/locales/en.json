@@ -54,7 +54,16 @@
     "cart":"Shopping Cart",
     "numberOf":"Quantity",
     "cartempty":"Shopping cart is empty",
-    "totalcost":"Total cost"
+    "totalcost":"Total cost",
+    "sumup":"Sum up",
+    "country":"Country",
+    "voivodeship":"State",
+    "city":"City",
+    "postalCode":"Postal code",
+    "street":"Street",
+    "streetNumber":"Street number",
+    "blikCode":"BLIK code",
+    "placeOrder":"Place order and proceed to payment"
 
 
     

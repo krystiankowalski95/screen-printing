@@ -26,11 +26,11 @@
         <b-col draggable="true">{{ index + 1 }}</b-col>
         <b-col>{{ product.name }}</b-col>
         <b-col>{{ product.categoryName }}</b-col>
-        <b-col>{{ product.quantity }}</b-col>
-        <b-col v-if="product.quantity > 0"
+        <b-col>{{ product.stock }}</b-col>
+        <b-col v-if="product.stock > 0"
           ><b-button pill variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
         >
-         <b-col v-if="product.quantity === 0"
+         <b-col v-if="product.stock === 0"
           ><b-button pill disabled variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
         >
         <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
@@ -60,8 +60,9 @@ export default {
         this.responseList = data.data;
 
         this.responseList.map((product) => {
-          this.productList.push(new Product(product.id, product.name, product.categoryName, product.price, product.dtoVersion, product.quantity));
+          this.productList.push(new Product(product.id, product.name, product.categoryName, product.price, product.dtoVersion,product.quantity, product.stock));
         });
+        console.log(this.productList);
       },
       (error) => {
         this.content = (error.response && error.response.data) || error.message || error.toString();

@@ -22,7 +22,7 @@ public class ProductEntity {
     @Basic@Column(name = "category", nullable = false, length = -1)
     private String categoryName;
     @Basic@Column(name = "stock", nullable = false)
-    private  long quantity;
+    private  long stock;
     @Version
     @Basic@Column(name = "version", nullable = false)
     private Long version;

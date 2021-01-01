@@ -11,6 +11,7 @@ import ResetPassword from './views/ResetPassword.vue';
 import ResetPasswordForm from './views/ResetPasswordForm.vue';
 import EditProduct from './views/EditProduct.vue';
 import Cart from './views/Cart.vue';
+import SumUp from './views/SumUp.vue';
 
 Vue.use(Router);
 
@@ -21,6 +22,10 @@ export const router = new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/sumup',
+      component: SumUp
     },
     {
       path: '/changePassword',

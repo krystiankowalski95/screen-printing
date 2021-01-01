@@ -100,6 +100,7 @@ export default {
           this.product.categoryName,
           this.product.price,
           this.product.dtoVersion,
+          this.product.stock,
           this.selected
         )
       );

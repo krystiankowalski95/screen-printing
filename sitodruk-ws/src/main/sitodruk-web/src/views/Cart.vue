@@ -27,12 +27,12 @@
           <b-col>{{ product.product.categoryName }}</b-col>
           <b-col>
             <number-input
-               @change="calculatePrice()"
+              @change="calculatePrice()"
               size="small"
               name="quantity"
               v-model="product.product.quantity"
               :min="1"
-              :max="10"
+              :max="product.product.stock"
               inline
               controls
             ></number-input
@@ -47,13 +47,24 @@
       </b-container>
       <b-container>
         <b-row>
-          <b-col style="font-weight:bold;">{{ $t('totalcost') }}</b-col>
-          <b-col><money disabled v-model=" this.totalcost" v-bind="money" v-validate="'required'" class="form-control" name="price" /></b-col>
-          <b-col/>
-          <b-col/>
-          <b-col/>
+          <b-col style="font-weight: bold">{{ $t('totalcost') }}</b-col>
+          <b-col
+            ><money
+              disabled
+              v-model="this.totalcost"
+              v-bind="money"
+              v-validate="'required'"
+              class="form-control"
+              name="price"
+          /></b-col>
+          <b-col />
+          <b-col />
+          <b-col />
         </b-row>
       </b-container>
+      <b-button pill variant="primary" @click="goToSumUp()">{{
+        $t('sumup')
+      }}</b-button>
     </div>
     <div v-if="this.$store.getters.shoppingListSize == 0">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
@@ -62,7 +73,7 @@
 </template>
 
 <script>
-import { Money } from "v-money";
+import { Money } from 'v-money';
 
 export default {
   components: { Money },
@@ -70,18 +81,20 @@ export default {
   data() {
     return {
       productList: this.$store.getters.shoppingList,
-      totalcost: null,
+      addressList: [],
+      totalcost: 0,
       money: {
-        decimal: ".",
-        thousands: "",
-        prefix: "",
-        suffix: " PLN",
+        decimal: '.',
+        thousands: '',
+        prefix: '',
+        suffix: ' PLN',
         precision: 2,
         masked: false,
       },
     };
   },
   mounted() {
+    console.log(this.productList);
     this.calculatePrice();
   },
   methods: {
@@ -95,6 +108,12 @@ export default {
           this.$store.commit('removeProduct', index);
         })
         .catch(() => console.log());
+    },
+    goToSumUp() {
+      this.$router.push({
+        path: '/sumup',
+        params: { productList: this.productList },
+      });
     },
     calculatePrice() {
       this.totalcost = 0;

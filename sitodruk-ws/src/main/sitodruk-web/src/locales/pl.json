@@ -55,6 +55,15 @@
     "cart":"Koszyk",
     "numberOf":"Liczność",
     "cartempty":"Koszyk jest pusty",
-    "totalcost":"Wartość zamówienia"
+    "totalcost":"Wartość zamówienia",
+    "sumup":"Podsumowanie",
+    "country":"Kraj",
+    "voivodeship":"Województwo",
+    "city":"Miasto",
+    "postalCode":"Kod pocztowy",
+    "street":"Ulica",
+    "streetNumber":"Numer",
+    "blikCode":"Kod BLIK",
+    "placeOrder":"Złóż zamówienie i zapłać"
 
 }

@@ -11,5 +11,5 @@ public class ProductDTO {
     private String categoryName;
     private String dtoVersion;
     private Long quantity;
-    private String payUOrderId;
+    private Long stock;
 }
