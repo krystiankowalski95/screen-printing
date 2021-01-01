@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,6 +16,4 @@ public class OrderStatusEntity {
     private long id;
     @Basic@Column(name = "status_name", nullable = false, length = -1)
     private String statusName;
-    @OneToOne
-    private OrderEntity orderEntity;
 }

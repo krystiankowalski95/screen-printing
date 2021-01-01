@@ -6,27 +6,31 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.AddressDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.repositories.mok.AddressRepository;
+import pl.lodz.it.sitodruk.repositories.moz.AddressRepository;
+import pl.lodz.it.sitodruk.repositories.mok.UserRepository;
 import pl.lodz.it.sitodruk.service.AddressService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
+@Transactional(propagation = Propagation.REQUIRES_NEW, transactionManager = "mokTransactionManager")
 public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void createAddress(AddressDTO addressDTO) throws BaseException {
-    }
-
-    @Override
-    public void modifyAddress(AddressDTO addressDTO) throws BaseException {
-
-    }
-
-    @Override
-    public AddressDTO findAddressByUsername(String username) throws BaseException {
-        return null;
+//        if (userRepository.findByUsername(addressDTO.getUsername()).isPresent()) {
+//            Collection<AddressEntity> addresses = userRepository.findByUsername(addressDTO.getUsername()).get().getAddresses();
+//            for (AddressEntity address : addresses) {
+//                if (isAddressEqual(address,addressDTO)){
+//                    throw new AddressAlreadyExistsException();
+//                }
+//            }
+//        }else{
+//            throw new UserNotFoundException();
+//        }
     }
 }

@@ -58,10 +58,6 @@ public class UserEntity implements Serializable {
     @Column(name = "phone_number", table = "user_personal_data", nullable = false, length = 15)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "userEntity")
-    private Collection<AddressEntity> addresses = new ArrayList<>();
-
-
     @Basic
     @Version
     @Column(name = "version", table = "login_data", nullable = false)

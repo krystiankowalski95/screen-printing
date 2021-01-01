@@ -36,9 +36,6 @@ public class AddressEntity {
     @Column(name = "version", nullable = false)
     @Version
     private Long version;
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private UserEntity userEntity;
     @OneToMany(mappedBy = "addressByAddressId")
     private Collection<OrderEntity> orderById;
 

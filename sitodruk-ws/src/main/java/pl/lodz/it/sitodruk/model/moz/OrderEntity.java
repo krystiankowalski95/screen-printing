@@ -1,8 +1,6 @@
 package pl.lodz.it.sitodruk.model.moz;
 
 import lombok.*;
-import pl.lodz.it.sitodruk.model.mop.ProductEntity;
-
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -25,9 +23,15 @@ public class OrderEntity {
     private String userId;
     @ManyToOne@JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private AddressEntity addressByAddressId;
-    @Basic@Column(name = "order_status", nullable = false, length = -1)
-    private String order;
-//    @ManyToOne
-//    private List<ProductEntity> productEntityList = new ArrayList<>();
+    @Basic
+    @JoinColumn(name = "order_status", referencedColumnName = "status_name" ,nullable = false)
+    private String orderStatus;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "order_product",
+            joinColumns = { @JoinColumn(name = "order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "product_id")}
+    )
+    private List<ProductEntity> productEntityList = new ArrayList<>();
 
 }
