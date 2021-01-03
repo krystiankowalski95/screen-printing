@@ -118,13 +118,7 @@
               >
               <b-col>
                 <div class="form-group">
-                  <input
-                    v-model="address.postalCode"
-                    v-validate="'required|min:3|max:200'"
-                    type="text"
-                    class="form-control"
-                    name="postalCode"
-                  />
+                   <the-mask name="postalCode" :mask="['##-###']" v-model="address.postalCode" v-validate="'required'" />
                   <div
                     v-if="submitted && errors.has('postalCode')"
                     class="alert-danger"
@@ -190,13 +184,7 @@
               >
               <b-col>
                 <div class="form-group">
-                  <input
-                    v-model="order.blikCode"
-                    v-validate="'required|min:6|max:6'"
-                    type="text"
-                    class="form-control"
-                    name="blikCode"
-                  />
+                  <the-mask name="blikCode" :mask="['### ###']" v-model="order.blikCode" />
                   <div
                     v-if="submitted && errors.has('blikCode')"
                     class="alert-danger"
@@ -229,17 +217,19 @@
 
 <script>
 import { Money } from 'v-money';
+import {TheMask} from 'vue-the-mask'
 import Address from '../models/address';
 import Order from '../models/order';
+import OrderService from "../services/order.service";
 
 export default {
-  components: { Money },
+  components: { Money, TheMask },
   name: 'SumUp',
   data() {
     return {
       productList: this.$store.getters.shoppingList,
       totalcost: 0,
-      order: new Order(''),
+      order: new Order('','','','','',''),
       address: new Address('', '', '', '', '', ''),
       money: {
         decimal: '.',
@@ -264,7 +254,24 @@ export default {
         this.totalcost = this.totalcost + price;
       }
     },
-    placeOrder() {},
+    placeOrder() {
+      this.order.products = this.productList;
+      this.order.address = this.address;
+      this.order.totalValue = this.totalcost;
+      this.order.username = this.$store.state.auth.user.username;
+      this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")
+        .then(() => {
+          OrderService.placeOrder(this.order).then(
+            (data) => {
+              this.responseList = data.data;
+            },
+            (error) => {
+              this.content = (error.response && error.response.data) || error.message || error.toString();
+            }
+          );
+        })
+        .catch(() => console.log());
+    },
   },
 };
 </script>

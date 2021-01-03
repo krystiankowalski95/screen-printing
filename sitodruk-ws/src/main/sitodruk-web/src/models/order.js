@@ -1,5 +1,10 @@
 export default class Order {
-    constructor(blikCode) {
+    constructor(payUOrderId,products,totalValue,username,blikCode,addressDTO) {
+      this.payUOrderId = payUOrderId;
+      this.products = products;
+      this.totalValue = totalValue;
+      this.username = username;
       this.blikCode = blikCode;
+      this.addressDTO = addressDTO;
     }
   }

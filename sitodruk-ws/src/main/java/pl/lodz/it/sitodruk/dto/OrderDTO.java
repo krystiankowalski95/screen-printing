@@ -1,10 +1,20 @@
 package pl.lodz.it.sitodruk.dto;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDTO {
-    private String username;
-    private LocalDateTime created;
     private String payUOrderId;
-
+    private Collection<ProductDTO> products;
+    private Double totalValue;
+    private String username;
+    private Long blikCode;
+    private AddressDTO addressDTO;
+    private String ipAddress;
 }

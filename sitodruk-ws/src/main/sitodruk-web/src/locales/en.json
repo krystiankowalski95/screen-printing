@@ -63,7 +63,8 @@
     "street":"Street",
     "streetNumber":"Street number",
     "blikCode":"BLIK code",
-    "placeOrder":"Place order and proceed to payment"
+    "placeOrder":"Place order and proceed to payment",
+    "placingorder":"Place order and confirm payment"
 
 
     

@@ -64,6 +64,7 @@
     "street":"Ulica",
     "streetNumber":"Numer",
     "blikCode":"Kod BLIK",
-    "placeOrder":"Złóż zamówienie i zapłać"
+    "placeOrder":"Złóż zamówienie i zapłać",
+    "placingorder":"Złóż zamówienie i zapłać"
 
 }

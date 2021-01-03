@@ -8,9 +8,6 @@
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <mapping class="pl.lodz.it.sitodruk.model.mok.UserEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.mok.UserAccessLevelEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.mok.OrderEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.mok.OrderStatusEntity"/>
-        <mapping class="pl.lodz.it.sitodruk.model.mok.AddressEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.mop.CategoryEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.mop.ProductEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.moz.AddressEntity"/>
