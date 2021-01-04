@@ -100,8 +100,8 @@ export default {
           this.product.categoryName,
           this.product.price,
           this.product.dtoVersion,
+          this.selected,
           this.product.stock,
-          this.selected
         )
       );
       this.$alert(this.$t('productadded'));

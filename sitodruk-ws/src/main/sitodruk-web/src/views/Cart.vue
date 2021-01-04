@@ -51,10 +51,10 @@
           <b-col
             ><money
               disabled
-              v-model="this.totalcost"
+              v-model="totalcost"
               v-bind="money"
               v-validate="'required'"
-              class="form-control"
+              class="form-input"
               name="price"
           /></b-col>
           <b-col />
@@ -81,8 +81,7 @@ export default {
   data() {
     return {
       productList: this.$store.getters.shoppingList,
-      addressList: [],
-      totalcost: 0,
+      totalcost: 0.0,
       money: {
         decimal: '.',
         thousands: '',
@@ -93,8 +92,7 @@ export default {
       },
     };
   },
-  mounted() {
-    console.log(this.productList);
+  mounted(){
     this.calculatePrice();
   },
   methods: {
@@ -116,11 +114,10 @@ export default {
       });
     },
     calculatePrice() {
-      this.totalcost = 0;
-      for (let i = 0; i < this.$store.getters.shoppingListSize; i++) {
+      this.totalcost = 0.0;
+      for (let i = 0; i < this.productList.length; i++) {
         let price =
-          this.productList[i].product.price *
-          this.productList[i].product.quantity;
+          this.productList[i].product.price *  this.productList[i].product.quantity;
         this.totalcost = this.totalcost + price;
       }
     },
