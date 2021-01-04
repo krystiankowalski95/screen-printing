@@ -209,6 +209,9 @@
         </div>
       </form>
     </div>
+    <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+        {{ message }}
+      </div>
     <div v-if="this.$store.getters.shoppingListSize == 0">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
@@ -262,18 +265,22 @@ export default {
       this.order.address = this.address;
       this.order.totalValue = this.totalcost;
       this.order.username = this.$store.state.auth.user.username;
-      this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")
+      this.$validator.validate().then((isValid) => {
+        if (isValid) {
+          this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")
         .then(() => {
           OrderService.placeOrder(this.order).then(
             (data) => {
               this.responseList = data.data;
+              this.successful = true;
             },
             (error) => {
-              this.content = (error.response && error.response.data) || error.message || error.toString();
+              this.message = (error.response && error.response.data) || error.message || error.toString();
+              this.successful = false;
             }
           );
         })
-        .catch(() => console.log());
+        }});
     },
   },
 };

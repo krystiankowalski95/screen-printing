@@ -38,12 +38,12 @@
           </div>
 
             <div class="form-group">
-            <label for="quantity">{{ $t('quantity') }}</label>
-             <number-input name="quantity"  v-model="product.quantity" :min="0" :max="99" inline controls></number-input>
+            <label for="stock">{{ $t('quantity') }}</label>
+             <number-input name="stock"  v-model="product.stock" :min="0" :max="99" inline controls></number-input>
             <div
-              v-if="submitted && errors.has('quantity')"
+              v-if="submitted && errors.has('stock')"
               class="alert-danger"
-            >{{errors.first('quantity')}}</div>
+            >{{errors.first('stock')}}</div>
           </div>
 
 
@@ -84,7 +84,7 @@ export default {
   name: 'AddProduct',
   data() {
     return {
-      product: new Product('','', '', '',''),
+      product: new Product('','', '', '','','',''),
       productCategories: [],
       selectedProductCategory: null,
       submitted: false,
