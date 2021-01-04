@@ -22,17 +22,25 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    addProduct(state, product){
+    addProduct(state, productDTO){
       let changed = false;
-      console.log(product);
+      console.log(productDTO);
       for(let i = 0; i < state.shoppingList.length; i ++){
-        if(state.shoppingList[i].product.name == product.name){
-          state.shoppingList[i].product.quantity= Number(state.shoppingList[i].product.quantity) + Number(product.quantity);
+        if(state.shoppingList[i].name == productDTO.name){
+          state.shoppingList[i].quantity= Number(state.shoppingList[i].quantity) + Number(productDTO.quantity);
           changed = true;
         }
       }
       if(changed == false){ 
-        state.shoppingList.push({product});
+        state.shoppingList.push({
+          id : productDTO.id,
+          name : productDTO.name,
+          price : productDTO.price,
+          categoryName : productDTO.categoryName,
+          dtoVersion : productDTO.dtoVersion,
+          quantity :  productDTO.quantity,
+          stock : productDTO.stock
+        });
       }
     },
     removeProduct(state, index){

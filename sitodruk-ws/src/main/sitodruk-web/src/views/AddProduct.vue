@@ -43,7 +43,7 @@
             <div
               v-if="submitted && errors.has('stock')"
               class="alert-danger"
-            >{{errors.first('stock')}}</div>
+            >{{errors.first('quantity')}}</div>
           </div>
 
 

@@ -18,14 +18,14 @@
         :key="index"
       >
         <b-row style="padding: 5px">
-          <b-col>{{ product.product.name }}</b-col>
-          <b-col>{{ product.product.categoryName }}</b-col>
+          <b-col>{{ product.name }}</b-col>
+          <b-col>{{ product.categoryName }}</b-col>
           <b-col>
             <number-input
               @change="calculatePrice()"
               size="small"
               name="quantity"
-              v-model="product.product.quantity"
+              v-model="product.quantity"
               disabled
             ></number-input
           ></b-col>
@@ -255,8 +255,8 @@ export default {
       this.totalcost = 0;
       for (let i = 0; i < this.productList.length; i++) {
         let price =
-          this.productList[i].product.price *
-          this.productList[i].product.quantity;
+          this.productList[i].price *
+          this.productList[i].quantity;
         this.totalcost = this.totalcost + price;
       }
     },
@@ -265,6 +265,7 @@ export default {
       this.order.address = this.address;
       this.order.totalValue = this.totalcost;
       this.order.username = this.$store.state.auth.user.username;
+      console.log(this.order);
       this.$validator.validate().then((isValid) => {
         if (isValid) {
           this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")

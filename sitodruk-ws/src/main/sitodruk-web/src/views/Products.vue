@@ -59,8 +59,8 @@ export default {
       (data) => {
         this.responseList = data.data;
 
-        this.responseList.map((product) => {
-          this.productList.push(new Product(product.id, product.name, product.categoryName, product.price, product.dtoVersion,product.quantity, product.stock));
+        this.responseList.map((productDTO) => {
+          this.productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock));
         });
         console.log(this.productList);
       },

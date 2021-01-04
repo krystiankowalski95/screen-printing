@@ -23,16 +23,16 @@
       >
         <b-row style="padding: 5px">
           <b-col draggable="true">{{ index + 1 }}</b-col>
-          <b-col>{{ product.product.name }}</b-col>
-          <b-col>{{ product.product.categoryName }}</b-col>
+          <b-col>{{ product.name }}</b-col>
+          <b-col>{{ product.categoryName }}</b-col>
           <b-col>
             <number-input
               @change="calculatePrice()"
               size="small"
               name="quantity"
-              v-model="product.product.quantity"
+              v-model="product.quantity"
               :min="1"
-              :max="product.product.stock"
+              :max="product.stock"
               inline
               controls
             ></number-input
@@ -93,13 +93,13 @@ export default {
     };
   },
   mounted(){
-    this.calculatePrice();
+    this.calculatePrice()
   },
   methods: {
     removeProduct(index) {
       this.$confirm(
         this.$t('areyousure'),
-        this.$t('deletingmsg') + this.productList[index].product.name,
+        this.$t('deletingmsg') + this.productList[index].name,
         'warning'
       )
         .then(() => {
@@ -117,7 +117,7 @@ export default {
       this.totalcost = 0.0;
       for (let i = 0; i < this.productList.length; i++) {
         let price =
-          this.productList[i].product.price *  this.productList[i].product.quantity;
+          this.productList[i].price *  this.productList[i].quantity;
         this.totalcost = this.totalcost + price;
       }
     },
