@@ -38,10 +38,10 @@
           <b-col
             ><money
               disabled
-              v-model="this.totalcost"
+              v-model="totalcost"
               v-bind="money"
               v-validate="'required'"
-              class="form-control"
+              class="form-input"
               name="price"
           /></b-col>
         </b-row>
@@ -227,8 +227,11 @@ export default {
   name: 'SumUp',
   data() {
     return {
+      submitted: false,
+      successful: false,
+      message: "",
       productList: this.$store.getters.shoppingList,
-      totalcost: 0,
+      totalcost: 0.0,
       order: new Order('','','','','',''),
       address: new Address('', '', '', '', '', ''),
       money: {
@@ -247,7 +250,7 @@ export default {
   methods: {
     calculatePrice() {
       this.totalcost = 0;
-      for (let i = 0; i < this.$store.getters.shoppingListSize; i++) {
+      for (let i = 0; i < this.productList.length; i++) {
         let price =
           this.productList[i].product.price *
           this.productList[i].product.quantity;
