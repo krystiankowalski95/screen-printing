@@ -1,6 +1,7 @@
 package pl.lodz.it.sitodruk.controllers;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.web.context.annotation.SessionScope;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.dto.payu.*;
+import pl.lodz.it.sitodruk.model.moz.OrderStatusEntity;
 import pl.lodz.it.sitodruk.model.moz.UserEntity;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +35,7 @@ public class PayUController {
 
     private String payuToken;
 
+
     @PostConstruct
     private void init() {
         RestTemplate restTemplate = new RestTemplate();
@@ -54,19 +57,18 @@ public class PayUController {
         OrderPayU order = new OrderPayU();
         order.setCurrencyCode("PLN");
         String totalValue = String.valueOf(orderDTO.getTotalValue() * 100);
-        order.setTotalAmount(totalValue.substring(0,totalValue.indexOf(".")));
+        order.setTotalAmount(totalValue.substring(0, totalValue.indexOf(".")));
         order.setDescription("Payment");
         order.setNotifyUrl("https://screen-printing-application.herokuapp.com/platnosci");
         order.setCustomerIp(orderDTO.getIpAddress());
         order.setMerchantPosId(client_id);
-        order.setBuyer( new BuyerPayU("",userEntity.getEmail(),userEntity.getPhoneNumber(),userEntity.getFirstname(),userEntity.getLastname(),"pl"));
-        for(ProductDTO prod : orderDTO.getProducts()){
+        order.setBuyer(new BuyerPayU("", userEntity.getEmail(), userEntity.getPhoneNumber(), userEntity.getFirstname(), userEntity.getLastname(), "pl"));
+        for (ProductDTO prod : orderDTO.getProducts()) {
             ProductPayU productPayU = new ProductPayU();
             productPayU.setName(prod.getName());
             productPayU.setQuantity(prod.getQuantity().toString());
             String unitPrice = String.valueOf(prod.getPrice() * 100);
-            order.setTotalAmount(unitPrice.substring(0,unitPrice.indexOf(".")));
-            productPayU.setUnitPrice(unitPrice);
+            productPayU.setUnitPrice(unitPrice.substring(0, unitPrice.indexOf(".")));
             order.getProducts().add(productPayU);
         }
         PayMethodPayU payMethod = new PayMethodPayU();
@@ -78,6 +80,21 @@ public class PayUController {
         HttpEntity<?> paymentEntity = new HttpEntity<>(order, paymentHeaders);
         ResponseEntity<Map> paymentResponseEntity = restTemplate.exchange(payuApiUrl + "/orders", HttpMethod.POST, paymentEntity, Map.class);
         return (String) paymentResponseEntity.getBody().get("orderId");
+    }
+
+    public String getPaymentStatus(String paymentId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders orderStatusHeaders = new HttpHeaders();
+        orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
+        orderStatusHeaders.setBearerAuth(payuToken);
+        HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl + "/orders/" + paymentId, HttpMethod.GET, httpEntity, Map.class);
+        if (orderStatusResponse.getBody().get("status").toString().contains("SUCCESS")) {
+            return "paid";
+        } else if (orderStatusResponse.getBody().get("status").toString().contains("PENDING")) {
+            return "created";
+        }else return "cancelled";
     }
 
 

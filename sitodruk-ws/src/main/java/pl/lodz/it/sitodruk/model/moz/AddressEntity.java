@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.model.moz;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -32,11 +33,10 @@ public class AddressEntity {
     @Basic
     @Column(name = "street_number", nullable = false, length = -1)
     private String streetNumber;
-    @Basic
     @Column(name = "version", nullable = false)
     @Version
     private Long version;
     @OneToMany(mappedBy = "addressByAddressId")
-    private Collection<OrderEntity> orderById;
+    private Collection<OrderEntity> orderById = new ArrayList<>();
 
 }

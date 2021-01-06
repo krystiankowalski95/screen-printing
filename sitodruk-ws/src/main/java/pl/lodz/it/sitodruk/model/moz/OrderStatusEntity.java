@@ -14,6 +14,6 @@ import java.util.List;
 public class OrderStatusEntity {
     @Id@Column(name = "id", nullable = false)
     private long id;
-    @Basic@Column(name = "status_name", nullable = false, length = -1)
+    @Basic@Column(name = "status_name", nullable = false)
     private String statusName;
 }
