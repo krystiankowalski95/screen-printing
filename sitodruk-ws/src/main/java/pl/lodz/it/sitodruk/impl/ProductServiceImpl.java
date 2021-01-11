@@ -1,11 +1,13 @@
 package pl.lodz.it.sitodruk.impl;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.dto.mappers.ProductMapper;
+import pl.lodz.it.sitodruk.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.exceptions.ProductAlreadyExistsException;
 import pl.lodz.it.sitodruk.exceptions.ProductNotFoundException;
@@ -30,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.existsByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName())) {
             throw new ProductAlreadyExistsException();
         } else {
-
             ProductEntity productEntity = ProductMapper.INSTANCE.createNewProduct(productDTO);
             productEntity.setPrice(productDTO.getPrice());
             productEntity.setStock(productDTO.getStock());
@@ -41,14 +42,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void modifyProduct(ProductDTO productDTO) throws BaseException {
         ProductEntity productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
-//        if(String.valueOf(productEntity.getVersion()).equals(productDTO.getDtoVersion())){
-//
-//        }else {
-//            throw new OptimisticLockException();
-//        }
-        productEntity.setPrice(productDTO.getPrice());
-        productEntity.setStock(productDTO.getStock());
-        productRepository.save(productEntity);
+        if(String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity))){
+            productEntity.setPrice(productDTO.getPrice());
+            productEntity.setStock(productDTO.getStock());
+            productRepository.save(productEntity);
+        }else {
+            throw new ApplicationOptimisticLockException();
+        }
     }
 
     @Override
@@ -66,7 +66,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO findProductByName(String productName) throws BaseException {
         Optional<ProductEntity> product = productRepository.findByName(productName);
         if (product.isPresent()) {
-            return ProductMapper.INSTANCE.toProductDTO(product.get());
+            ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(product.get());
+            productDTO.setDtoVersion(getVersionHash(product.get()));
+            return productDTO;
         } else {
             throw new ProductNotFoundException();
         }
@@ -78,8 +80,13 @@ public class ProductServiceImpl implements ProductService {
         List<ProductEntity> productEntities = productRepository.findAll();
         for (ProductEntity prod : productEntities) {
             ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(prod);
+            productDTO.setDtoVersion(getVersionHash(prod));
             products.add(productDTO);
         }
         return products;
+    }
+
+    public String getVersionHash(ProductEntity productEntity){
+        return DigestUtils.sha256Hex(productEntity.getName()+productEntity.getVersion());
     }
 }

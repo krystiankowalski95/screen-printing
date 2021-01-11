@@ -64,7 +64,8 @@
     "streetNumber":"Street number",
     "blikCode":"BLIK code",
     "placeOrder":"Place order and proceed to payment",
-    "placingorder":"Place order and confirm payment"
+    "placingorder":"Place order and confirm payment",
+    "optimistic.lock":"Someone has modified this product"
 
 
     

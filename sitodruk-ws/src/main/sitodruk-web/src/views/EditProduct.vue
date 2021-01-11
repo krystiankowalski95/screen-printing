@@ -50,7 +50,7 @@
       </form>
 
       <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-        {{ message }}
+        {{ $t(message.message) }}
       </div>
     </div>
   </div>
@@ -100,7 +100,7 @@ export default {
               this.successful = true;
             },
             (error) => {
-              this.message = (error.response && error.response.data) || error.message || error.toString();
+              this.message = (error.response && error.response.data)
               this.successful = false;
             }
           );

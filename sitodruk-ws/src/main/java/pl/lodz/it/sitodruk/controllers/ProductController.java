@@ -4,23 +4,19 @@ package pl.lodz.it.sitodruk.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.dto.CategoryDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
+import pl.lodz.it.sitodruk.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.payload.MessageResponse;
 import pl.lodz.it.sitodruk.service.ProductCategoryService;
 import pl.lodz.it.sitodruk.service.ProductService;
-import pl.lodz.it.sitodruk.utils.ResourceBundles;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import javax.persistence.OptimisticLockException;
 import java.util.List;
 import java.util.Properties;
 
@@ -37,16 +33,6 @@ public class ProductController {
     private ProductCategoryService productCategoryService;
 
     private Properties exceptionProperties;
-
-    @PostConstruct
-    private void init() {
-        try {
-            exceptionProperties = ResourceBundles.loadProperties("exception.properties");
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
-        }
-    }
-
 
     @GetMapping("/categories")
 //    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
@@ -66,6 +52,8 @@ public class ProductController {
         try {
             productService.modifyProduct(productDTO);
             return ResponseEntity.ok("");
+        }catch(ApplicationOptimisticLockException ex){
+            throw new ResponseStatusException(HttpStatus.LOCKED,"optimistic.lock",ex);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }

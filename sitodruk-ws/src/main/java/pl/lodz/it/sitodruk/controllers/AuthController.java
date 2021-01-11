@@ -27,9 +27,7 @@ import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.impl.UserDetailsImpl;
 import pl.lodz.it.sitodruk.payload.JwtResponse;
-import pl.lodz.it.sitodruk.payload.MessageResponse;
 import pl.lodz.it.sitodruk.service.UserService;
-import pl.lodz.it.sitodruk.utils.ResourceBundles;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -48,14 +46,6 @@ public class AuthController {
 
     private Properties exceptionProperties;
 
-    @PostConstruct
-    private void init() {
-        try {
-            exceptionProperties = ResourceBundles.loadProperties("exception.properties");
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
-        }
-    }
 
     @PostMapping("/signin")
     @Transactional(propagation = Propagation.NEVER)
@@ -95,6 +85,6 @@ public class AuthController {
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok("user.registered");
     }
 }

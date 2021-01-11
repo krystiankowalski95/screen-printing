@@ -4,18 +4,14 @@ package pl.lodz.it.sitodruk.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.payload.MessageResponse;
 import pl.lodz.it.sitodruk.service.UserService;
-import pl.lodz.it.sitodruk.utils.ResourceBundles;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -32,15 +28,6 @@ public class UserOperationsController {
 
     private Properties exceptionProperties;
 
-    @PostConstruct
-    private void init() {
-        try {
-            exceptionProperties = ResourceBundles.loadProperties("exception.properties");
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
-        }
-    }
-
     @PostMapping("/confirmAccount")
     @PermitAll
     public ResponseEntity<?> confirmAccount(@RequestBody Map<String,String> tokenRequest){
@@ -49,7 +36,7 @@ public class UserOperationsController {
             } catch (BaseException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
             }
-        return  ResponseEntity.ok(new MessageResponse("Account has been confirmed"));
+        return  ResponseEntity.ok("account.confirmed");
     }
 
     @PostMapping("/changePassword")
@@ -60,7 +47,7 @@ public class UserOperationsController {
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
-        return  ResponseEntity.ok(new MessageResponse("Password has been changed"));
+        return  ResponseEntity.ok("password.changed");
     }
 
     @PostMapping("/resetPassword")
@@ -71,7 +58,7 @@ public class UserOperationsController {
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
-        return  ResponseEntity.ok(new MessageResponse("Email with further information has been sent"));
+        return  ResponseEntity.ok("email.sent");
     }
 
     @PostMapping("/setNewPassword")
@@ -82,6 +69,6 @@ public class UserOperationsController {
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
         }
-        return  ResponseEntity.ok(new MessageResponse("Password has been changed"));
+        return  ResponseEntity.ok("password.changed");
     }
 }
