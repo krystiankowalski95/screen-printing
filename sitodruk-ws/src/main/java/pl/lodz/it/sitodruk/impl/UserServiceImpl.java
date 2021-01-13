@@ -16,7 +16,6 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,9 +28,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailSenderService emailSenderService;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     PasswordEncoder encoder;
@@ -89,7 +85,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO findUserByUsername(String username) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            return userMapper.toUserDTO(user.get());
+            return UserMapper.INSTANCE.toUserDTO(user.get());
         } else throw new UserNotFoundException();
     }
 

@@ -2,8 +2,6 @@ package pl.lodz.it.sitodruk.model.moz;
 
 import lombok.*;
 import javax.persistence.*;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ public class OrderEntity {
     private List<ProductEntity> productEntityList = new ArrayList<>();
 
     public OrderEntity(){
-        this.version = 1L;
+
     }
 
 }

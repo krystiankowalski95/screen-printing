@@ -1,6 +1,7 @@
 package pl.lodz.it.sitodruk.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -9,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.controllers.PayUController;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
-import pl.lodz.it.sitodruk.dto.mappers.ProductMapper;
-import pl.lodz.it.sitodruk.dto.payu.BuyerPayU;
+import pl.lodz.it.sitodruk.dto.mappers.OrderMapper;
+import pl.lodz.it.sitodruk.dto.mappers.ProductMapperMoz;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.exceptions.InsufficientStockException;
 import pl.lodz.it.sitodruk.exceptions.UserNotFoundException;
@@ -21,6 +22,8 @@ import pl.lodz.it.sitodruk.repositories.moz.ProductRepositoryMoz;
 import pl.lodz.it.sitodruk.repositories.moz.UserRepositoryMoz;
 import pl.lodz.it.sitodruk.service.OrderService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,7 +79,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOrderBy(String username) throws BaseException {
-        return null;
+    public void cancelOrder(OrderDTO orderDTO) throws BaseException {
+
+    }
+
+    @Override
+    public OrderDTO findUsersOrders(String username) throws BaseException {
+        return new OrderDTO();
+    }
+
+
+    @Override
+    public List<OrderDTO> findAllOrders() throws BaseException{
+        List<OrderDTO>orderDtos = new ArrayList<>();
+        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        for (OrderEntity orderEntity : orderRepository.findAll()){
+            if(orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())){
+                orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayuOrderId())));
+                orderRepository.saveAndFlush(orderEntity);
+            }
+            OrderDTO orderDTO = OrderMapper.INSTANCE.toOrderDTO(orderEntity);
+            for (ProductEntity product : orderEntity.getProductEntityList()){
+                orderDTO.getProducts().add(ProductMapperMoz.INSTANCE.toProductDTO(product));
+            }
+            orderDtos.add(orderDTO);
+        }
+        return orderDtos;
     }
 }

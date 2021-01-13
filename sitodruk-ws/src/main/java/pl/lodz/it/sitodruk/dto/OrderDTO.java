@@ -16,5 +16,6 @@ public class OrderDTO {
     private String username;
     private Long blikCode;
     private AddressDTO addressDTO;
+    private String orderStatus;
     private String ipAddress;
 }
