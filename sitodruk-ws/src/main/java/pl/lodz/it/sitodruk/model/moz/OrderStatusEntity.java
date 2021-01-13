@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "order_statuses", schema = "public", catalog = "postgres")
 public class OrderStatusEntity {
     @Id@Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
     @Basic@Column(name = "status_name", nullable = false)
     private String statusName;
 }

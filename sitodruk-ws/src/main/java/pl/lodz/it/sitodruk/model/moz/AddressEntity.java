@@ -14,7 +14,7 @@ public class AddressEntity {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_generator")
     @SequenceGenerator(name = "address_generator", sequenceName = "address_seq", allocationSize = 1)
-    private long id;
+    private Long id;
     @Basic
     @Column(name = "country", nullable = false, length = -1)
     private String country;
@@ -38,5 +38,9 @@ public class AddressEntity {
     private Long version;
     @OneToMany(mappedBy = "addressByAddressId")
     private Collection<OrderEntity> orderById = new ArrayList<>();
+
+    public AddressEntity(){
+        this.version = 1L;
+    }
 
 }

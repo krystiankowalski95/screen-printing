@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.impl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
@@ -52,11 +53,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void removeProductByName(String name) throws BaseException {
-        Optional<ProductEntity> productEntity = productRepository.findByName(name);
+    public void removeProduct(ProductDTO productDTO) throws BaseException {
+        Optional<ProductEntity> productEntity = productRepository.findByName(productDTO.getName());
         if (productEntity.isPresent()) {
-            productRepository.delete(productEntity.get());
-            productRepository.flush();
+            if(String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))){
+                productRepository.delete(productEntity.get());
+                productRepository.flush();
+            }else {
+                throw new OptimisticLockException();
+            }
         } else {
             throw new ProductNotFoundException();
         }

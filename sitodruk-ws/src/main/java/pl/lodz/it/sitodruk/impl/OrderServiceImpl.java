@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.controllers.PayUController;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mozTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "mozTransactionManager")
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;

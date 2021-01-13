@@ -15,7 +15,7 @@ public class OrderEntity {
     @Id@Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_generator")
     @SequenceGenerator(name = "order_generator", sequenceName = "orders_seq", allocationSize = 1)
-    private long id;
+    private Long id;
     @Basic@Column(name = "payu_order_id", nullable = false)
     private String payuOrderId;
     @Basic@Column(name = "timestamp", nullable = true)
@@ -38,5 +38,9 @@ public class OrderEntity {
             inverseJoinColumns = { @JoinColumn(name = "product_id")}
     )
     private List<ProductEntity> productEntityList = new ArrayList<>();
+
+    public OrderEntity(){
+        this.version = 1L;
+    }
 
 }

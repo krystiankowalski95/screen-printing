@@ -21,7 +21,7 @@ public class UserEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "u_generator")
     @SequenceGenerator(name = "u_generator", sequenceName = "login_data_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
     @Basic
     @Column(name = "username", nullable = false, length = 64)
     private String username;
@@ -30,11 +30,11 @@ public class UserEntity implements Serializable {
     private String password;
     @Basic
     @Column(name = "active", nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @Basic
     @Column(name = "confirmed", nullable = false)
-    private boolean confirmed;
+    private Boolean confirmed;
 
     @Basic
     @Column(name = "token", unique = true)

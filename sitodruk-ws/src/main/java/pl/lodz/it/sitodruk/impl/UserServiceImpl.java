@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.UserDTO;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserService {
     public void confirmUser(String token) throws BaseException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
-            if(user.get().isConfirmed()){
+            if(user.get().getConfirmed()){
                 throw new UserAlreadyConfirmedException();
             }else{
                 user.get().setConfirmed(true);

@@ -4,6 +4,7 @@ package pl.lodz.it.sitodruk.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import java.util.Properties;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/")
-@Transactional(propagation = Propagation.NEVER)
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.NEVER,transactionManager = "mokTransactionManager")
 public class UserOperationsController {
 
     @Autowired
@@ -34,7 +35,7 @@ public class UserOperationsController {
             try {
                 userService.confirmUser(tokenRequest.get("token"));
             } catch (BaseException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
             }
         return  ResponseEntity.ok("account.confirmed");
     }
@@ -45,7 +46,7 @@ public class UserOperationsController {
         try {
             userService.changePassword(userDTO);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
         return  ResponseEntity.ok("password.changed");
     }
@@ -56,7 +57,7 @@ public class UserOperationsController {
         try {
             userService.resetPassword(userDTO,requestUrl);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
         return  ResponseEntity.ok("email.sent");
     }
@@ -67,7 +68,7 @@ public class UserOperationsController {
         try {
             userService.setNewPassword(userDTO);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
         return  ResponseEntity.ok("password.changed");
     }

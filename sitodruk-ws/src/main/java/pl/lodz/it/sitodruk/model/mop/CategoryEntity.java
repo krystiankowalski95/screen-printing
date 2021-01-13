@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class CategoryEntity {
     @Id
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
     @Basic
     @Column(name = "category_name", nullable = false, length = -1)
     private String categoryName;

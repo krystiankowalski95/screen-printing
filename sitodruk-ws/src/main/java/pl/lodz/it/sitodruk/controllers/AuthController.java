@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,6 +36,7 @@ import pl.lodz.it.sitodruk.service.UserService;
 @RestController
 @Slf4j
 @RequestMapping("/api/auth")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.NEVER,transactionManager = "mokTransactionManager")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -48,7 +51,7 @@ public class AuthController {
 
 
     @PostMapping("/signin")
-    @Transactional(propagation = Propagation.NEVER)
+    @PermitAll
     public ResponseEntity<?> authenticateUser(@RequestBody UserDTO userDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -63,12 +66,13 @@ public class AuthController {
                 .collect(Collectors.toList());
         try {
             if (userService.isUserConfirmed(userDTO)) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("account.notconfirmed"));
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"account.notconfirmed");
+
             } else if (userService.isUserActive(userDTO)) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("account.notactive"));
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"account.notactive");
             }
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -78,12 +82,12 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    @Transactional(propagation = Propagation.NEVER)
+    @PermitAll
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         try {
             userService.createUser(userDTO, request);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exceptionProperties.getProperty("unexpected.error"));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
         return ResponseEntity.ok("user.registered");
     }

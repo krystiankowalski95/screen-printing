@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProductService {
     void createProduct(ProductDTO productDTO) throws BaseException;
     void modifyProduct(ProductDTO productDTO) throws BaseException;
-    void removeProductByName(String name) throws BaseException;
+    void removeProduct(ProductDTO productDTO) throws BaseException;
     ProductDTO findProductByName(String productName) throws BaseException;
     List<ProductDTO> findAllProducts() throws  BaseException;
 }

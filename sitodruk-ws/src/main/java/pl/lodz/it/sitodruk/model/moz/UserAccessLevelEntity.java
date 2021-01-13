@@ -12,13 +12,13 @@ public class UserAccessLevelEntity {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_level_generator")
     @SequenceGenerator(name = "access_level_generator", sequenceName = "user_access_level_seq", allocationSize = 1)
-    private int id;
+    private Long id;
     @Basic
     @Column(name = "access_level_name", nullable = false, length = 64)
     private String accessLevelName;
     @Basic
     @Column(name = "active", nullable = false)
-    private boolean active;
+    private Boolean active;
     @Basic
     @Column(name = "version", nullable = false)
     @Version
