@@ -34,11 +34,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private ProductCategoryService productCategoryService;
-
-    private Properties exceptionProperties;
-
     @PostMapping("/placeOrder")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
     public ResponseEntity<?> placeOrder(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {

@@ -7,7 +7,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.model.moz.OrderEntity;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 @Transactional(propagation = Propagation.MANDATORY, transactionManager = "mozTransactionManager",isolation = Isolation.READ_COMMITTED)
 public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
+    List<OrderEntity> findAllByUsername(String username);
+    Optional<OrderEntity> findByPayuOrderId(String payUOrderId);
 }

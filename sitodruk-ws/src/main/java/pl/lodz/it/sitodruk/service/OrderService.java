@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface OrderService {
     void createOrder(OrderDTO orderDTO) throws BaseException;
-    void modifyOrder(OrderDTO orderDTO) throws BaseException;
     void cancelOrder(OrderDTO orderDTO) throws BaseException;
-    OrderDTO findUsersOrders(String username) throws BaseException;
+    void markOrderAsCompleted(OrderDTO orderDTO) throws BaseException;
+    void repeatPayment(OrderDTO orderDTO) throws BaseException;
+    List<OrderDTO> findUsersOrders(String username) throws BaseException;
     List<OrderDTO> findAllOrders() throws BaseException;
 }

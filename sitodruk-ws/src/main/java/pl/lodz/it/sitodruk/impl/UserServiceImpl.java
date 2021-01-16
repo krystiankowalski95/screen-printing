@@ -45,11 +45,21 @@ public class UserServiceImpl implements UserService {
             user.setPassword(encoder.encode(userDTO.getPassword()));
             user.setFirstname(userDTO.getFirstname());
             user.setLastname(userDTO.getLastname());
-            UserAccessLevelEntity userAccessLevelEntity = new UserAccessLevelEntity();
-            userAccessLevelEntity.setAccessLevelName("ROLE_CLIENT");
-            userAccessLevelEntity.setActive(true);
-            userAccessLevelEntity.setLoginDataByUserId(user);
-            user.getUserAccessLevelsById().add(userAccessLevelEntity);
+            UserAccessLevelEntity client = new UserAccessLevelEntity();
+            client.setAccessLevelName("ROLE_CLIENT");
+            client.setActive(true);
+            client.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(client);
+            UserAccessLevelEntity manager = new UserAccessLevelEntity();
+            manager.setAccessLevelName("ROLE_MANAGER");
+            manager.setActive(false);
+            manager.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(manager);
+            UserAccessLevelEntity admin = new UserAccessLevelEntity();
+            admin.setAccessLevelName("ROLE_ADMIN");
+            admin.setActive(false);
+            admin.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(admin);
             userRepository.saveAndFlush(user);
             emailSenderService.sendRegistrationEmail(user.getEmail(), requestUrl, user.getToken());
         }

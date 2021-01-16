@@ -18,4 +18,5 @@ public class OrderDTO {
     private AddressDTO addressDTO;
     private String orderStatus;
     private String ipAddress;
+    private String dtoVersion;
 }
