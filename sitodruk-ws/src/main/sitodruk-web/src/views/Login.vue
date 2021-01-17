@@ -49,7 +49,7 @@
           </router-link>
         </div>
         <div class="form-group">
-          <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
+          <div v-if="message" class="alert alert-danger" role="alert">{{ $t(message.message) }}</div>
         </div>
       </form>
     </div>
@@ -93,11 +93,8 @@ export default {
               this.$router.push('/profile');
             },
             error => {
-              this.loading = false;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+             this.message = (error.response && error.response.data)
+              this.successful = false;
             }
           );
         }

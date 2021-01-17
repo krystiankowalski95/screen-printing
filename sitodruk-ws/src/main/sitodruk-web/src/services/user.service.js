@@ -1,26 +1,9 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const test_api_url = process.env.VUE_APP_BASE_API_URL + '/api/test/';
 const API_URL = process.env.VUE_APP_BASE_API_URL + '/';
 
 class UserService {
-  getPublicContent() {
-    return axios.get(test_api_url + 'all');
-  }
-
-  getUserBoard() {
-    return axios.get(test_api_url + 'user', { headers: authHeader() });
-  }
-
-  getModeratorBoard() {
-    return axios.get(test_api_url + 'mod', { headers: authHeader() });
-  }
-
-  getAdminBoard() {
-    return axios.get(test_api_url + 'admin', { headers: authHeader() });
-  }
-
   confirmAccount(token) {
     return axios.post(API_URL + 'confirmAccount', {
       token: token,
@@ -32,7 +15,7 @@ class UserService {
       username: user.username,
       password: user.password,
       confirmPassword: user.confirmPassword
-    });
+    }, { headers: authHeader() });
   }
 
   resetPassword(user) {
@@ -47,6 +30,13 @@ class UserService {
       password: user.password,
       confirmPassword: user.password
     });
+  }
+
+  getUserProfile(user) {
+    return axios.post(API_URL + 'findAccountByUsername', {
+      username: user.username
+    }, { headers: authHeader() }
+    );
   }
 }
 

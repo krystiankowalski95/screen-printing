@@ -213,11 +213,11 @@ public class UserOperationsController {
     }
 
 
-    @GetMapping("/findAccountByUsername")
+    @PostMapping("/findAccountByUsername")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN')")
-    public ResponseEntity<UserDTO> getAccountByUsername(@RequestBody String username) {
+    public ResponseEntity<UserDTO> getAccountByUsername(@RequestBody Map<String, String> username) {
         try {
-            return new ResponseEntity(userService.findUserByUsername(username), HttpStatus.OK);
+            return new ResponseEntity(userService.findUserByUsername(username.get("username")), HttpStatus.OK);
         } catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not.found", ex);
         } catch (BaseException e) {

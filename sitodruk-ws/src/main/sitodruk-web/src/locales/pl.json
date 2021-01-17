@@ -66,6 +66,10 @@
     "blikCode":"Kod BLIK",
     "placeOrder":"Złóż zamówienie i zapłać",
     "placingorder":"Złóż zamówienie i zapłać",
-    "optimistic.lock":"Ktoś edytował przed Tobą ten produkt"
-
+    "optimistic.lock":"Wystąpił problem. Odśwież stronę i spróbuj jeszcze raz.",
+    "account.notconfirmed":"Konto nie zostało jeszcze potwierdzone",
+    "account.notactive":"Konto zostało zablokowane",
+    "unexpected.error":"Wystąpił nieoczekiwany błąd.",
+    "username.already.taken":"Nazwa użytkownika jest już zajęta",
+    "email.already.taken":"Adres email jest już zajęty"
 }

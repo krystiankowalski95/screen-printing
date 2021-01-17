@@ -65,10 +65,10 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         try {
-            if (userService.isUserConfirmed(userDTO)) {
+            if (!userService.isUserConfirmed(userDTO)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"account.notconfirmed");
 
-            } else if (userService.isUserActive(userDTO)) {
+            } else if (!userService.isUserActive(userDTO)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"account.notactive");
             }
         } catch (BaseException e) {
@@ -86,9 +86,10 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
         try {
             userService.createUser(userDTO, request);
+            return ResponseEntity.ok("user.registered");
+
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
-        return ResponseEntity.ok("user.registered");
     }
 }

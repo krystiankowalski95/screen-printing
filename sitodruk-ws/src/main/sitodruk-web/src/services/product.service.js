@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import authHeader from './auth-header';
+import authHeader from './auth-header';
 
 const API_URL = process.env.VUE_APP_BASE_API_URL + '/products';
 
@@ -9,8 +9,8 @@ class ProductService {
   }
 
   getAllProductCategories() {
-    return axios.get(API_URL + '/categories',{},
-    // , { headers: authHeader() }
+    return axios.get(API_URL + '/categories',{}
+    , { headers: authHeader() }
     );
   }
 
@@ -22,8 +22,7 @@ class ProductService {
       quantity: product.quantity,
       stock: product.stock,
       dtoVersion: product.dtoVersion
-    },
-    // , { headers: authHeader() }
+    }, { headers: authHeader() }
     );
   }
 
@@ -34,8 +33,7 @@ class ProductService {
       price: product.price,
       quantity: product.quantity,
       stock: product.stock,
-    }
-    // , { headers: authHeader() }
+    }, { headers: authHeader() }
     );
   }
 
@@ -43,13 +41,13 @@ class ProductService {
     return axios.post(API_URL + '/removeProduct', {
       name: product.name,
     }
-    // , { headers: authHeader() }
+    , { headers: authHeader() }
     );
   }
 
   findProductByName(name) {
     return axios.get(API_URL + '/findByName/' + name, {}
-    // , { headers: authHeader() }
+    , { headers: authHeader() }
     );
   }
 }

@@ -207,6 +207,10 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
             userDTO.setDtoVersion(getVersionHash(user.get()));
+            userDTO.setPassword("");
+            for(UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()){
+                userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+            }
             return userDTO;
         } else throw new UserNotFoundException();
     }
@@ -216,6 +220,10 @@ public class UserServiceImpl implements UserService {
         for (UserEntity userEntity : userRepository.findAll()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
             userDTO.setDtoVersion(getVersionHash(userEntity));
+            userDTO.setPassword("");
+            for(UserAccessLevelEntity userAccessLevelEntity : userEntity.getUserAccessLevelsById()){
+                userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+            }
             userDtos.add(userDTO);
         }
         return userDtos;

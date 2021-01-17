@@ -23,11 +23,7 @@
         /></b-col>
       </b-row>
       <b-row>
-        <b-col
-          ><b-button pill variant="primary" @click="edit()">{{
-            $t('edit')
-          }}</b-button></b-col
-        ></b-row
+        </b-row
       >
       <b-row style="padding: 5px" />
       <b-row>
@@ -84,13 +80,6 @@ export default {
     }
   },
   methods: {
-    edit() {
-      this.$store.productName = this.product.name;
-      this.$router.push({
-        path: '/editProduct',
-        params: { productName: this.product.productName },
-      });
-    },
     addProductToCart() {
       this.$store.commit(
         'addProduct',

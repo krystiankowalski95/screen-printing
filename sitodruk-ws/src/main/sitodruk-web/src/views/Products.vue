@@ -2,8 +2,7 @@
   <div class="container">
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t("productList") }}</h3>
-      <!-- <div v-if="isManagerInRole" class="navbar-nav ml-auto"> -->
-      <div class="navbar-nav ml-auto">
+      <div v-if="isManagerInRole" class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/addProduct" class="nav-link"> <font-awesome-icon icon="plus-square" />{{ $t("addProduct") }} </router-link>
         </li>
@@ -16,9 +15,8 @@
         <b-col>{{ $t("categoryName") }}</b-col>
         <b-col>{{ $t("quantity") }}</b-col>
         <b-col>{{ $t("goToDetails") }}</b-col>
-        <b-col>{{ $t("removeSelectedProduct") }}</b-col>
-
-        <!-- <b-col v-if="isManagerInRole">{{ $t('removeSelectedProduct') }}</b-col> -->
+        <b-col v-if="isManagerInRole">{{ $t('removeSelectedProduct') }}</b-col>
+        <b-col v-if="isManagerInRole">{{ $t('removeSelectedProduct') }}</b-col>
       </b-row>
     </b-container>
     <b-container class="bv-example-row" v-for="(product, index) in productList" :key="index">
@@ -33,10 +31,8 @@
          <b-col v-if="product.stock === 0"
           ><b-button pill disabled variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
         >
-        <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
-        <b-col
-          ><b-button pill variant="danger" @click="removeProduct(index)">{{ $t("removeButton") }}</b-button></b-col
-        >
+         <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col>
+          <b-col v-if="isManagerInRole"><b-button pill variant="secondary" @click="edit(index)">{{ $t('edit') }}</b-button></b-col>
       </b-row>
     </b-container>
   </div>
@@ -54,6 +50,32 @@ export default {
       productList: [],
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+    isAdminInRole() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes("ROLE_ADMIN");
+      }
+
+      return false;
+    },
+    isManagerInRole() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes("ROLE_MANAGER");
+      }
+
+      return false;
+    },
+    isClientInRole() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes("ROLE_CLIENT");
+      }
+
+      return false;
+    },
+  },
   mounted() {
     ProductService.getAllProducts().then(
       (data) => {
@@ -70,6 +92,13 @@ export default {
     );
   },
   methods: {
+    edit(index) {
+      this.$store.productName = this.productList[index].name
+      this.$router.push({
+        path: '/editProduct',
+        params: { productName: this.productList[index].name },
+      });
+    },
     removeProduct(index) {
       this.$confirm(this.$t("areyousure"), this.$t("deletingmsg") + this.productList[index].name, "warning")
         .then(() => {
@@ -84,6 +113,7 @@ export default {
         })
         .catch(() => console.log());
     },
+    
     getDetails(index) {
       this.$store.product = this.productList[index];
       this.$router.push({

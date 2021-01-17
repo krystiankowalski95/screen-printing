@@ -8,11 +8,11 @@ import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 public class UserDTO {
-    private String id;
     private String username;
     private String password;
     private boolean active;
@@ -23,6 +23,6 @@ public class UserDTO {
     private String phoneNumber;
     private String confirmPassword;
     private String token;
-    private Set<String> roles;
+    private Set<String> roles = new HashSet<>();
     private String dtoVersion;
 }

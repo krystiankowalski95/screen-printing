@@ -112,7 +112,11 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);
-        } catch (BaseException e) {
+        }catch (UsernameAlreadyExistsException ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "username.already.taken");
+        } catch (EmailAlreadyExistsException ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "email.already.taken");
+        }catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
     }
