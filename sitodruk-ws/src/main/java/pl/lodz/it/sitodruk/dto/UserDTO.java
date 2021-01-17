@@ -24,4 +24,5 @@ public class UserDTO {
     private String confirmPassword;
     private String token;
     private Set<String> roles;
+    private String dtoVersion;
 }

@@ -1,5 +1,6 @@
 package pl.lodz.it.sitodruk.impl;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,13 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mokTransactionManager")
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -33,18 +36,109 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
+    public void activateUserAccount(UserDTO userDTO) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setActive(true);
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void deactivateUserAccount(UserDTO userDTO) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setActive(false);
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(role)) {
+                        userAccessLevelEntity.setActive(true);
+                    }
+                }
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void deactivateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(role)) {
+                        userAccessLevelEntity.setActive(false);
+                    }
+                }
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void createUserByAdmin(UserDTO userDTO) throws BaseException {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new UsernameAlreadyExistsException();
+        } else if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new EmailAlreadyExistsException();
+        } else {
+            UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
+            user.setPassword(encoder.encode(userDTO.getPassword()));
+            if (userDTO.getRoles().contains("ROLE_CLIENT")) {
+                UserAccessLevelEntity client = new UserAccessLevelEntity();
+                client.setAccessLevelName("ROLE_CLIENT");
+                client.setActive(true);
+                client.setLoginDataByUserId(user);
+                user.getUserAccessLevelsById().add(client);
+            }
+            if (userDTO.getRoles().contains("ROLE_MANAGER")) {
+                UserAccessLevelEntity manager = new UserAccessLevelEntity();
+                manager.setAccessLevelName("ROLE_MANAGER");
+                manager.setActive(false);
+                manager.setLoginDataByUserId(user);
+                user.getUserAccessLevelsById().add(manager);
+            }
+            if (userDTO.getRoles().contains("ROLE_ADMIN")) {
+                UserAccessLevelEntity admin = new UserAccessLevelEntity();
+                admin.setAccessLevelName("ROLE_ADMIN");
+                admin.setActive(false);
+                admin.setLoginDataByUserId(user);
+                user.getUserAccessLevelsById().add(admin);
+            }
+            userRepository.saveAndFlush(user);
+        }
+
+    }
+
+    @Override
     public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
         } else if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new EmailAlreadyExistsException();
-        } else if (userRepository.existsByPhoneNumber(userDTO.getPhoneNumber())) {
-            throw new PhoneNumberAlreadyExistsException();
         } else {
             UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
             user.setPassword(encoder.encode(userDTO.getPassword()));
-            user.setFirstname(userDTO.getFirstname());
-            user.setLastname(userDTO.getLastname());
             UserAccessLevelEntity client = new UserAccessLevelEntity();
             client.setAccessLevelName("ROLE_CLIENT");
             client.setActive(true);
@@ -69,53 +163,85 @@ public class UserServiceImpl implements UserService {
     public void modifyUser(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
-            //TODO Mapowanie DTO na Encję
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setFirstname(userDTO.getFirstname());
+                user.get().setLastname(userDTO.getLastname());
+                user.get().setPhoneNumber(userDTO.getPhoneNumber());
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
         } else throw new UserNotFoundException();
     }
+
 
     @Override
     public void setNewPassword(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
-        if(user.isPresent()){
-            user.get().setPassword(encoder.encode(userDTO.getPassword()));
-            userRepository.saveAndFlush(user.get());
-        }else throw new UserNotFoundException();
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setPassword(encoder.encode(userDTO.getPassword()));
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
     }
 
     @Override
     public void changePassword(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
-        if(user.isPresent()){
-            user.get().setPassword(encoder.encode(userDTO.getPassword()));
-            userRepository.saveAndFlush(user.get());
-        }else throw new UserNotFoundException();
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setPassword(encoder.encode(userDTO.getPassword()));
+                userRepository.saveAndFlush(user.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
     }
 
     @Override
     public UserDTO findUserByUsername(String username) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            return UserMapper.INSTANCE.toUserDTO(user.get());
+            UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
+            userDTO.setDtoVersion(getVersionHash(user.get()));
+            return userDTO;
         } else throw new UserNotFoundException();
     }
 
+    public List<UserDTO> getAllUsers() throws BaseException {
+        List<UserDTO> userDtos = new ArrayList<>();
+        for (UserEntity userEntity : userRepository.findAll()) {
+            UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
+            userDTO.setDtoVersion(getVersionHash(userEntity));
+            userDtos.add(userDTO);
+        }
+        return userDtos;
+    }
+
     @Override
-    public void resetPassword(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException {
+    public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
-        if(user.isPresent()){
-            user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
-            userRepository.saveAndFlush(user.get());
-            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(),requestUrl,user.get().getToken());
-        }else throw new UserNotFoundException();
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+                userRepository.saveAndFlush(user.get());
+                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
     }
 
     @Override
     public void confirmUser(String token) throws BaseException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
-            if(user.get().getConfirmed()){
+            if (user.get().getConfirmed()) {
                 throw new UserAlreadyConfirmedException();
-            }else{
+            } else {
                 user.get().setConfirmed(true);
                 user.get().setActive(true);
                 userRepository.saveAndFlush(user.get());
@@ -124,13 +250,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isUserConfirmed(UserDTO userDTO) {
-        return userRepository.existsByUsernameAndPasswordAndConfirmed(userDTO.getUsername(), userDTO.getPassword(), false);
+    public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException {
+        Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
+        if(userEntity.isPresent()){
+            return userEntity.get().getConfirmed();
+        }else throw new UserNotFoundException();
     }
 
     @Override
-    public Boolean isUserActive(UserDTO userDTO) {
-        return userRepository.existsByUsernameAndPasswordAndActive(userDTO.getUsername(), userDTO.getPassword(), false);
+    public Boolean isUserActive(UserDTO userDTO) throws BaseException{
+        Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
+        if(userEntity.isPresent()){
+            return userEntity.get().getActive();
+        }else throw new UserNotFoundException();
+    }
+
+    public String getVersionHash(UserEntity userEntity) {
+        return DigestUtils.sha256Hex(userEntity.getEmail() + userEntity.getVersion());
     }
 
 }
