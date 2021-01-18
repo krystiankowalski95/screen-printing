@@ -12,6 +12,8 @@ import ResetPasswordForm from './views/ResetPasswordForm.vue';
 import EditProduct from './views/EditProduct.vue';
 import Cart from './views/Cart.vue';
 import SumUp from './views/SumUp.vue';
+import EditUser from './views/EditUser.vue';
+import UserOrders from './views/UserOrders.vue';
 
 Vue.use(Router);
 
@@ -28,8 +30,16 @@ export const router = new Router({
       component: SumUp
     },
     {
+      path: "/userOrders",
+      component: UserOrders
+    },
+    {
       path: '/changePassword',
       component: ChangePassword
+    },
+    {
+      path: '/editUser',
+      component: EditUser
     },
     {
       path: '/home',

@@ -71,5 +71,7 @@
     "account.notactive":"Konto zostało zablokowane",
     "unexpected.error":"Wystąpił nieoczekiwany błąd.",
     "username.already.taken":"Nazwa użytkownika jest już zajęta",
-    "email.already.taken":"Adres email jest już zajęty"
+    "email.already.taken":"Adres email jest już zajęty",
+    "editUser":"Edytuj konto",
+    "userOrders":"Zamówienia"
 }

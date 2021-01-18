@@ -21,7 +21,7 @@ public class OrderEntity {
     @Version
     @Basic@Column(name = "version", nullable = false)
     private Long version;
-    @Basic@JoinColumn(name = "username", referencedColumnName = "id", nullable = false)
+    @Basic@Column(name = "username", nullable = false)
     private String username;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)

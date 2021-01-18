@@ -134,7 +134,8 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> findUsersOrders(String username) throws BaseException {
         List<OrderDTO> orderDtos = new ArrayList<>();
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
-        for (OrderEntity orderEntity : orderRepository.findAllByUsername(username)) {
+        List<OrderEntity> orderEntities = orderRepository.findAllByUsername(username);
+        for (OrderEntity orderEntity : orderEntities) {
             if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
                 orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayuOrderId())));
                 orderRepository.saveAndFlush(orderEntity);

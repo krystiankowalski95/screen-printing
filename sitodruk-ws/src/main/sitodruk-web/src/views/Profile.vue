@@ -13,6 +13,11 @@
             <font-awesome-icon icon="plus-square" />{{ $t('editUser') }}
           </router-link>
         </li>
+        <li class="nav-item">
+          <router-link to="/userOrders" class="nav-link">
+            <font-awesome-icon icon="plus-square" />{{ $t('userOrders') }}
+          </router-link>
+        </li>
       </div>
     </header>
     <div class="card card-container">
@@ -25,9 +30,6 @@
           class="form-control"
           name="firstname"
         />
-        <div v-if="submitted && errors.has('firstname')" class="alert-danger">
-          {{ errors.first('firstname') }}
-        </div>
       </div>
       <div class="form-group">
         <label for="lastname">{{ $t('lastname') }}</label>
@@ -118,7 +120,6 @@ export default {
             data.data.roles
           );
           data.data;
-          console.log(this.user);
         },
         (error) => {
           this.message = error.response && error.response.data;

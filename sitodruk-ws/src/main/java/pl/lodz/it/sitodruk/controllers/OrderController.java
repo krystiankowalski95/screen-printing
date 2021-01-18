@@ -97,11 +97,12 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/findUsersOrders")
+    @PostMapping("/findUsersOrders")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
     public ResponseEntity<List<OrderDTO>> getAllUsersOrders(@RequestBody String username) {
         try {
-            return new ResponseEntity(orderService.findUsersOrders(username), HttpStatus.OK);
+            List<OrderDTO> orderDTOS = orderService.findUsersOrders(username);
+            return new ResponseEntity(orderDTOS, HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
@@ -112,10 +113,6 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);
-        }catch (UsernameAlreadyExistsException ex){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "username.already.taken");
-        } catch (EmailAlreadyExistsException ex){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "email.already.taken");
         }catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }

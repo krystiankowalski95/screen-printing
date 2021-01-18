@@ -11,10 +11,21 @@ class UserService {
   }
 
   changePassword(user) {
-    return axios.post(API_URL + 'changePassword', {
+    return axios.post(API_URL + 'changeOwnPassword', {
       username: user.username,
       password: user.password,
-      confirmPassword: user.confirmPassword
+      confirmPassword: user.confirmPassword,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
+
+  editOwnAccount(user){
+    return axios.post(API_URL + 'modifyOwnAccount', {
+      username: user.username,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phoneNumber: user.phoneNumber,
+      dtoVersion: user.dtoVersion
     }, { headers: authHeader() });
   }
 

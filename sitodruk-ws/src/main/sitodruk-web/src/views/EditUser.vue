@@ -15,7 +15,9 @@
             <div
               v-if="submitted && errors.has('firstname')"
               class="alert-danger"
-            >{{errors.first('firstname')}}</div>
+            >
+              {{ errors.first('firstname') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="lastname">{{ $t('lastname') }}</label>
@@ -29,7 +31,9 @@
             <div
               v-if="submitted && errors.has('lastName')"
               class="alert-danger"
-            >{{errors.first('lastame')}}</div>
+            >
+              {{ errors.first('lastame') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="username">{{ $t('username') }}</label>
@@ -40,6 +44,7 @@
               class="form-control"
               name="username"
             />
+          </div>
           <div class="form-group">
             <label for="email">{{ $t('email') }}</label>
             <input
@@ -49,22 +54,27 @@
               class="form-control"
               name="email"
             />
-          <div class="form-group">
-            <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
-            <input
-              v-model="user.phoneNumber"
-              v-validate="{ required: true, digits:9}"
-              type="text"
-              class="form-control"
-              name="phoneNumber"
-            />
-            <div
-              v-if="submitted && errors.has('phoneNumber')"
-              class="alert-danger"
-            >{{errors.first('phoneNumber')}}</div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-block">{{ $t('edit') }}</button>
+            <div class="form-group">
+              <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
+              <input
+                v-model="user.phoneNumber"
+                v-validate="{ required: true, digits: 9 }"
+                type="text"
+                class="form-control"
+                name="phoneNumber"
+              />
+              <div
+                v-if="submitted && errors.has('phoneNumber')"
+                class="alert-danger"
+              >
+                {{ errors.first('phoneNumber') }}
+              </div>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary btn-block">
+                {{ $t('edit') }}
+              </button>
+            </div>
           </div>
         </div>
       </form>
@@ -72,62 +82,78 @@
         v-if="message"
         class="alert"
         :class="successful ? 'alert-success' : 'alert-danger'"
-      >{{ $t(message.message)}}</div>
+      >
+        {{ $t(message.message) }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import User from '../models/user';
+import UserService from '../services/user.service';
 
 export default {
   name: 'EditUser',
   data() {
     return {
-      user: new User('', '', '','','','','','','','',''),
+      user: new User('', '', '', '', '', '', '', '', '', '', ''),
       submitted: false,
       successful: false,
-      message: ''
+      message: '',
     };
   },
   mounted() {
     UserService.getUserProfile(this.$store.state.auth.user).then(
-        (data) => {
-          this.user = new User(data.data.username, data.data.email, data.data.password,data.data.confirmPassword,data.data.firstname,data.data.lastname,data.data.phoneNumber,data.data.token,data.data.dtoVersion,data.data.confirmed,data.data.active,data.data.roles);
-          data.data;
-          console.log(this.user);
-        },
-        (error) => {
-          this.message = error.response && error.response.data;
-          if (this.message.status == 401) {
-            this.$store.dispatch("auth/logout");
-          }
+      (data) => {
+        this.user = new User(
+          data.data.username,
+          data.data.email,
+          data.data.password,
+          data.data.confirmPassword,
+          data.data.firstname,
+          data.data.lastname,
+          data.data.phoneNumber,
+          data.data.token,
+          data.data.dtoVersion,
+          data.data.confirmed,
+          data.data.active,
+          data.data.roles
+        );
+        data.data;
+        console.log(this.user);
+      },
+      (error) => {
+        this.message = error.response && error.response.data;
+        if (this.message.status == 401) {
+          this.$store.dispatch('auth/logout');
         }
-      );
+      }
+    );
   },
   methods: {
     handleEdit() {
       this.message = '';
       this.submitted = true;
-      this.$validator.validate().then(isValid => {
+      this.$validator.validate().then((isValid) => {
         if (isValid) {
-          this.$store.dispatch('auth/register', this.user).then(
-            data => {
+          UserService.editOwnAccount(this.user).then(
+            (data) => {
               this.message = data.message;
               this.successful = true;
             },
-            error => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+            (error) => {
+              this.message = error.response && error.response.data;
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+              }
               this.successful = false;
             }
           );
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

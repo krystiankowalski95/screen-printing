@@ -106,11 +106,10 @@ export default {
               this.responseList = data.data;
             },
             (error) => {
-              this.content = (error.response && error.response.data) || error.message || error.toString();
+              this.content = (error.response && error.response.data);
             }
           );
         })
-        .catch(() => console.log());
     },
     
     getDetails(index) {

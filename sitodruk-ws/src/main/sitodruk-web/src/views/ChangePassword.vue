@@ -42,7 +42,7 @@
         v-if="message"
         class="alert"
         :class="successful ? 'alert-success' : 'alert-danger'"
-      >{{message}}</div>
+      >{{ $t(message.message)}}</div>
     </div>
     </div>
 </template>
@@ -55,14 +55,39 @@ export default {
   name: 'ChangePassword',
   data() {
      return {
-      user: new User('', '', ''),
+      user: new User(),
       submitted: false,
       successful: false,
       message: ''
     };
   },
   mounted() {
-      this.user.username = this.$store.state.auth.user.username;
+      UserService.getUserProfile(this.$store.state.auth.user).then(
+        (data) => {
+          this.user = new User(
+            data.data.username,
+            data.data.email,
+            data.data.password,
+            data.data.confirmPassword,
+            data.data.firstname,
+            data.data.lastname,
+            data.data.phoneNumber,
+            data.data.token,
+            data.data.dtoVersion,
+            data.data.confirmed,
+            data.data.active,
+            data.data.roles
+          );
+          data.data;
+          console.log(this.user);
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+            this.$store.dispatch('auth/logout');
+          }
+        }
+      );
   },
   methods: {
       changePassword(){
@@ -78,9 +103,8 @@ export default {
             },
             error => {
               this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+                (error.response && error.response.data);
+               
               this.successful = false;
             }
           );

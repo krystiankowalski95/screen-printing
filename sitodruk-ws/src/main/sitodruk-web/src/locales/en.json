@@ -70,7 +70,9 @@
     "account.notactive":"Account has been blocked",
     "unexpected.error":"Unexpected error occoured",
     "username.already.taken":"Given username is already taken",
-    "email.already.taken":"Given email is already taken"
+    "email.already.taken":"Given email is already taken",
+    "editUser":"Edit account",
+    "userOrders":"Orders"
 
 
     

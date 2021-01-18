@@ -4,9 +4,12 @@ import authHeader from './auth-header';
 const API_URL = process.env.VUE_APP_BASE_API_URL + '/orders';
 
 class OrderService {
-  // getAllOrders() {
-  //   return axios.get(API_URL + '/findAll');
-  // }
+  getAllUserOrders(user) {
+    return axios.post(API_URL + '/findUsersOrders',
+    {
+      username: user.username
+    } , { headers: authHeader() });
+  }
 
   // getAllOrderStatuses() {
   //   return axios.get(API_URL + '/categories',{},
