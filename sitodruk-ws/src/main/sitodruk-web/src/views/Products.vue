@@ -84,7 +84,6 @@ export default {
         this.responseList.map((productDTO) => {
           this.productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock));
         });
-        console.log(this.productList);
       },
       (error) => {
         this.content = (error.response && error.response.data) || error.message || error.toString();
