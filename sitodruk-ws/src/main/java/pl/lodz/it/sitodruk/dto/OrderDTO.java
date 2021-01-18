@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -11,7 +12,7 @@ import java.util.Collection;
 @NoArgsConstructor
 public class OrderDTO {
     private String payUOrderId;
-    private Collection<ProductDTO> products;
+    private Collection<ProductDTO> products = new ArrayList<>();
     private Double totalValue;
     private String username;
     private Long blikCode;

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.controllers.PayUController;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
+import pl.lodz.it.sitodruk.dto.mappers.AddressMapper;
 import pl.lodz.it.sitodruk.dto.mappers.OrderMapper;
 import pl.lodz.it.sitodruk.dto.mappers.ProductMapperMoz;
 import pl.lodz.it.sitodruk.exceptions.*;
@@ -64,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.getAddressByAddressId().setPostalCode(orderDTO.getAddressDTO().getPostalCode());
             orderEntity.getAddressByAddressId().setStreet(orderDTO.getAddressDTO().getStreet());
             orderEntity.getAddressByAddressId().setStreetNumber(orderDTO.getAddressDTO().getStreetNumber());
-            orderEntity.setPayuOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
-            orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayuOrderId())));
+            orderEntity.setPayUOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
+            orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
             orderEntity.setUsername(userEntity.get().getUsername());
             orderRepository.saveAndFlush(orderEntity);
         } else throw new UserNotFoundException();
@@ -73,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrder(OrderDTO orderDTO) throws BaseException {
-        Optional<OrderEntity> orderEntity = orderRepository.findByPayuOrderId(orderDTO.getPayUOrderId());
+        Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         OrderStatusEntity cancelled = orderStatusRepository.findByStatusName("cancelled");
 
         if (orderEntity.isPresent()) {
@@ -99,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void markOrderAsCompleted(OrderDTO orderDTO) throws BaseException {
-        Optional<OrderEntity> orderEntity = orderRepository.findByPayuOrderId(orderDTO.getPayUOrderId());
+        Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         OrderStatusEntity completed = orderStatusRepository.findByStatusName("completed");
         if (orderEntity.isPresent()) {
             if (String.valueOf(orderDTO.getDtoVersion()).equals(getOrderVersionHash(orderEntity.get()))) {
@@ -116,13 +117,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void repeatPayment(OrderDTO orderDTO) throws BaseException {
-        Optional<OrderEntity> orderEntity = orderRepository.findByPayuOrderId(orderDTO.getPayUOrderId());
+        Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         Optional<UserEntity> userEntity = userRepository.findByUsername(orderDTO.getUsername());
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         if(orderEntity.isPresent()){
             if(orderEntity.get().getOrderStatus().equals(created)){
-                orderEntity.get().setPayuOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
-                orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayuOrderId())));
+                orderEntity.get().setPayUOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
+                orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity.get());
             }else{
                 throw new InvalidOrderStatusException();
@@ -137,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderEntity> orderEntities = orderRepository.findAllByUsername(username);
         for (OrderEntity orderEntity : orderEntities) {
             if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
-                orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayuOrderId())));
+                orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity);
             }
             OrderDTO orderDTO = OrderMapper.INSTANCE.toOrderDTO(orderEntity);
@@ -146,6 +147,7 @@ public class OrderServiceImpl implements OrderService {
                 productDTO.setDtoVersion(getProductVersionHash(product));
                 orderDTO.getProducts().add(productDTO);
             }
+            orderDTO.setAddressDTO(AddressMapper.INSTANCE.toAddressDTO(orderEntity.getAddressByAddressId()));
             orderDTO.setDtoVersion(getOrderVersionHash(orderEntity));
             orderDtos.add(orderDTO);
         }
@@ -159,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         for (OrderEntity orderEntity : orderRepository.findAll()) {
             if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
-                orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayuOrderId())));
+                orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity);
             }
             OrderDTO orderDTO = OrderMapper.INSTANCE.toOrderDTO(orderEntity);

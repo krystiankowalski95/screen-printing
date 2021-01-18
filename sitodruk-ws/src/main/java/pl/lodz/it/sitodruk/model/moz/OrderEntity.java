@@ -15,7 +15,7 @@ public class OrderEntity {
     @SequenceGenerator(name = "order_generator", sequenceName = "orders_seq", allocationSize = 1)
     private Long id;
     @Basic@Column(name = "payu_order_id", nullable = false)
-    private String payuOrderId;
+    private String payUOrderId;
     @Basic@Column(name = "timestamp", nullable = true)
     private LocalDateTime timestamp = LocalDateTime.now();
     @Version
@@ -23,6 +23,8 @@ public class OrderEntity {
     private Long version;
     @Basic@Column(name = "username", nullable = false)
     private String username;
+    @Basic@Column(name = "total_value", nullable = false)
+    private Double totalValue;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private AddressEntity addressByAddressId;

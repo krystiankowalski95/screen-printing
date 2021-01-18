@@ -10,16 +10,17 @@
     </header>
     <b-container>
       <b-row>
+        <b-col>{{ $t("id") }}</b-col>
         <b-col>{{ $t("payUId") }}</b-col>
         <b-col>{{ $t("totalValue") }}</b-col>
-        <b-col>{{ $t("Cancel") }}</b-col>
+        <!-- <b-col>{{ $t("Cancel") }}</b-col> -->
       </b-row>
     </b-container>
     <b-container class="bv-example-row" v-for="(order, index) in orderList" :key="index">
       <b-row style="padding: 5px">
         <b-col draggable="true">{{ index + 1 }}</b-col>
         <b-col>{{ order.payUOrderId }}</b-col>
-        <b-col>{{ product.totalValue }}</b-col>
+        <b-col>{{ order.totalValue }}</b-col>
       </b-row>
     </b-container>
   </div>
@@ -69,13 +70,13 @@ export default {
   mounted() {
     OrderService.getAllUserOrders(this.currentUser).then(
       (data) => {
-        this.responseList = data;
+        this.responseList = data.data;
 
         console.log(this.responseList);
         this.responseList.map((orderDto) => {
-          let temp = new Order(orderDto.payUOrderId,this.products, orderDto.totalValue, new Address(orderDto.addressDTO.country, orderDto.addressDTO.voivodeship, orderDto.addressDTO.city, orderDto.addressDTO.postalCode, orderDto.addressDTO.street, orderDto.addressDTO.streetNumber), orderDto.dtoVersion);
+          let temp = new Order(orderDto.payUOrderId, null, orderDto.totalValue, new Address(orderDto.addressDTO.country, orderDto.addressDTO.voivodeship, orderDto.addressDTO.city, orderDto.addressDTO.postalCode, orderDto.addressDTO.street, orderDto.addressDTO.streetNumber), orderDto.dtoVersion);
           let productList = [];
-          orderDto.products((productDTO) => {
+          orderDto.products.map((productDTO) => {
           productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock));
         });
           temp.products = productList;

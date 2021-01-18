@@ -14,5 +14,5 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.MANDATORY, transactionManager = "mozTransactionManager",isolation = Isolation.READ_COMMITTED)
 public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
     List<OrderEntity> findAllByUsername(String username);
-    Optional<OrderEntity> findByPayuOrderId(String payUOrderId);
+    Optional<OrderEntity> findByPayUOrderId(String payUOrderId);
 }

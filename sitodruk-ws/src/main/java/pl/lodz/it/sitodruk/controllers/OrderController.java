@@ -99,9 +99,9 @@ public class OrderController {
 
     @PostMapping("/findUsersOrders")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
-    public ResponseEntity<List<OrderDTO>> getAllUsersOrders(@RequestBody String username) {
+    public ResponseEntity<List<OrderDTO>> getAllUsersOrders(@RequestBody OrderDTO orderDTO) {
         try {
-            List<OrderDTO> orderDTOS = orderService.findUsersOrders(username);
+            List<OrderDTO> orderDTOS = orderService.findUsersOrders(orderDTO.getUsername());
             return new ResponseEntity(orderDTOS, HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");

@@ -12,7 +12,7 @@ import java.util.Collection;
 public interface AddressMapper {
 
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
-    AddressDTO toAddressDTO(AddressDTO addressDTO);
+    AddressDTO toAddressDTO(AddressEntity addressEntity);
     AddressEntity createNewAddress(AddressDTO addressDTO);
     Collection<AddressDTO> toAddressDTOCollection(Collection<AddressEntity> productEntities);
 }
