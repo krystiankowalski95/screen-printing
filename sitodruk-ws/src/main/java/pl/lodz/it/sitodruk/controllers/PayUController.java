@@ -90,11 +90,12 @@ public class PayUController {
         orderStatusHeaders.setBearerAuth(payuToken);
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
         ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl + "/orders/" + paymentId, HttpMethod.GET, httpEntity, Map.class);
-        if (orderStatusResponse.getBody().get("status").toString().contains("SUCCESS")) {
+        String status = orderStatusResponse.getBody().get("orders").toString().substring(orderStatusResponse.getBody().get("orders").toString().indexOf("status="),orderStatusResponse.getBody().get("orders").toString().indexOf(", products=")).replace("status=","");
+        if (status.equalsIgnoreCase("completed")) {
             return "paid";
-        } else if (orderStatusResponse.getBody().get("status").toString().contains("PENDING")) {
-            return "created";
-        }else return "cancelled";
+        } else if (status.equalsIgnoreCase("cancelled")) {
+            return "cancelled";
+        }else return "created";
     }
 
 

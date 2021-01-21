@@ -9,22 +9,22 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.model.mok.UserEntity;
-import pl.lodz.it.sitodruk.repositories.mok.UserRepository;
+import pl.lodz.it.sitodruk.repositories.auth.AuthUserRepository;
 
 import java.util.Optional;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "mokTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "authTransactionManager")
 public class UserDetailsServiceImpl implements UserDetailsService, pl.lodz.it.sitodruk.service.UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    AuthUserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isPresent()){
             return UserDetailsImpl.build(user.get());
-        }else throw new UsernameNotFoundException("User Not Found ");
+        }else throw new UsernameNotFoundException("user.not.found");
     }
 
 }

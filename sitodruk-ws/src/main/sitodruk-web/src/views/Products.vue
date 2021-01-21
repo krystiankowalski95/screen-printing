@@ -23,7 +23,7 @@
       <b-row style="padding: 5px">
         <b-col draggable="true">{{ index + 1 }}</b-col>
         <b-col>{{ product.name }}</b-col>
-        <b-col>{{ product.categoryName }}</b-col>
+        <b-col>{{ $t(product.categoryName) }}</b-col>
         <b-col>{{ product.stock }}</b-col>
         <b-col v-if="product.stock > 0"
           ><b-button pill variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col

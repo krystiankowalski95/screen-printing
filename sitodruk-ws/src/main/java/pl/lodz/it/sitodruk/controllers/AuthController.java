@@ -47,9 +47,6 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    private Properties exceptionProperties;
-
-
     @PostMapping("/signin")
     @PermitAll
     public ResponseEntity<?> authenticateUser(@RequestBody UserDTO userDTO) {

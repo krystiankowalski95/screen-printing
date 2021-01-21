@@ -42,8 +42,6 @@
     "emailRequired":"Email is required",
     "sendResetPasswordMail":"Reset password",
     "choose":"Choose",
-    "siatki":"Mesh",
-    "emulsje":"Emulsion",
     "edit":"Edit",
     "deletingmsg":"You are about to delete the product named ",
     "areyousure":"Are you sure?",
@@ -72,7 +70,16 @@
     "username.already.taken":"Given username is already taken",
     "email.already.taken":"Given email is already taken",
     "editUser":"Edit account",
-    "userOrders":"Orders"
+    "userOrders":"Orders",
+    "status":"Order status",
+    "id":"Id",
+    "orderDetails":"Order details",
+    "created": "Created",
+    "canceled": "Canceled",
+    "completed": "Completed",
+    "paid": "Paid",
+    "emulsje": "Emulsions",
+    "siatki": "Screen printing net"
 
 
     

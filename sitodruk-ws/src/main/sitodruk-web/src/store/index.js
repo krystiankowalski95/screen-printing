@@ -8,6 +8,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     product: {},
+    order: {},
     shoppingList: []
   },
   modules: {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     shoppingList: state => {
       return state.shoppingList;
+    },
+    order: state => {
+      return state.order;
     }
   },
   mutations: {

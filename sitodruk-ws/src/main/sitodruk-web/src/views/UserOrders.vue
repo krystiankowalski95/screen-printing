@@ -1,26 +1,26 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>{{ $t("productList") }}</h3>
-      <div v-if="isManagerInRole" class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <router-link to="/addProduct" class="nav-link"> <font-awesome-icon icon="plus-square" />{{ $t("addProduct") }} </router-link>
-        </li>
-      </div>
+      <h3>{{ $t("userOrders") }}</h3>
     </header>
     <b-container>
       <b-row>
         <b-col>{{ $t("id") }}</b-col>
-        <b-col>{{ $t("payUId") }}</b-col>
-        <b-col>{{ $t("totalValue") }}</b-col>
-        <!-- <b-col>{{ $t("Cancel") }}</b-col> -->
+        <b-col>{{ $t("totalcost") }}</b-col>
+        <b-col>{{ $t("status") }}</b-col>
+        <b-col>{{ $t("details") }}</b-col>
       </b-row>
     </b-container>
     <b-container class="bv-example-row" v-for="(order, index) in orderList" :key="index">
       <b-row style="padding: 5px">
         <b-col draggable="true">{{ index + 1 }}</b-col>
-        <b-col>{{ order.payUOrderId }}</b-col>
         <b-col>{{ order.totalValue }}</b-col>
+        <b-col>{{ $t(order.orderStatus) }}</b-col>
+        <b-col
+          ><b-button pill variant="primary" @click="getDetails(index)">{{
+            $t("details")
+          }}</b-button></b-col
+        >
       </b-row>
     </b-container>
   </div>
@@ -38,19 +38,13 @@ export default {
     return {
       responseList: [],
       orderList: [],
-      message: ""
+      message: "",
+      content: "",
     };
   },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
-    },
-    isAdminInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes("ROLE_ADMIN");
-      }
-
-      return false;
     },
     isManagerInRole() {
       if (this.currentUser && this.currentUser.roles) {
@@ -74,48 +68,52 @@ export default {
 
         console.log(this.responseList);
         this.responseList.map((orderDto) => {
-          let temp = new Order(orderDto.payUOrderId, null, orderDto.totalValue, new Address(orderDto.addressDTO.country, orderDto.addressDTO.voivodeship, orderDto.addressDTO.city, orderDto.addressDTO.postalCode, orderDto.addressDTO.street, orderDto.addressDTO.streetNumber), orderDto.dtoVersion);
+          let temp = new Order(
+          orderDto.payUOrderId,
+          null,
+          orderDto.totalValue,
+          null,
+          null,
+          new Address(
+            orderDto.addressDTO.country,
+            orderDto.addressDTO.voivodeship,
+            orderDto.addressDTO.city,
+            orderDto.addressDTO.postalCode,
+            orderDto.addressDTO.street,
+            orderDto.addressDTO.streetNumber
+          ),
+          orderDto.orderStatus,
+          orderDto.dtoVersion
+        );
           let productList = [];
           orderDto.products.map((productDTO) => {
-          productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock));
-        });
+            productList.push(
+              new Product(
+                productDTO.id,
+                productDTO.name,
+                productDTO.categoryName,
+                productDTO.price,
+                productDTO.dtoVersion,
+                productDTO.quantity,
+                productDTO.stock
+              )
+            );
+          });
           temp.products = productList;
-          this.orderList.push(temp)
-
+          this.orderList.push(temp);
         });
       },
       (error) => {
-        this.content = (error.response && error.response.data)
+        this.content = error.response && error.response.data;
       }
     );
   },
   methods: {
-    edit(index) {
-      this.$store.productName = this.productList[index].name
-      this.$router.push({
-        path: '/editProduct',
-        params: { productName: this.productList[index].name },
-      });
-    },
-    // removeProduct(index) {
-    //   this.$confirm(this.$t("areyousure"), this.$t("deletingmsg") + this.productList[index].name, "warning")
-    //     .then(() => {
-    //       ProductService.removeProduct(this.productList[index]).then(
-    //         (data) => {
-    //           this.responseList = data.data;
-    //         },
-    //         (error) => {
-    //           this.content = (error.response && error.response.data);
-    //         }
-    //       );
-    //     })
-    // },
-    
     getDetails(index) {
-      this.$store.product = this.productList[index];
+      this.$store.payUOrderId = this.orderList[index].payUOrderId;
       this.$router.push({
-        path: "/productDetails",
-        params: { productName: this.productList[index].name },
+        path: "/orderDetails",
+        params: { payUOrderId: this.orderList[index].payUOrderId },
       });
     },
   },

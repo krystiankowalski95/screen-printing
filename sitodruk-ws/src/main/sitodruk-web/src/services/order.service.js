@@ -11,6 +11,15 @@ class OrderService {
     } , { headers: authHeader() });
   }
 
+  findOrderByPayUOrderId(payUOrderId) {
+    return axios.post(API_URL + '/findByPayUOrderId',
+    {
+      payUOrderId: payUOrderId
+    } , { headers: authHeader() });
+  }
+
+
+
   // getAllOrderStatuses() {
   //   return axios.get(API_URL + '/categories',{},
   //   // , { headers: authHeader() }

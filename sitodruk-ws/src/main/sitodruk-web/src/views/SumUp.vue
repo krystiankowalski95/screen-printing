@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>Podsumowanie</h3>
-      <!-- <div v-if="isManagerInRole" class="navbar-nav ml-auto"> -->
+      <h3>{{ $t('sumup')}}</h3>
     </header>
     <div v-if="this.$store.getters.shoppingListSize > 0">
       <b-container>
@@ -19,7 +18,7 @@
       >
         <b-row style="padding: 5px">
           <b-col>{{ product.name }}</b-col>
-          <b-col>{{ product.categoryName }}</b-col>
+          <b-col>{{ $t(product.categoryName) }}</b-col>
           <b-col>
             <number-input
               @change="calculatePrice()"

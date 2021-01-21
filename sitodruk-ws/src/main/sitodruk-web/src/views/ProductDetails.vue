@@ -14,7 +14,7 @@
       </b-row>
       <b-row>
         <b-col>{{ $t('categoryName') }}</b-col>
-        <b-col>{{ product.categoryName }}</b-col>
+        <b-col>{{ $t(product.categoryName) }}</b-col>
       </b-row>
       <b-row>
         <b-col>{{ $t('price') }}</b-col>
@@ -34,17 +34,6 @@
             }}
           </b-button>
         </b-col>
-        <!-- <b-col style="padding: 10px">
-          <label>{{ $t('amount') }}</label>
-          <select v-model="selected">
-            <option
-              v-for="(quantity, index) in quantityList"
-              v-bind:key="index"
-            >
-              {{ quantity.option }}
-            </option>
-          </select>
-        </b-col> -->
         <b-col></b-col>
       </b-row>
     </b-container>

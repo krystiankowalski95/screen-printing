@@ -12,4 +12,5 @@ public interface OrderService {
     void repeatPayment(OrderDTO orderDTO) throws BaseException;
     List<OrderDTO> findUsersOrders(String username) throws BaseException;
     List<OrderDTO> findAllOrders() throws BaseException;
+    OrderDTO findOrderByPayuOrderId(OrderDTO orderDTO) throws BaseException;
 }

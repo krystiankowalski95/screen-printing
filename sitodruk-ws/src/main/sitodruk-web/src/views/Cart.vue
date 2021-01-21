@@ -24,7 +24,7 @@
         <b-row style="padding: 5px">
           <b-col draggable="true">{{ index + 1 }}</b-col>
           <b-col>{{ product.name }}</b-col>
-          <b-col>{{ product.categoryName }}</b-col>
+          <b-col>{{ $t(product.categoryName) }}</b-col>
           <b-col>
             <number-input
               @change="calculatePrice()"

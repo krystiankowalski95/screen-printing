@@ -108,6 +108,19 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/findByPayUOrderId")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
+    public ResponseEntity<OrderDTO> findOrderByPayUOrderId(@RequestBody OrderDTO orderDTO) {
+        try {
+            OrderDTO dto = orderService.findOrderByPayuOrderId(orderDTO);
+            return new ResponseEntity(dto, HttpStatus.OK);
+        }catch (OrderNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "order.not.found");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        }
+    }
+
     @GetMapping("/findAllOrders")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {

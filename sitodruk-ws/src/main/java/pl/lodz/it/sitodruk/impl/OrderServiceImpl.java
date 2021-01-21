@@ -58,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
                     throw new InsufficientStockException();
                 }
             }
+            orderEntity.setTotalValue(orderDTO.getTotalValue());
             orderEntity.setAddressByAddressId(new AddressEntity());
             orderEntity.getAddressByAddressId().setCountry(orderDTO.getAddressDTO().getCountry());
             orderEntity.getAddressByAddressId().setCity(orderDTO.getAddressDTO().getCity());
@@ -174,6 +175,27 @@ public class OrderServiceImpl implements OrderService {
             orderDtos.add(orderDTO);
         }
         return orderDtos;
+    }
+
+    @Override
+    public OrderDTO findOrderByPayuOrderId(OrderDTO orderDTO) throws BaseException {
+        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
+        if(orderEntity.isPresent()){
+            if (orderEntity.get().getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
+                orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayUOrderId())));
+                orderRepository.saveAndFlush(orderEntity.get());
+            }
+            OrderDTO dto = OrderMapper.INSTANCE.toOrderDTO(orderEntity.get());
+            for (ProductEntity product : orderEntity.get().getProductEntityList()) {
+                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(product);
+                productDTO.setDtoVersion(getProductVersionHash(product));
+                dto.getProducts().add(productDTO);
+            }
+            dto.setAddressDTO(AddressMapper.INSTANCE.toAddressDTO(orderEntity.get().getAddressByAddressId()));
+            dto.setDtoVersion(getOrderVersionHash(orderEntity.get()));
+            return dto;
+        }else throw new OrderNotFoundException();
     }
 
     public String getOrderVersionHash(OrderEntity orderEntity) {

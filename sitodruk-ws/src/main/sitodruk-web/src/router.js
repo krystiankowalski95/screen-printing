@@ -14,6 +14,7 @@ import Cart from './views/Cart.vue';
 import SumUp from './views/SumUp.vue';
 import EditUser from './views/EditUser.vue';
 import UserOrders from './views/UserOrders.vue';
+import OrderDetails from './views/OrderDetails.vue';
 
 Vue.use(Router);
 
@@ -78,13 +79,17 @@ export const router = new Router({
     {
       path: '/products',
       name: 'products',
-      // lazy-loaded
       component: () => import('./views/Products.vue')
+    },
+    {
+      path: '/orderDetails',
+      name: 'orderDetails',
+      component: OrderDetails,
+      props: true
     },
     {
       path: '/productDetails',
       name: 'productDetails',
-      // lazy-loaded
       component: ProductDetails,
       props: true
     },
@@ -100,24 +105,6 @@ export const router = new Router({
       component: EditProduct,
       props: true
     },
-    {
-      path: '/admin',
-      name: 'admin',
-      // lazy-loaded
-      component: () => import('./views/BoardAdmin.vue')
-    },
-    {
-      path: '/mod',
-      name: 'moderator',
-      // lazy-loaded
-      component: () => import('./views/BoardModerator.vue')
-    },
-    {
-      path: '/user',
-      name: 'user',
-      // lazy-loaded
-      component: () => import('./views/BoardUser.vue')
-    }
   ]
 });
 

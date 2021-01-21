@@ -51,9 +51,6 @@ public class SitodrukApplicationTests {
         HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
         ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
         String token = responseEntity.getBody().get("access_token").toString();
-
-        System.out.println(token);
-
         HttpHeaders paymentHeaders = new HttpHeaders();
         paymentHeaders.setContentType(MediaType.APPLICATION_JSON);
         paymentHeaders.setBearerAuth(token);
@@ -73,15 +70,15 @@ public class SitodrukApplicationTests {
         order.getProducts().add(productPayU);
         PayMethodPayU payMethod = new PayMethodPayU();
         payMethod.setBlikData(new BlikData(true));
-        payMethod.setAuthorizationCode("700701");
+        payMethod.setAuthorizationCode("500500");
         payMethod.setType("BLIK_TOKEN");
         order.setPayMethods(new PayMethodsPayU());
         order.getPayMethods().setPayMethod(payMethod);
         HttpEntity<?> paymentEntity = new HttpEntity<>(order, paymentHeaders);
         ResponseEntity<Map> paymentResponseEntity = restTemplate.exchange(payuApiUrl+"/orders",HttpMethod.POST,paymentEntity,Map.class);
+//        String status = paymentResponseEntity.getBody().toString().substring(paymentResponseEntity.getBody().toString().indexOf("status="),paymentResponseEntity.getBody().toString().indexOf(", products=")).replace("status=","");
+        System.out.println(paymentResponseEntity.getBody().toString());
         Assert.hasText("statusCode=SUCCESS",paymentResponseEntity.getBody().toString());
-        System.out.println(paymentResponseEntity.getBody());
-        System.out.println(paymentResponseEntity.getStatusCode());
     }
 
     @Test
@@ -94,15 +91,15 @@ public class SitodrukApplicationTests {
         HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
         ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
         String token = responseEntity.getBody().get("access_token").toString();
-
         HttpHeaders orderStatusHeaders = new HttpHeaders();
         orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
         orderStatusHeaders.setBearerAuth(token);
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
-        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/C1HQQF9VZZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
-        ResponseEntity<Map> orderStatusResponse1 = restTemplate.exchange(payuApiUrl+"/orders/6BXHLNS8MZ201115GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
-        System.out.println(orderStatusResponse.getBody().get("orders"));
-        System.out.println(orderStatusResponse1.getBody().get("status"));
+        ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/MBDVTS34LR210121GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
+        String status = orderStatusResponse.getBody().get("orders").toString().substring(orderStatusResponse.getBody().get("orders").toString().indexOf("status="),orderStatusResponse.getBody().get("orders").toString().indexOf(", products=")).replace("status=","");
+        System.out.println(status);
+        Assert.isTrue(status.equalsIgnoreCase("canceled"));
+
     }
 
     @Test
@@ -115,14 +112,12 @@ public class SitodrukApplicationTests {
         HttpEntity<?> entity = new HttpEntity<>(postingString, headers);
         ResponseEntity<Map> responseEntity = restTemplate.exchange(OauthUrl,HttpMethod.POST,entity,Map.class);
         String token = responseEntity.getBody().get("access_token").toString();
-
         HttpHeaders orderStatusHeaders = new HttpHeaders();
         orderStatusHeaders.setContentType(MediaType.APPLICATION_JSON);
         orderStatusHeaders.setBearerAuth(token);
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
         ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/C1HQQF9VZZ201115GUEST000P01/transactions",HttpMethod.GET,httpEntity,Map.class);
-        System.out.println(orderStatusResponse.getBody());
-        System.out.println(orderStatusResponse.getStatusCode());
+        Assert.isTrue(orderStatusResponse.getStatusCodeValue()==200);
     }
 
 }

@@ -43,8 +43,6 @@
     "emailRequired":"Podanie adresu email jest wymagane",
     "sendResetPasswordMail":"Resetuj hasło",
     "choose":"Wybierz",
-    "siatki":"Siatka",
-    "emulsje":"Emulsja",
     "edit":"Edytuj",
     "deletingmsg":"Za chwilę usuniesz produkt o nazwie ",
     "areyousure":"Czy jesteś pewny?",
@@ -73,5 +71,14 @@
     "username.already.taken":"Nazwa użytkownika jest już zajęta",
     "email.already.taken":"Adres email jest już zajęty",
     "editUser":"Edytuj konto",
-    "userOrders":"Zamówienia"
+    "userOrders":"Zamówienia",
+    "status":"Status zamówienia",
+    "id":"Identyfikator",
+    "orderDetails":"Szczegóły zamówienia",
+    "created": "Utworzone",
+    "canceled": "Anulowane",
+    "completed": "Zakończone",
+    "paid": "Opłacone",
+    "emulsje": "Emulsje",
+    "siatki": "Siatki do sitodruku"
 }
