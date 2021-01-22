@@ -209,7 +209,7 @@
       </form>
     </div>
     <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-        {{ message }}
+        {{ message.message }}
       </div>
     <div v-if="this.$store.getters.shoppingListSize == 0">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
@@ -275,7 +275,7 @@ export default {
               this.successful = true;
             },
             (error) => {
-              this.message = (error.response && error.response.data) || error.message || error.toString();
+              this.message = (error.response && error.response.data);
               this.successful = false;
             }
           );

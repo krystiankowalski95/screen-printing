@@ -41,6 +41,8 @@ public class OrderController {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.createOrder(orderDTO);
             return ResponseEntity.ok("order.placed");
+        } catch (PaymentException ex) {
+            return ResponseEntity.ok("order.created");
         } catch (InsufficientStockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "insufficient.stock", ex);
         } catch (UserNotFoundException ex) {

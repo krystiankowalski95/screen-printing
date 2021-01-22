@@ -18,6 +18,20 @@ class OrderService {
     } , { headers: authHeader() });
   }
 
+  cancelOrder(order) {
+    return axios.post(API_URL + '/cancel',
+    {
+      payUOrderId: order.payUOrderId,
+      products: order.products,
+      totalValue: order.totalValue,
+      username: order.username,
+      addressDTO: order.addressDTO,
+      orderStatus: order.orderStatus,
+      dtoVersion: order.dtoVersion
+    } , { headers: authHeader() });
+  }
+
+
 
 
   // getAllOrderStatuses() {

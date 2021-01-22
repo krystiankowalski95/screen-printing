@@ -8,7 +8,8 @@
         <b-col>{{ $t("id") }}</b-col>
         <b-col>{{ $t("totalcost") }}</b-col>
         <b-col>{{ $t("status") }}</b-col>
-        <b-col>{{ $t("details") }}</b-col>
+        <b-col></b-col>
+        <b-col></b-col>
       </b-row>
     </b-container>
     <b-container class="bv-example-row" v-for="(order, index) in orderList" :key="index">
@@ -21,8 +22,19 @@
             $t("details")
           }}</b-button></b-col
         >
+        <b-col
+          ><b-button  v-if="order.orderStatus == 'created'" pill variant="danger" @click="cancelOrder(index)">{{
+            $t("cancelOrder")
+          }}</b-button></b-col
+        >
       </b-row>
     </b-container>
+    <div
+        v-if="message"
+        class="alert"
+        :class="successful ? 'alert-success' : 'alert-danger'"
+      >{{ $t(message.message) }}
+    </div>
   </div>
 </template>
 
@@ -40,6 +52,8 @@ export default {
       orderList: [],
       message: "",
       content: "",
+      successful: false,
+
     };
   },
   computed: {
@@ -65,26 +79,24 @@ export default {
     OrderService.getAllUserOrders(this.currentUser).then(
       (data) => {
         this.responseList = data.data;
-
-        console.log(this.responseList);
         this.responseList.map((orderDto) => {
           let temp = new Order(
-          orderDto.payUOrderId,
-          null,
-          orderDto.totalValue,
-          null,
-          null,
-          new Address(
-            orderDto.addressDTO.country,
-            orderDto.addressDTO.voivodeship,
-            orderDto.addressDTO.city,
-            orderDto.addressDTO.postalCode,
-            orderDto.addressDTO.street,
-            orderDto.addressDTO.streetNumber
-          ),
-          orderDto.orderStatus,
-          orderDto.dtoVersion
-        );
+            orderDto.payUOrderId,
+            null,
+            orderDto.totalValue,
+            null,
+            null,
+            new Address(
+              orderDto.addressDTO.country,
+              orderDto.addressDTO.voivodeship,
+              orderDto.addressDTO.city,
+              orderDto.addressDTO.postalCode,
+              orderDto.addressDTO.street,
+              orderDto.addressDTO.streetNumber
+            ),
+            orderDto.orderStatus,
+            orderDto.dtoVersion
+          );
           let productList = [];
           orderDto.products.map((productDTO) => {
             productList.push(
@@ -94,8 +106,9 @@ export default {
                 productDTO.categoryName,
                 productDTO.price,
                 productDTO.dtoVersion,
+                productDTO.stock,
                 productDTO.quantity,
-                productDTO.stock
+
               )
             );
           });
@@ -114,6 +127,21 @@ export default {
       this.$router.push({
         path: "/orderDetails",
         params: { payUOrderId: this.orderList[index].payUOrderId },
+      });
+    },
+    cancelOrder(index) {
+       OrderService.cancelOrder(this.orderList[index]).then(
+      (data) => {
+        this.responseList = data.data;
+      },
+      (error) => {
+        this.content = error.response && error.response.data;
+        this.success = false;
+      }
+    );
+      this.$store.payUOrderId = this.orderList[index].payUOrderId;
+      this.$router.push({
+        path: "/userOrders",
       });
     },
   },

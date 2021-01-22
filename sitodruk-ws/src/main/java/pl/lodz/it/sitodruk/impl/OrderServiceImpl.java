@@ -70,13 +70,16 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
             orderEntity.setUsername(userEntity.get().getUsername());
             orderRepository.saveAndFlush(orderEntity);
+            if(orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase("created")){
+                throw new PaymentException();
+            }
         } else throw new UserNotFoundException();
     }
 
     @Override
     public void cancelOrder(OrderDTO orderDTO) throws BaseException {
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
-        OrderStatusEntity cancelled = orderStatusRepository.findByStatusName("cancelled");
+        OrderStatusEntity cancelled = orderStatusRepository.findByStatusName("canceled");
 
         if (orderEntity.isPresent()) {
             if (String.valueOf(orderDTO.getDtoVersion()).equals(getOrderVersionHash(orderEntity.get()))) {

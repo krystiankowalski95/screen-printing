@@ -79,7 +79,11 @@
     "completed": "Completed",
     "paid": "Paid",
     "emulsje": "Emulsions",
-    "siatki": "Screen printing net"
+    "siatki": "Screen printing net",
+    "order.created":"Order has been created but there were issues during payment process. Your account has not been charged. You can repeat payment from Order List view.",
+    "order.placed":"Order has been placed and succesfully paid.",
+    "insufficient.stock":"Order can not be placed. Insufficient stock of some of the products from the list.",
+    "cancelOrder":"Cancel order"
 
 
     

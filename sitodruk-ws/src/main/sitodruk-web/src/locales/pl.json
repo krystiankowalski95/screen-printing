@@ -80,5 +80,9 @@
     "completed": "Zakończone",
     "paid": "Opłacone",
     "emulsje": "Emulsje",
-    "siatki": "Siatki do sitodruku"
+    "siatki": "Siatki do sitodruku",
+    "order.created":"Zamówienie zostało utworzone ale wystąpiły problemy z płatnością. Konto nie zostało obciążone. Możesz ponownie spróbować opłacić zamówienie z poziomu listy zamówień.",
+    "order.placed":"Zamówienie zostało utworzono i opłacone.",
+    "insufficient.stock":"Zamówienie nie mogło zostać utworzone. Niewystarczający stan magazynowy jednego z produktów.",
+    "cancelOrder":"Anuluj zamówienie"
 }
