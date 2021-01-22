@@ -83,9 +83,12 @@ export default {
         },
         (error) => {
           this.message = error.response && error.response.data;
-          if (this.message.status == 401) {
-            this.$store.dispatch('auth/logout');
-          }
+         if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
         }
       );
   },

@@ -209,9 +209,14 @@
       </form>
     </div>
     <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-        {{ message.message }}
+        {{ $t(message) }}
       </div>
-    <div v-if="this.$store.getters.shoppingListSize == 0">
+      <div v-if="successful == true">
+        <b-button pill variant="primary" @click="goToHomePage()">{{
+                  $t('OK')
+                }}</b-button>
+      </div>
+    <div v-if="(this.$store.getters.shoppingListSize == 0) && (this.successful == false)">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
   </div>
@@ -250,6 +255,12 @@ export default {
     this.calculatePrice();
   },
   methods: {
+    goToHomePage() {
+      this.$store.commit('clearShoppingList');
+       this.$router.push({
+                  path: '/home',
+                });
+    },
     calculatePrice() {
       this.totalcost = 0;
       for (let i = 0; i < this.productList.length; i++) {
@@ -271,11 +282,21 @@ export default {
         .then(() => {
           OrderService.placeOrder(this.order).then(
             (data) => {
-              this.responseList = data.data;
+              this.responseList = data;
+              if(this.responseList.data == "order.created" && this.responseList.status == 200){
+                this.message =this.responseList.data;
+                this.$store.commit('clearShoppingList');
+              }
               this.successful = true;
             },
             (error) => {
               this.message = (error.response && error.response.data);
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
               this.successful = false;
             }
           );

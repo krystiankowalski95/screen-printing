@@ -105,7 +105,6 @@ export default {
         .then(() => {
           this.$store.commit('removeProduct', index);
         })
-        .catch(() => console.log());
     },
     goToSumUp() {
       this.$router.push({

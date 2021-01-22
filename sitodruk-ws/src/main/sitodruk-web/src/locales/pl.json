@@ -84,5 +84,7 @@
     "order.created":"Zamówienie zostało utworzone ale wystąpiły problemy z płatnością. Konto nie zostało obciążone. Możesz ponownie spróbować opłacić zamówienie z poziomu listy zamówień.",
     "order.placed":"Zamówienie zostało utworzono i opłacone.",
     "insufficient.stock":"Zamówienie nie mogło zostać utworzone. Niewystarczający stan magazynowy jednego z produktów.",
-    "cancelOrder":"Anuluj zamówienie"
+    "cancelOrder":"Anuluj zamówienie",
+    "cancelorder.msg":"Czy jesteś pewien ,że chcesz anulować to zamówienie?",
+    "ok":"OK"
 }

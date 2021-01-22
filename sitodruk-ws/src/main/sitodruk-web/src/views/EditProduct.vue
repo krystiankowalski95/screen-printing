@@ -87,7 +87,13 @@ export default {
       this.product = new Product(prod.id, prod.name, prod.categoryName, prod.price,prod.dtoVersion ,prod.quantity, prod.stock);
       });
     (error) => {
-      this.content = (error.response && error.response.data) || error.message || error.toString();
+      this.message = (error.response && error.response.data);
+      if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
     };
   },
   methods: {
@@ -101,6 +107,12 @@ export default {
             },
             (error) => {
               this.message = (error.response && error.response.data)
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
               this.successful = false;
             }
           );

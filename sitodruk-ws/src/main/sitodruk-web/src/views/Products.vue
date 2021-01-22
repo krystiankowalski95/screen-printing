@@ -35,6 +35,13 @@
           <b-col v-if="isManagerInRole"><b-button pill variant="secondary" @click="edit(index)">{{ $t('edit') }}</b-button></b-col>
       </b-row>
     </b-container>
+    <div
+      v-if="message"
+      class="alert"
+      :class="successful ? 'alert-success' : 'alert-danger'"
+    >
+      {{ $t(message.message) }}
+    </div>
   </div>
 </template>
 
@@ -46,6 +53,7 @@ export default {
   name: "Products",
   data() {
     return {
+      message: "",
       responseList: [],
       productList: [],
     };
@@ -86,7 +94,13 @@ export default {
         });
       },
       (error) => {
-        this.content = (error.response && error.response.data) || error.message || error.toString();
+        this.message = (error.response && error.response.data);
+        if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
       }
     );
   },
@@ -106,7 +120,13 @@ export default {
               this.responseList = data.data;
             },
             (error) => {
-              this.content = (error.response && error.response.data);
+              this.message = (error.response && error.response.data);
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
             }
           );
         })

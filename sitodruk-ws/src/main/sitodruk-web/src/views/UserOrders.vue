@@ -1,59 +1,67 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>{{ $t("userOrders") }}</h3>
+      <h3>{{ $t('userOrders') }}</h3>
     </header>
     <b-container>
       <b-row>
-        <b-col>{{ $t("id") }}</b-col>
-        <b-col>{{ $t("totalcost") }}</b-col>
-        <b-col>{{ $t("status") }}</b-col>
+        <b-col>{{ $t('id') }}</b-col>
+        <b-col>{{ $t('totalcost') }}</b-col>
+        <b-col>{{ $t('status') }}</b-col>
         <b-col></b-col>
         <b-col></b-col>
       </b-row>
     </b-container>
-    <b-container class="bv-example-row" v-for="(order, index) in orderList" :key="index">
+    <b-container
+      class="bv-example-row"
+      v-for="(order, index) in orderList"
+      :key="index"
+    >
       <b-row style="padding: 5px">
         <b-col draggable="true">{{ index + 1 }}</b-col>
         <b-col>{{ order.totalValue }}</b-col>
         <b-col>{{ $t(order.orderStatus) }}</b-col>
         <b-col
           ><b-button pill variant="primary" @click="getDetails(index)">{{
-            $t("details")
+            $t('details')
           }}</b-button></b-col
         >
         <b-col
-          ><b-button  v-if="order.orderStatus == 'created'" pill variant="danger" @click="cancelOrder(index)">{{
-            $t("cancelOrder")
-          }}</b-button></b-col
+          ><b-button
+            v-if="order.orderStatus == 'created'"
+            pill
+            variant="danger"
+            @click="cancelOrder(index)"
+            >{{ $t('cancelOrder') }}</b-button
+          ></b-col
         >
       </b-row>
     </b-container>
     <div
-        v-if="message"
-        class="alert"
-        :class="successful ? 'alert-success' : 'alert-danger'"
-      >{{ $t(message.message) }}
+      v-if="message"
+      class="alert"
+      :class="successful ? 'alert-success' : 'alert-danger'"
+    >
+      {{ $t(message.message) }}
     </div>
   </div>
 </template>
 
 <script>
-import OrderService from "../services/order.service";
-import Order from "../models/order";
-import Product from "../models/product";
-import Address from "../models/product";
+import OrderService from '../services/order.service';
+import Order from '../models/order';
+import Product from '../models/product';
+import Address from '../models/product';
 
 export default {
-  name: "UserOrders",
+  name: 'UserOrders',
   data() {
     return {
       responseList: [],
       orderList: [],
-      message: "",
-      content: "",
+      message: '',
+      content: '',
       successful: false,
-
     };
   },
   computed: {
@@ -62,14 +70,14 @@ export default {
     },
     isManagerInRole() {
       if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes("ROLE_MANAGER");
+        return this.currentUser.roles.includes('ROLE_MANAGER');
       }
 
       return false;
     },
     isClientInRole() {
       if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes("ROLE_CLIENT");
+        return this.currentUser.roles.includes('ROLE_CLIENT');
       }
 
       return false;
@@ -107,8 +115,7 @@ export default {
                 productDTO.price,
                 productDTO.dtoVersion,
                 productDTO.stock,
-                productDTO.quantity,
-
+                productDTO.quantity
               )
             );
           });
@@ -117,7 +124,13 @@ export default {
         });
       },
       (error) => {
-        this.content = error.response && error.response.data;
+        this.message = error.response && error.response.data;
+        if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
       }
     );
   },
@@ -125,24 +138,34 @@ export default {
     getDetails(index) {
       this.$store.payUOrderId = this.orderList[index].payUOrderId;
       this.$router.push({
-        path: "/orderDetails",
+        path: '/orderDetails',
         params: { payUOrderId: this.orderList[index].payUOrderId },
       });
     },
+
     cancelOrder(index) {
-       OrderService.cancelOrder(this.orderList[index]).then(
-      (data) => {
-        this.responseList = data.data;
-      },
-      (error) => {
-        this.content = error.response && error.response.data;
-        this.success = false;
-      }
-    );
-      this.$store.payUOrderId = this.orderList[index].payUOrderId;
-      this.$router.push({
-        path: "/userOrders",
-      });
+      this.$confirm(this.$t("areyousure"), this.$t("cancelorder.msg"), "warning")
+        .then(() => {
+          OrderService.cancelOrder(this.orderList[index]).then(
+        (data) => {
+          this.responseList = data.data;
+          this.successful = true;
+          this.$router.push({
+          path: '/userOrders',
+        });
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
+          this.successful = false;
+        }
+      )
+        })
     },
   },
 };

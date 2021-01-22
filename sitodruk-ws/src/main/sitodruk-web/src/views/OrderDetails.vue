@@ -153,7 +153,7 @@
       class="alert"
       :class="successful ? 'alert-success' : 'alert-danger'"
     >
-      {{ message }}
+      {{ $t(message.message) }}
     </div>
   </div>
 </template>
@@ -174,7 +174,7 @@ export default {
       submitted: false,
       successful: false,
       message: '',
-      payUOrderId: this.$store.payUOrderId,
+      payUOrderId: this.$store.payUOrderId, 
       order: {},
       money: {
         decimal: '.',
@@ -230,7 +230,13 @@ export default {
         console.log(this.order);
       },
       (error) => {
-        this.content = error.response && error.response.data;
+        this.message = error.response && error.response.data;
+        if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
       }
     );
     }

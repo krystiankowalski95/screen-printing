@@ -4,7 +4,7 @@
       <form name="form" @submit.prevent="handleEdit">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="firstname">{{ $t('firstname') }}</label>
+            <label for="firstname">{{ $t("firstname") }}</label>
             <input
               v-model="user.firstname"
               v-validate="'required|min:3|max:20'"
@@ -12,15 +12,12 @@
               class="form-control"
               name="firstname"
             />
-            <div
-              v-if="submitted && errors.has('firstname')"
-              class="alert-danger"
-            >
-              {{ errors.first('firstname') }}
+            <div v-if="submitted && errors.has('firstname')" class="alert-danger">
+              {{ errors.first("firstname") }}
             </div>
           </div>
           <div class="form-group">
-            <label for="lastname">{{ $t('lastname') }}</label>
+            <label for="lastname">{{ $t("lastname") }}</label>
             <input
               v-model="user.lastname"
               v-validate="'required|min:2|max:20'"
@@ -28,15 +25,12 @@
               class="form-control"
               name="lastname"
             />
-            <div
-              v-if="submitted && errors.has('lastName')"
-              class="alert-danger"
-            >
-              {{ errors.first('lastame') }}
+            <div v-if="submitted && errors.has('lastName')" class="alert-danger">
+              {{ errors.first("lastame") }}
             </div>
           </div>
           <div class="form-group">
-            <label for="username">{{ $t('username') }}</label>
+            <label for="username">{{ $t("username") }}</label>
             <input
               v-model="user.username"
               disabled
@@ -46,7 +40,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="email">{{ $t('email') }}</label>
+            <label for="email">{{ $t("email") }}</label>
             <input
               v-model="user.email"
               disabled
@@ -55,7 +49,7 @@
               name="email"
             />
             <div class="form-group">
-              <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
+              <label for="phoneNumber">{{ $t("phoneNumber") }}</label>
               <input
                 v-model="user.phoneNumber"
                 v-validate="{ required: true, digits: 9 }"
@@ -63,16 +57,13 @@
                 class="form-control"
                 name="phoneNumber"
               />
-              <div
-                v-if="submitted && errors.has('phoneNumber')"
-                class="alert-danger"
-              >
-                {{ errors.first('phoneNumber') }}
+              <div v-if="submitted && errors.has('phoneNumber')" class="alert-danger">
+                {{ errors.first("phoneNumber") }}
               </div>
             </div>
             <div class="form-group">
               <button class="btn btn-primary btn-block">
-                {{ $t('edit') }}
+                {{ $t("edit") }}
               </button>
             </div>
           </div>
@@ -90,17 +81,17 @@
 </template>
 
 <script>
-import User from '../models/user';
-import UserService from '../services/user.service';
+import User from "../models/user";
+import UserService from "../services/user.service";
 
 export default {
-  name: 'EditUser',
+  name: "EditUser",
   data() {
     return {
-      user: new User('', '', '', '', '', '', '', '', '', '', ''),
+      user: new User("", "", "", "", "", "", "", "", "", "", ""),
       submitted: false,
       successful: false,
-      message: '',
+      message: "",
     };
   },
   mounted() {
@@ -126,14 +117,17 @@ export default {
       (error) => {
         this.message = error.response && error.response.data;
         if (this.message.status == 401) {
-          this.$store.dispatch('auth/logout');
+          this.$store.dispatch("auth/logout");
+          this.$router.push({
+            path: "/login",
+          });
         }
       }
     );
   },
   methods: {
     handleEdit() {
-      this.message = '';
+      this.message = "";
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
@@ -145,7 +139,10 @@ export default {
             (error) => {
               this.message = error.response && error.response.data;
               if (this.message.status == 401) {
-                this.$store.dispatch('auth/logout');
+                this.$store.dispatch("auth/logout");
+                this.$router.push({
+                  path: "/login",
+                });
               }
               this.successful = false;
             }

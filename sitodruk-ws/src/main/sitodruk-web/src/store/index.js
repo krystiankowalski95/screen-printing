@@ -48,9 +48,10 @@ export default new Vuex.Store({
       }
     },
     removeProduct(state, index){
-      console.log(state.shoppingList.length);
       state.shoppingList.splice(state.shoppingList[index],1);
-      console.log(state.shoppingList.length);
+    },
+    clearShoppingList(state){
+      state.shoppingList = [];
     }
   }
 });
