@@ -91,6 +91,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<ProductEntity> product = productRepository.findByName(productName);
         if (product.isPresent()) {
             ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(product.get());
+            productDTO.setIsActive(product.get().isActive());
             productDTO.setDtoVersion(getVersionHash(product.get()));
             return productDTO;
         } else {
@@ -104,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductEntity> productEntities = productRepository.findAllByIsActiveIsTrue();
         for (ProductEntity prod : productEntities) {
             ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(prod);
+            productDTO.setIsActive(prod.isActive());
             productDTO.setDtoVersion(getVersionHash(prod));
             products.add(productDTO);
         }
@@ -116,6 +118,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductEntity> productEntities = productRepository.findAll();
         for (ProductEntity prod : productEntities) {
             ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(prod);
+            productDTO.setIsActive(prod.isActive());
             productDTO.setDtoVersion(getVersionHash(prod));
             products.add(productDTO);
         }

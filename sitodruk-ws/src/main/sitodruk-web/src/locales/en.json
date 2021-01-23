@@ -88,7 +88,12 @@
     "repeatpayment.msg":"Are you sure that you want to repeat payment?",
     "repeatPayment":"Repeat payment",
     "product.unavailable":"Product temporarily unavailable",
-    "product.removed":"Product has been removed"
+    "product.removed":"Product has been removed",
+    "deactivate":"Deactivate",
+    "activate":"Activate",
+    "deactivateSelectedProduct":"Activate selected product",
+    "activateSelectedProduct":"Deactivate selected product",
+    "editSelectedProduct":"Edit selected product"
 
 
     

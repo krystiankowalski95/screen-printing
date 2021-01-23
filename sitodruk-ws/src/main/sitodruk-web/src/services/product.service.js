@@ -4,22 +4,24 @@ import authHeader from './auth-header';
 const API_URL = process.env.VUE_APP_BASE_API_URL + '/products';
 
 class ProductService {
-  getAllClientProducts() {
-    return axios.get(API_URL + '/findAllActive');
+  getAllProducts() {
+    return axios.get(API_URL + '/findAll');
   }
 
-  getAllProducts() {
-    return axios.get(API_URL + '/findAll',{}, { headers: authHeader() });
+  getAllProductsManager() {
+    return axios.get(API_URL + '/findAll', {}
+      , { headers: authHeader() }
+    );
   }
 
   getAllProductCategories() {
-    return axios.get(API_URL + '/categories',{}
-    , { headers: authHeader() }
+    return axios.get(API_URL + '/categories', {}
+      , { headers: authHeader() }
     );
   }
 
   editProduct(product) {
-    return axios.post(API_URL + '/edit' ,{
+    return axios.post(API_URL + '/edit', {
       name: product.name,
       categoryName: product.categoryName,
       price: product.price,
@@ -42,29 +44,31 @@ class ProductService {
   }
 
   activateProduct(product) {
-    return axios.post(API_URL + '/removeProduct', {
+    return axios.post(API_URL + '/activateProduct', {
       name: product.name,
       categoryName: product.categoryName,
-      dtoVersion: product.dtoVersion  
+      dtoVersion: product.dtoVersion,
+      isActive: product.isActive
     }
-    , { headers: authHeader() }
+      , { headers: authHeader() }
     );
   }
 
 
   deactivateProduct(product) {
-    return axios.post(API_URL + '/removeProduct', {
+    return axios.post(API_URL + '/deactivateProduct', {
       name: product.name,
       categoryName: product.categoryName,
-      dtoVersion: product.dtoVersion  
+      dtoVersion: product.dtoVersion,
+      isActive: product.isActive
     }
-    , { headers: authHeader() }
+      , { headers: authHeader() }
     );
   }
 
   findProductByName(name) {
     return axios.get(API_URL + '/findByName/' + name, {}
-    , { headers: authHeader() }
+      , { headers: authHeader() }
     );
   }
 }

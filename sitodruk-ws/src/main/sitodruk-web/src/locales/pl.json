@@ -90,5 +90,10 @@
     "repeatpayment.msg":"Czy na pewno chcesz powtórzyć płatność?",
     "repeatPayment":"Powtórz płatność",
     "product.unavailable":"Produkt tymczasowo niedostępny",
-    "product.removed":"Produkt usunięty"
+    "product.removed":"Produkt usunięty",
+    "deactivate":"Dezaktywuj",
+    "activate":"Aktywuj",
+    "deactivateSelectedProduct":"Dezaktywuj wybrany produkt",
+    "activateSelectedProduct":"Aktywuj wybrany product",
+    "editSelectedProduct":"Edytuj wybrany produkt"
 }

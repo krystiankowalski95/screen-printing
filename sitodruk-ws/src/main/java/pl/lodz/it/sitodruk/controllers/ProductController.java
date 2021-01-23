@@ -39,7 +39,7 @@ public class ProductController {
     private Properties exceptionProperties;
 
     @GetMapping("/categories")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<CategoryDTO>> getAllProductCategories() {
         try {
             return new ResponseEntity(productCategoryService.getAllProductCategories(), HttpStatus.OK);
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/edit")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> editProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.modifyProduct(productDTO);
@@ -61,21 +61,22 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/findAllActive")
+    @GetMapping("/findAll")
+//    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PermitAll
-    public ResponseEntity<List<ProductDTO>> getAllActiveProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllManagerProducts() {
         try {
-            return new ResponseEntity(productService.findAllActiveProducts(), HttpStatus.OK);
+            return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
     }
 
-    @GetMapping("/findAll")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    @GetMapping("/findAllActive")
+    @PermitAll
+    public ResponseEntity<List<ProductDTO>> getAllActiveProducts() {
         try {
-            return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);
+            return new ResponseEntity(productService.findAllActiveProducts(), HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
@@ -95,7 +96,7 @@ public class ProductController {
 
 
     @PostMapping("/addNew")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.createProduct(productDTO);
@@ -108,7 +109,7 @@ public class ProductController {
     }
 
     @PostMapping("/activateProduct")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> activateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.activateProduct(productDTO);
@@ -123,7 +124,7 @@ public class ProductController {
     }
 
     @PostMapping("/deactivateProduct")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> deactivateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.deactivateProduct(productDTO);
