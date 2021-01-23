@@ -84,7 +84,7 @@ export default {
   mounted() {
     ProductService.findProductByName(this.productName).then((data) => {
       let prod = data.data;
-      this.product = new Product(prod.id, prod.name, prod.categoryName, prod.price,prod.dtoVersion ,prod.quantity, prod.stock);
+      this.product = new Product(prod.id, prod.name, prod.categoryName, prod.price,prod.dtoVersion ,prod.quantity, prod.stock,prod.isActive);
       });
     (error) => {
       this.message = (error.response && error.response.data);
@@ -103,6 +103,9 @@ export default {
           ProductService.editProduct(this.product).then(
             (data) => {
               this.message = data.message;
+               this.$router.push({
+                  path: '/products',
+                });
               this.successful = true;
             },
             (error) => {

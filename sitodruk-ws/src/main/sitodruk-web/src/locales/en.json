@@ -86,7 +86,9 @@
     "cancelOrder":"Cancel order",
     "cancelorder.msg":"Are you sure that you want to cancel this order?",
     "repeatpayment.msg":"Are you sure that you want to repeat payment?",
-    "repeatPayment":"Repeat payment"
+    "repeatPayment":"Repeat payment",
+    "product.unavailable":"Product temporarily unavailable",
+    "product.removed":"Product has been removed"
 
 
     

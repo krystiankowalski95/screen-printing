@@ -4,8 +4,12 @@ import authHeader from './auth-header';
 const API_URL = process.env.VUE_APP_BASE_API_URL + '/products';
 
 class ProductService {
+  getAllClientProducts() {
+    return axios.get(API_URL + '/findAllActive');
+  }
+
   getAllProducts() {
-    return axios.get(API_URL + '/findAll');
+    return axios.get(API_URL + '/findAll',{}, { headers: authHeader() });
   }
 
   getAllProductCategories() {
@@ -37,9 +41,22 @@ class ProductService {
     );
   }
 
-  removeProduct(product) {
+  activateProduct(product) {
     return axios.post(API_URL + '/removeProduct', {
       name: product.name,
+      categoryName: product.categoryName,
+      dtoVersion: product.dtoVersion  
+    }
+    , { headers: authHeader() }
+    );
+  }
+
+
+  deactivateProduct(product) {
+    return axios.post(API_URL + '/removeProduct', {
+      name: product.name,
+      categoryName: product.categoryName,
+      dtoVersion: product.dtoVersion  
     }
     , { headers: authHeader() }
     );

@@ -9,15 +9,6 @@
         <li class="nav-item">
           <router-link to="/products" class="nav-link"> <font-awesome-icon icon="gifts" />{{ $t("products") }} </router-link>
         </li>
-        <li v-if="isAdminInRole" class="nav-item">
-          <router-link to="/admin" class="nav-link">Admin Board</router-link>
-        </li>
-        <li v-if="isManagerInRole" class="nav-item">
-          <router-link to="/mod" class="nav-link">Manager Board</router-link>
-        </li>
-        <li v-if="isClientInRole" class="nav-item">
-          <router-link to="/user" class="nav-link">User</router-link>
-        </li>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">

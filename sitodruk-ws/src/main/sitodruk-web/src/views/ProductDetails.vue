@@ -27,10 +27,15 @@
       >
       <b-row style="padding: 5px" />
       <b-row>
-        <b-col>
-          <b-button pill variant="primary" @click="addProductToCart()">
+        <b-col> 
+          <b-button v-if="product.stock > 0" pill variant="primary" @click="addProductToCart()">
             <font-awesome-icon icon="cart-arrow-down" />{{
               $t('addProcutToCart')
+            }}
+          </b-button>
+          <b-button v-if="product.stock == 0" disabled  pill variant="primary" @click="addProductToCart()">
+            <font-awesome-icon icon="cart-arrow-down" />{{
+              $t('product.unavailable')
             }}
           </b-button>
         </b-col>
@@ -80,6 +85,7 @@ export default {
           this.product.dtoVersion,
           this.selected,
           this.product.stock,
+          this.product.isActive
         )
       );
       this.$alert(this.$t('productadded'));

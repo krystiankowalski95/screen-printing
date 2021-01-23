@@ -15,4 +15,5 @@ public class ProductDTO {
     private String dtoVersion;
     private Long quantity;
     private Long stock;
+    private Boolean isActive;
 }

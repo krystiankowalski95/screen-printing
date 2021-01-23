@@ -245,7 +245,8 @@ export default {
               productDTO.price,
               productDTO.dtoVersion,
               productDTO.quantity,
-              productDTO.stock
+              productDTO.stock,
+              productDTO.isActive
             )
           );
         });

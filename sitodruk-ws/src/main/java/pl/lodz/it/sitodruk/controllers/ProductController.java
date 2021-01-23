@@ -61,8 +61,18 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("/findAllActive")
     @PermitAll
+    public ResponseEntity<List<ProductDTO>> getAllActiveProducts() {
+        try {
+            return new ResponseEntity(productService.findAllActiveProducts(), HttpStatus.OK);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        }
+    }
+
+    @GetMapping("/findAll")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         try {
             return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);
@@ -97,14 +107,29 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/removeProduct")
+    @PostMapping("/activateProduct")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
-    public ResponseEntity<?> removeProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<?> activateProduct(@RequestBody ProductDTO productDTO) {
         try {
-            productService.removeProduct(productDTO);
-            return ResponseEntity.ok("product.removed");
+            productService.activateProduct(productDTO);
+            return ResponseEntity.ok("product.activated");
         } catch (ApplicationOptimisticLockException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock");
+        } catch (ProductNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.not.found");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        }
+    }
+
+    @PostMapping("/deactivateProduct")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    public ResponseEntity<?> deactivateProduct(@RequestBody ProductDTO productDTO) {
+        try {
+            productService.deactivateProduct(productDTO);
+            return ResponseEntity.ok("product.deactivated");
+        } catch (ApplicationOptimisticLockException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock");
         } catch (ProductNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.not.found");
         } catch (BaseException e) {

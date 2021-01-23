@@ -84,7 +84,7 @@ export default {
   name: 'AddProduct',
   data() {
     return {
-      product: new Product('','', '', '','','',''),
+      product: new Product('','', '', '','','','',''),
       productCategories: [],
       selectedProductCategory: null,
       submitted: false,
@@ -120,6 +120,7 @@ export default {
       this.submitted = true;
       this.$validator.validate().then(isValid => {
         if (isValid) {
+          this.product.isActive = false;
           ProductService.addProduct(this.product).then(
             data => {
               this.message = data.message;

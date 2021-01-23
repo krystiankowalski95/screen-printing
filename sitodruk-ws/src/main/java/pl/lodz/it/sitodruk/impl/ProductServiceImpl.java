@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
@@ -42,25 +42,44 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void modifyProduct(ProductDTO productDTO) throws BaseException {
-        ProductEntity productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
-        if(String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity))){
-            productEntity.setPrice(productDTO.getPrice());
-            productEntity.setStock(productDTO.getStock());
-            productRepository.save(productEntity);
-        }else {
-            throw new ApplicationOptimisticLockException();
+        Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
+        if (productEntity.isPresent()) {
+            if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
+                productEntity.get().setPrice(productDTO.getPrice());
+                productEntity.get().setStock(productDTO.getStock());
+                productRepository.save(productEntity.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else {
+            throw new ProductNotFoundException();
         }
     }
 
     @Override
-    public void removeProduct(ProductDTO productDTO) throws BaseException {
-        Optional<ProductEntity> productEntity = productRepository.findByName(productDTO.getName());
+    public void deactivateProduct(ProductDTO productDTO) throws BaseException {
+        Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
         if (productEntity.isPresent()) {
-            if(String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))){
-                productRepository.delete(productEntity.get());
-                productRepository.flush();
-            }else {
-                throw new OptimisticLockException();
+            if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
+                productEntity.get().setActive(false);
+                productRepository.saveAndFlush(productEntity.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else {
+            throw new ProductNotFoundException();
+        }
+    }
+
+    @Override
+    public void activateProduct(ProductDTO productDTO) throws BaseException {
+        Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
+        if (productEntity.isPresent()) {
+            if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
+                productEntity.get().setActive(true);
+                productRepository.saveAndFlush(productEntity.get());
+            } else {
+                throw new ApplicationOptimisticLockException();
             }
         } else {
             throw new ProductNotFoundException();
@@ -80,6 +99,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> findAllActiveProducts() throws BaseException {
+        List<ProductDTO> products = new ArrayList<>();
+        List<ProductEntity> productEntities = productRepository.findAllByIsActiveIsTrue();
+        for (ProductEntity prod : productEntities) {
+            ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(prod);
+            productDTO.setDtoVersion(getVersionHash(prod));
+            products.add(productDTO);
+        }
+        return products;
+    }
+
+    @Override
     public List<ProductDTO> findAllProducts() throws BaseException {
         List<ProductDTO> products = new ArrayList<>();
         List<ProductEntity> productEntities = productRepository.findAll();
@@ -91,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
-    public String getVersionHash(ProductEntity productEntity){
-        return DigestUtils.sha256Hex(productEntity.getName()+productEntity.getVersion());
+    public String getVersionHash(ProductEntity productEntity) {
+        return DigestUtils.sha256Hex(productEntity.getName() + productEntity.getVersion());
     }
 }

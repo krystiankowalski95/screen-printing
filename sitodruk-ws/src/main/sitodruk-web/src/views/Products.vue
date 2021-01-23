@@ -25,11 +25,8 @@
         <b-col>{{ product.name }}</b-col>
         <b-col>{{ $t(product.categoryName) }}</b-col>
         <b-col>{{ product.stock }}</b-col>
-        <b-col v-if="product.stock > 0"
+        <b-col 
           ><b-button pill variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
-        >
-         <b-col v-if="product.stock === 0"
-          ><b-button pill disabled variant="primary" @click="getDetails(index)">{{ $t("details") }}</b-button></b-col
         >
          <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col>
           <b-col v-if="isManagerInRole"><b-button pill variant="secondary" @click="edit(index)">{{ $t('edit') }}</b-button></b-col>
@@ -56,6 +53,7 @@ export default {
       message: "",
       responseList: [],
       productList: [],
+      successful: false
     };
   },
   computed: {
@@ -85,12 +83,13 @@ export default {
     },
   },
   mounted() {
-    ProductService.getAllProducts().then(
+    if(this.isManagerInRole == true){
+    ProductService.getAllClientProducts().then(
       (data) => {
         this.responseList = data.data;
 
         this.responseList.map((productDTO) => {
-          this.productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock));
+          this.productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock,productDTO.isActive));
         });
       },
       (error) => {
@@ -103,6 +102,26 @@ export default {
               }
       }
     );
+    }else{
+      ProductService.getAllClientProducts().then(
+      (data) => {
+        this.responseList = data.data;
+
+        this.responseList.map((productDTO) => {
+          this.productList.push(new Product(productDTO.id, productDTO.name, productDTO.categoryName, productDTO.price, productDTO.dtoVersion,productDTO.quantity, productDTO.stock,productDTO.isActive));
+        });
+      },
+      (error) => {
+        this.message = (error.response && error.response.data);
+        if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
+      }
+    );
+    }
   },
   methods: {
     edit(index) {
@@ -118,6 +137,7 @@ export default {
           ProductService.removeProduct(this.productList[index]).then(
             (data) => {
               this.responseList = data.data;
+            
             },
             (error) => {
               this.message = (error.response && error.response.data);

@@ -88,5 +88,7 @@
     "cancelorder.msg":"Czy jesteś pewien ,że chcesz anulować to zamówienie?",
     "ok":"OK",
     "repeatpayment.msg":"Czy na pewno chcesz powtórzyć płatność?",
-    "repeatPayment":"Powtórz płatność"
+    "repeatPayment":"Powtórz płatność",
+    "product.unavailable":"Produkt tymczasowo niedostępny",
+    "product.removed":"Produkt usunięty"
 }
