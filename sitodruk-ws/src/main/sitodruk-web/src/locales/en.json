@@ -93,7 +93,10 @@
     "activate":"Activate",
     "deactivateSelectedProduct":"Activate selected product",
     "activateSelectedProduct":"Deactivate selected product",
-    "editSelectedProduct":"Edit selected product"
+    "editSelectedProduct":"Edit selected product",
+    "orders":"Orders",
+    "complete.msg":"Are you sure that you want to mark this order as completed?",
+    "completeOrder":"Complete order"
 
 
     

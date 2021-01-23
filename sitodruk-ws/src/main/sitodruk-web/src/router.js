@@ -15,6 +15,7 @@ import SumUp from './views/SumUp.vue';
 import EditUser from './views/EditUser.vue';
 import UserOrders from './views/UserOrders.vue';
 import OrderDetails from './views/OrderDetails.vue';
+import ManagerOrderBoard from './views/ManagerOrderBoard.vue';
 
 Vue.use(Router);
 
@@ -53,6 +54,10 @@ export const router = new Router({
     {
       path: '/resetPassword',
       component: ResetPassword
+    },
+    {
+      path: '/orders',
+      component: ManagerOrderBoard
     },
     {
       path: '/confirmAccount',

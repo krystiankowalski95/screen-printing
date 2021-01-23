@@ -51,7 +51,7 @@
 import OrderService from '../services/order.service';
 import Order from '../models/order';
 import Product from '../models/product';
-import Address from '../models/product';
+import Address from '../models/address';
 
 export default {
   name: 'UserOrders',

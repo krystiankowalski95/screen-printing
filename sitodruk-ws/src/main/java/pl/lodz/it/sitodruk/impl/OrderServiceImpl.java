@@ -185,6 +185,7 @@ public class OrderServiceImpl implements OrderService {
                 productDTO.setQuantity(ope.getAmount().longValue());
                 orderDTO.getProducts().add(productDTO);
             }
+            orderDTO.setAddressDTO(AddressMapper.INSTANCE.toAddressDTO(orderEntity.getAddressByAddressId()));
             orderDTO.setDtoVersion(getOrderVersionHash(orderEntity));
             orderDtos.add(orderDTO);
         }

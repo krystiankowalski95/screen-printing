@@ -9,6 +9,9 @@
         <li class="nav-item">
           <router-link to="/products" class="nav-link"> <font-awesome-icon icon="gifts" />{{ $t("products") }} </router-link>
         </li>
+        <li class="nav-item" v-if="isManagerInRole == true">
+          <router-link to="/orders" class="nav-link"> <font-awesome-icon icon="gifts" />{{ $t("orders") }} </router-link>
+        </li>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">

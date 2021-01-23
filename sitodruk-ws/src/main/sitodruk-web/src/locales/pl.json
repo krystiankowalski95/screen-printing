@@ -95,5 +95,8 @@
     "activate":"Aktywuj",
     "deactivateSelectedProduct":"Dezaktywuj wybrany produkt",
     "activateSelectedProduct":"Aktywuj wybrany product",
-    "editSelectedProduct":"Edytuj wybrany produkt"
+    "editSelectedProduct":"Edytuj wybrany produkt",
+    "orders":"Zamówienia",
+    "complete.msg":"Czy na pewno chcesz oznaczyć zamówienie jako zakończone",
+    "completeOrder":"Zakończ zamówienie"
 }

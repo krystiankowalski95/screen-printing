@@ -5,11 +5,11 @@ const API_URL = process.env.VUE_APP_BASE_API_URL + '/products';
 
 class ProductService {
   getAllProducts() {
-    return axios.get(API_URL + '/findAll');
+    return axios.get(API_URL + '/findAllActive');
   }
 
   getAllProductsManager() {
-    return axios.get(API_URL + '/findAll', {}
+    return axios.get(API_URL + '/findAll'
       , { headers: authHeader() }
     );
   }
@@ -67,7 +67,7 @@ class ProductService {
   }
 
   findProductByName(name) {
-    return axios.get(API_URL + '/findByName/' + name, {}
+    return axios.get(API_URL + '/findByName' + name, {}
       , { headers: authHeader() }
     );
   }

@@ -125,7 +125,7 @@ public class OrderController {
     }
 
     @GetMapping("/findAllOrders")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);
