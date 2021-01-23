@@ -53,7 +53,11 @@ public class OrderServiceImpl implements OrderService {
                 Optional<ProductEntity> prdEnt = productRepository.findByNameAndStockGreaterThanEqual(product.getName(), product.getQuantity());
                 if (prdEnt.isPresent()) {
                     prdEnt.get().setStock(prdEnt.get().getStock() - product.getQuantity());
-                    orderEntity.getProductEntityList().add(prdEnt.get());
+                    OrderProductEntity orderProductEntity = new OrderProductEntity();
+                    orderProductEntity.setOrderEntity(orderEntity);
+                    orderProductEntity.setProductEntity(prdEnt.get());
+                    orderProductEntity.setAmount(product.getQuantity().intValue());
+                    orderEntity.getOrderProductEntities().add(orderProductEntity);
                 } else {
                     throw new InsufficientStockException();
                 }
@@ -86,7 +90,12 @@ public class OrderServiceImpl implements OrderService {
                 for (ProductDTO product : orderDTO.getProducts()) {
                     ProductEntity prdEnt = productRepository.findByNameAndCategoryName(product.getName(),product.getCategoryName());
                     if (String.valueOf(product.getDtoVersion()).equals(getProductVersionHash(prdEnt))) {
-                        prdEnt.setStock(prdEnt.getStock() + product.getQuantity());
+                        for (OrderProductEntity orderProductEntity: orderEntity.get().getOrderProductEntities()){
+                            if(orderProductEntity.getProductEntity().equals(prdEnt)){
+                                orderProductEntity.getProductEntity().setStock(prdEnt.getStock() + orderProductEntity.getAmount());
+                                orderProductEntity.setAmount(0);
+                            }
+                        }
                         productRepository.saveAndFlush(prdEnt);
                     }else{
                         throw new ApplicationOptimisticLockException();
@@ -146,9 +155,10 @@ public class OrderServiceImpl implements OrderService {
                 orderRepository.saveAndFlush(orderEntity);
             }
             OrderDTO orderDTO = OrderMapper.INSTANCE.toOrderDTO(orderEntity);
-            for (ProductEntity product : orderEntity.getProductEntityList()) {
-                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(product);
-                productDTO.setDtoVersion(getProductVersionHash(product));
+            for(OrderProductEntity ope : orderEntity.getOrderProductEntities()){
+                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
+                productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setQuantity(ope.getAmount().longValue());
                 orderDTO.getProducts().add(productDTO);
             }
             orderDTO.setAddressDTO(AddressMapper.INSTANCE.toAddressDTO(orderEntity.getAddressByAddressId()));
@@ -169,9 +179,10 @@ public class OrderServiceImpl implements OrderService {
                 orderRepository.saveAndFlush(orderEntity);
             }
             OrderDTO orderDTO = OrderMapper.INSTANCE.toOrderDTO(orderEntity);
-            for (ProductEntity product : orderEntity.getProductEntityList()) {
-                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(product);
-                productDTO.setDtoVersion(getProductVersionHash(product));
+            for(OrderProductEntity ope : orderEntity.getOrderProductEntities()){
+                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
+                productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setQuantity(ope.getAmount().longValue());
                 orderDTO.getProducts().add(productDTO);
             }
             orderDTO.setDtoVersion(getOrderVersionHash(orderEntity));
@@ -190,9 +201,10 @@ public class OrderServiceImpl implements OrderService {
                 orderRepository.saveAndFlush(orderEntity.get());
             }
             OrderDTO dto = OrderMapper.INSTANCE.toOrderDTO(orderEntity.get());
-            for (ProductEntity product : orderEntity.get().getProductEntityList()) {
-                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(product);
-                productDTO.setDtoVersion(getProductVersionHash(product));
+            for(OrderProductEntity ope : orderEntity.get().getOrderProductEntities()){
+                ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
+                productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setQuantity(ope.getAmount().longValue());
                 dto.getProducts().add(productDTO);
             }
             dto.setAddressDTO(AddressMapper.INSTANCE.toAddressDTO(orderEntity.get().getAddressByAddressId()));

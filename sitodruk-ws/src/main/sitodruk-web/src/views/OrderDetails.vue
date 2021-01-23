@@ -3,6 +3,7 @@
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('orderDetails') }}</h3>
     </header>
+    <form>
     <b-container>
       <b-row>
         <b-col>{{ $t('productName') }}</b-col>
@@ -138,16 +139,37 @@
     <br />
     <br />
     <b-container>
-      <b-row>
-        <b-col></b-col>
-        <b-col></b-col>
-      </b-row>
-      <b-row>
-        <b-col></b-col>
-        <b-col></b-col>
-        <b-col></b-col>
-      </b-row>
+            <b-row>
+              <b-col></b-col>
+              <b-col></b-col>
+              <b-col
+                ><label v-if="order.orderStatus=='created'" for="blikCode">{{ $t('blikCode') }}</label></b-col
+              >
+              <b-col>
+                <div v-if="order.orderStatus=='created'" class="form-group" >
+                  <the-mask name="blikCode" :mask="['### ###']" v-model="order.blikCode" />
+                  <div
+                    v-if="submitted && errors.has('blikCode')"
+                    class="alert-danger"
+                  >
+                    {{ errors.first('blikCode') }}
+                  </div>
+                </div></b-col
+              >
+            </b-row>
+            <br/>
+            <b-row>
+              <b-col></b-col>
+              <b-col></b-col>
+              <b-col></b-col>
+              <b-col>
+                <b-button v-if="order.orderStatus=='created'" pill variant="primary" @click="repeatPayment()">{{
+                  $t('repeatPayment')
+                }}</b-button></b-col
+              >
+            </b-row>
     </b-container>
+    </form>
     <div
       v-if="message"
       class="alert"
@@ -195,6 +217,7 @@ export default {
     OrderService.findOrderByPayUOrderId(this.payUOrderId).then(
       (data) => {
         let orderDto = data.data;
+        console.log(orderDto);
         this.order = new Order(
           orderDto.payUOrderId,
           null,
@@ -227,7 +250,6 @@ export default {
           );
         });
         this.order.products = productList;
-        console.log(this.order);
       },
       (error) => {
         this.message = error.response && error.response.data;
@@ -241,6 +263,32 @@ export default {
     );
     }
  },
-  methods: {},
+  methods: {
+    repeatPayment(){
+     this.order.username = this.$store.state.auth.user.username;
+     this.$confirm(this.$t("areyousure"), this.$t("repeatpayment.msg"), "warning")
+        .then(() => {
+          OrderService.repeatPayment(this.order).then(
+        (data) => {
+          this.responseList = data.data;
+          this.successful = true;
+          this.$router.push({
+          path: '/userOrders',
+        });
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
+          this.successful = false;
+        }
+      )
+        })
+    },
+  },
 };
 </script>

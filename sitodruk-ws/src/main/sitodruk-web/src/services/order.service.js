@@ -30,6 +30,20 @@ class OrderService {
       dtoVersion: order.dtoVersion
     } , { headers: authHeader() });
   }
+  
+  repeatPayment(order) {
+    return axios.post(API_URL + '/repeatPayment',
+    {
+      payUOrderId: order.payUOrderId,
+      products: order.products,
+      totalValue: order.totalValue,
+      username: order.username,
+      blikCode: order.blikCode,
+      addressDTO: order.addressDTO,
+      orderStatus: order.orderStatus,
+      dtoVersion: order.dtoVersion
+    } , { headers: authHeader() });
+  }
 
 
 

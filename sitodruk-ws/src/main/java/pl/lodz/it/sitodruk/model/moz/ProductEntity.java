@@ -3,6 +3,8 @@ package pl.lodz.it.sitodruk.model.moz;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -26,4 +28,6 @@ public class ProductEntity {
     @Version
     @Basic@Column(name = "version", nullable = false)
     private Long version;
+    @OneToMany(mappedBy = "productEntity")
+    private List<OrderProductEntity> orderProductEntities = new ArrayList<>();
 }

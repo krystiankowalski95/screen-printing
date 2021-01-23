@@ -86,5 +86,7 @@
     "insufficient.stock":"Zamówienie nie mogło zostać utworzone. Niewystarczający stan magazynowy jednego z produktów.",
     "cancelOrder":"Anuluj zamówienie",
     "cancelorder.msg":"Czy jesteś pewien ,że chcesz anulować to zamówienie?",
-    "ok":"OK"
+    "ok":"OK",
+    "repeatpayment.msg":"Czy na pewno chcesz powtórzyć płatność?",
+    "repeatPayment":"Powtórz płatność"
 }

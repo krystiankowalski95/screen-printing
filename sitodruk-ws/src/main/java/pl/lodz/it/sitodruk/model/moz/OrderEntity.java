@@ -31,13 +31,9 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name = "order_status", referencedColumnName = "status_name" ,nullable = false)
     private OrderStatusEntity orderStatus;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "order_product",
-            joinColumns = { @JoinColumn(name = "order_id") },
-            inverseJoinColumns = { @JoinColumn(name = "product_id")}
-    )
-    private List<ProductEntity> productEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL)
+    private List<OrderProductEntity> orderProductEntities = new ArrayList<>();
 
     public OrderEntity(){
 

@@ -17,6 +17,7 @@
         <mapping class="pl.lodz.it.sitodruk.model.moz.ProductEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.moz.UserAccessLevelEntity"/>
         <mapping class="pl.lodz.it.sitodruk.model.moz.UserEntity"/>
+        <mapping class="pl.lodz.it.sitodruk.model.moz.OrderProductEntity"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 

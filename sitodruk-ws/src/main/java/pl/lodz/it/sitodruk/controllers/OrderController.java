@@ -84,8 +84,9 @@ public class OrderController {
 
     @PostMapping("/repeatPayment")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
-    public ResponseEntity<?> repeatPayment(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<?> repeatPayment(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {
         try {
+            orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.repeatPayment(orderDTO);
             return ResponseEntity.ok("order.completed");
         } catch (InvalidOrderStatusException ex) {
