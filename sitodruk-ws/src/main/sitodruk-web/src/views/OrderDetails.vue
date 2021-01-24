@@ -217,7 +217,6 @@ export default {
     OrderService.findOrderByPayUOrderId(this.payUOrderId).then(
       (data) => {
         let orderDto = data.data;
-        console.log(orderDto);
         this.order = new Order(
           orderDto.payUOrderId,
           null,

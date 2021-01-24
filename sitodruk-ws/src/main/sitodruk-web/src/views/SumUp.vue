@@ -275,7 +275,6 @@ export default {
       this.order.address = this.address;
       this.order.totalValue = this.totalcost;
       this.order.username = this.$store.state.auth.user.username;
-      console.log(this.order);
       this.$validator.validate().then((isValid) => {
         if (isValid) {
           this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")

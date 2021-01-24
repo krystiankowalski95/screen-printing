@@ -28,7 +28,6 @@ export default new Vuex.Store({
   mutations: {
     addProduct(state, productDTO){
       let changed = false;
-      console.log(productDTO);
       for(let i = 0; i < state.shoppingList.length; i ++){
         if(state.shoppingList[i].name == productDTO.name){
           state.shoppingList[i].quantity= Number(state.shoppingList[i].quantity) + Number(productDTO.quantity);

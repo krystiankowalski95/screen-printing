@@ -104,11 +104,6 @@ export default {
     };
   },
   mounted() {
-    if (this.$store.selectedUser == undefined) {
-      this.$router.push({
-        path: '/users',
-      });
-    } else {
       UserService.getUserProfile(this.$store.state.auth.user).then(
         (data) => {
           this.user = new User(
@@ -137,7 +132,6 @@ export default {
           }
         }
       );
-    }
   },
   methods: {
     handleEdit() {

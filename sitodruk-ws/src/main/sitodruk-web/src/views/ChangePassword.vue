@@ -79,7 +79,6 @@ export default {
             data.data.roles
           );
           data.data;
-          console.log(this.user);
         },
         (error) => {
           this.message = error.response && error.response.data;
