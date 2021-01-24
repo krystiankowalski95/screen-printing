@@ -105,5 +105,5 @@
     "changeSelectedUsersPassword":"Change password",
     "sendEmail":"Send email with activation link",
     "emailSent":"Email with activation link has been sent.",
-    "changeUsersPassword ":"Password change form for user"
+    "change.user.password ":"Password change form for user"
 }

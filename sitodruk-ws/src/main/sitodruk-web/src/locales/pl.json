@@ -107,5 +107,5 @@
     "changeSelectedUsersPassword":"Zmień hasło",
     "sendEmail":"Wyślij email z linkiem aktywacyjnym",
     "emailSent":"Wysłano wiadomość email z linkiem aktywacyjnym",
-    "changeUsersPassword ":"Formularz zmiany hasła użytkownika"
+    "change.user.password":"Formularz zmiany hasła użytkownika"
 }
