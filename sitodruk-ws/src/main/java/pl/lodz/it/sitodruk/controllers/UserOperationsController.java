@@ -76,6 +76,22 @@ public class UserOperationsController {
         }
     }
 
+    @PostMapping("/resendActivationLink")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<?> resendActivationLink(@RequestBody UserDTO userDTO,HttpServletRequest httpServletRequest) {
+        try {
+            userService.sendActivationLink(userDTO,httpServletRequest);
+            return ResponseEntity.ok("email.send");
+        } catch (ApplicationOptimisticLockException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not.found", ex);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        }
+    }
+
+
     @PostMapping("/activateAccessLevel")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<?> activateAccessLevel(@RequestBody UserDTO userDTO, String role) {
@@ -214,8 +230,20 @@ public class UserOperationsController {
 
 
     @PostMapping("/findAccountByUsername")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
     public ResponseEntity<UserDTO> getAccountByUsername(@RequestBody Map<String, String> username) {
+        try {
+            return new ResponseEntity(userService.findUserByUsername(username.get("username")), HttpStatus.OK);
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not.found", ex);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        }
+    }
+
+    @PostMapping("/findAccount")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<UserDTO> getAccountAdminByUsername(@RequestBody Map<String, String> username) {
         try {
             return new ResponseEntity(userService.findUserByUsername(username.get("username")), HttpStatus.OK);
         } catch (UserNotFoundException ex) {

@@ -38,4 +38,6 @@ public interface UserService {
 
     void createUserByAdmin(UserDTO userDTO) throws BaseException;
 
+    void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException;
+
 }

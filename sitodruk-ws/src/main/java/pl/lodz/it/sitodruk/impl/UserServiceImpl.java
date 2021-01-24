@@ -131,6 +131,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void sendActivationLink(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException {
+        Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
+        if (user.isPresent()) {
+            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
+                user.get().setToken(UUID.randomUUID().toString());
+                userRepository.saveAndFlush(user.get());
+                emailSenderService.sendRegistrationEmail(user.get().getEmail(), requestUrl, user.get().getToken());
+            } else {
+                throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
     public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
