@@ -2,23 +2,6 @@
   <div class="col-md-12">
     <header class="jumbotron">
       <h1>{{ user.username }}</h1>
-      <div class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <router-link to="/changePassword" class="nav-link">
-            <font-awesome-icon icon="plus-square" />{{ $t('changePassword') }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/editUser" class="nav-link">
-            <font-awesome-icon icon="plus-square" />{{ $t('editUser') }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/userOrders" class="nav-link">
-            <font-awesome-icon icon="plus-square" />{{ $t('userOrders') }}
-          </router-link>
-        </li>
-      </div>
     </header>
     <div class="card card-container">
       <div class="form-group">
