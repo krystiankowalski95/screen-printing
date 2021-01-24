@@ -97,8 +97,13 @@
     "orders":"Orders",
     "complete.msg":"Are you sure that you want to mark this order as completed?",
     "completeOrder":"Complete order",
-    "profil":"Profile"
-
-
-    
+    "profil":"Profile",
+    "admin.panel":"Admin panel",
+    "user.list":"User list",
+    "user.create":"Create account",
+    "user.actions":"Actions available",
+    "changeSelectedUsersPassword":"Change password",
+    "sendEmail":"Send email with activation link",
+    "emailSent":"Email with activation link has been sent.",
+    "changeUsersPassword ":"Password change form for user"
 }

@@ -16,6 +16,11 @@ import EditUser from './views/EditUser.vue';
 import UserOrders from './views/UserOrders.vue';
 import OrderDetails from './views/OrderDetails.vue';
 import ManagerOrderBoard from './views/ManagerOrderBoard.vue';
+import UserList from './views/UserList.vue';
+import UserDetails from './views/UserDetails.vue';
+import UserEdit from './views/UserEdit.vue';
+import CreateAccount from './views/CreateAccount.vue';
+import ChangeUsersPassword from './views/ChangeUsersPassword.vue';
 
 Vue.use(Router);
 
@@ -32,6 +37,14 @@ export const router = new Router({
       component: SumUp
     },
     {
+      path: '/createUser',
+      component: CreateAccount
+    },
+    {
+      path: '/changeUsersPassword',
+      component: ChangeUsersPassword
+    },
+    {
       path: "/userOrders",
       component: UserOrders
     },
@@ -41,7 +54,19 @@ export const router = new Router({
     },
     {
       path: '/editUser',
+      component: UserEdit
+    },
+    {
+      path: '/userEdit',
       component: EditUser
+    },
+    {
+      path: '/users',
+      component: UserList
+    },
+    {
+      path: '/userDetails',
+      component: UserDetails
     },
     {
       path: '/home',

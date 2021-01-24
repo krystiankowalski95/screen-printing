@@ -18,6 +18,13 @@
             <font-awesome-icon icon="gifts" />{{ $t('orders') }}
           </router-link>
         </li>
+        <b-dropdown  v-if="isAdminInRole" id="dropdown" class="m-md-2 navbar-nav ml-auto">
+          <template #button-content>
+            {{ $t('admin.panel') }}
+          </template>
+          <b-dropdown-item href="/users">{{ $t('user.list')}}</b-dropdown-item>
+          <b-dropdown-item  href="/createUser">{{ $t('user.create')}}</b-dropdown-item>
+        </b-dropdown>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
