@@ -27,7 +27,7 @@
       >
       <b-row style="padding: 5px" />
       <b-row>
-        <b-col> 
+        <b-col v-if="currentUser"> 
           <b-button v-if="product.stock > 0" pill variant="primary" @click="addProductToCart()">
             <font-awesome-icon icon="cart-arrow-down" />{{
               $t('addProcutToCart')
@@ -53,6 +53,11 @@ export default {
   components: { Money },
   name: 'ProductDetails',
   props: ['productName'],
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+  },
   data() {
     return {
       selected: 1,
