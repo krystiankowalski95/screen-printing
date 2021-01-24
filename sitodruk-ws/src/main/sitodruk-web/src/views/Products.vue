@@ -15,14 +15,10 @@
         <b-col>{{ $t('productName') }}</b-col>
         <b-col>{{ $t('categoryName') }}</b-col>
         <b-col>{{ $t('quantity') }}</b-col>
-        <b-col>{{ $t('goToDetails') }}</b-col>
-        <b-col v-if="isManagerInRole">{{
-          $t('deactivateSelectedProduct')
-        }}</b-col>
-        <b-col v-if="isManagerInRole">{{
-          $t('activateSelectedProduct')
-        }}</b-col>
-        <b-col v-if="isManagerInRole">{{ $t('editSelectedProduct') }}</b-col>
+        <b-col></b-col>
+        <b-col v-if="isManagerInRole"></b-col>
+        <b-col v-if="isManagerInRole"></b-col>
+        <b-col v-if="isManagerInRole"></b-col>
       </b-row>
     </b-container>
     <b-container
@@ -39,26 +35,14 @@
             $t('details')
           }}</b-button></b-col
         >
-        <b-col v-if="product.isActive == true"
-          ><b-button pill variant="danger" @click="deactivate(index)">{{
-            $t('deactivate')
-          }}</b-button></b-col
-        >
-        <b-col v-if="product.isActive == false"
-          ><b-button pill disabled variant="danger">{{
-            $t('deactivate')
-          }}</b-button></b-col
-        >
-        <b-col v-if="product.isActive == false"
-          ><b-button pill variant="success" @click="activate(index)">{{
-            $t('activate')
-          }}</b-button></b-col
-        >
-        <b-col v-if="product.isActive == true"
-          ><b-button pill disabled variant="success">{{
-            $t('activate')
-          }}</b-button></b-col
-        >
+        <b-button-group  v-if="product.isActive == true">
+          <b-button disabled variant="success">{{$t('activate') }}</b-button>
+          <b-button @click="deactivate(index)" variant="danger"> {{$t('deactivate') }}</b-button>
+        </b-button-group>
+        <b-button-group  v-if="product.isActive == false">
+          <b-button @click="activate(index)" variant="success">{{$t('activate') }}</b-button>
+          <b-button disabled  variant="danger">{{$t('deactivate') }} </b-button>
+        </b-button-group>
         <b-col v-if="isManagerInRole"
           ><b-button pill variant="secondary" @click="edit(index)">{{
             $t('edit')
