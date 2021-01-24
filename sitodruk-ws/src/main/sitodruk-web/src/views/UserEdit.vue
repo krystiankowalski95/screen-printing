@@ -109,7 +109,7 @@ export default {
         path: '/users',
       });
     } else {
-      UserService.findAccount(this.$store.selectedUser).then(
+      UserService.getUserProfile(this.$store.state.auth.user).then(
         (data) => {
           this.user = new User(
             data.data.username,
@@ -146,13 +146,10 @@ export default {
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
-          UserService.editSelectedAccount(this.user).then(
+          UserService.editOwnAccount(this.user).then(
             (data) => {
               this.message = data.message;
               this.successful = true;
-              this.$router.push({
-                  path: '/users',
-                });
             },
             (error) => {
               this.message = error.response && error.response.data;

@@ -19,12 +19,56 @@ class UserService {
     }, { headers: authHeader() });
   }
 
+  changeOtherUserPassword(user) {
+    return axios.post(API_URL + 'changePassword', {
+      username: user.username,
+      password: user.password,
+      confirmPassword: user.confirmPassword,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
   editOwnAccount(user){
     return axios.post(API_URL + 'modifyOwnAccount', {
       username: user.username,
       firstname: user.firstname,
       lastname: user.lastname,
       phoneNumber: user.phoneNumber,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
+
+  editSelectedAccount(user){
+    return axios.post(API_URL + 'modifyAccount', {
+      username: user.username,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phoneNumber: user.phoneNumber,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
+
+  sendActivationLink(user){
+    return axios.post(API_URL + 'resendActivationLink', {
+      username: user.username,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
+
+  
+
+  
+  activateAccount(user){
+    return axios.post(API_URL + 'activateAccount', {
+      username: user.username,
+      active: true,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+  }
+
+  deactivateAccount(user){
+    return axios.post(API_URL + 'deactivateAccount', {
+      username: user.username,
+      active: false,
       dtoVersion: user.dtoVersion
     }, { headers: authHeader() });
   }
@@ -47,6 +91,20 @@ class UserService {
     return axios.post(API_URL + 'findAccountByUsername', {
       username: user.username
     }, { headers: authHeader() }
+    );
+  }
+
+  findAccount(user) {
+    return axios.post(API_URL + 'findAccount', {
+      username: user.username
+    }, { headers: authHeader() }
+    );
+  }
+
+  
+
+  getAllUsers() {
+    return axios.get(API_URL + 'findAllAccounts', { headers: authHeader() }
     );
   }
 }
