@@ -107,5 +107,9 @@
     "changeSelectedUsersPassword":"Zmień hasło",
     "sendEmail":"Wyślij email z linkiem aktywacyjnym",
     "emailSent":"Wysłano wiadomość email z linkiem aktywacyjnym",
-    "change.user.password":"Formularz zmiany hasła użytkownika"
+    "change.user.password":"Formularz zmiany hasła użytkownika",
+    "role.client":"Rola klienta",
+    "role.manager":"Rola menadżera",
+    "role.admin":"Rola administratora",
+    "cannot.deactivate.access.level":"Użytkownik musi mieć aktywny przynajmniej jednej poziom dostępu"
 }

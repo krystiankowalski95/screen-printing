@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mokTransactionManager")
@@ -63,11 +64,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+        String appRoleName = "";
+        if(role.equalsIgnoreCase("admin")){
+            appRoleName = "ROLE_ADMIN";
+        }else if(role.equalsIgnoreCase("manager")){
+            appRoleName = "ROLE_MANAGER";
+        }else if(role.equalsIgnoreCase("client")){
+            appRoleName = "ROLE_CLIENT";
+        }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
                 for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
-                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(role)) {
+                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
                         userAccessLevelEntity.setActive(true);
                     }
                 }
@@ -80,15 +89,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deactivateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+        String appRoleName = "";
+        if(role.equalsIgnoreCase("admin")){
+            appRoleName = "ROLE_ADMIN";
+        }else if(role.equalsIgnoreCase("manager")){
+            appRoleName = "ROLE_MANAGER";
+        }else if(role.equalsIgnoreCase("client")){
+            appRoleName = "ROLE_CLIENT";
+        }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
-                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(role)) {
-                        userAccessLevelEntity.setActive(false);
+                List<UserAccessLevelEntity> list = user.get().getUserAccessLevelsById().stream().filter(UserAccessLevelEntity::getActive).collect(Collectors.toList());
+                if(list.size() > 1){
+                    for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                        if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
+                            userAccessLevelEntity.setActive(false);
+                        }
                     }
+                    userRepository.saveAndFlush(user.get());
+                }else{
+                    throw new UserAccessLevelDeactivationException();
                 }
-                userRepository.saveAndFlush(user.get());
             } else {
                 throw new ApplicationOptimisticLockException();
             }
@@ -223,7 +245,9 @@ public class UserServiceImpl implements UserService {
             userDTO.setDtoVersion(getVersionHash(user.get()));
             userDTO.setPassword("");
             for(UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()){
-                userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+                if(userAccessLevelEntity.getActive()){
+                    userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+                }
             }
             return userDTO;
         } else throw new UserNotFoundException();
@@ -236,7 +260,9 @@ public class UserServiceImpl implements UserService {
             userDTO.setDtoVersion(getVersionHash(userEntity));
             userDTO.setPassword("");
             for(UserAccessLevelEntity userAccessLevelEntity : userEntity.getUserAccessLevelsById()){
-                userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+                if(userAccessLevelEntity.getActive()){
+                    userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
+                }
             }
             userDtos.add(userDTO);
         }

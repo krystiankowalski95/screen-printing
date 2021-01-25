@@ -65,6 +65,20 @@ class UserService {
     }, { headers: authHeader() });
   }
 
+  activateRole(user,role){
+    return axios.post(API_URL + 'activateAccessLevel/' + role, {
+      username: user.username,
+      dtoVersion: user.dtoVersion
+    }, { headers: authHeader() });
+}
+
+  deactivateRole(user,role){
+      return axios.post(API_URL + 'deactivateAccessLevel/' + role, {
+        username: user.username,
+        dtoVersion: user.dtoVersion
+      }, { headers: authHeader() });
+  }
+
   deactivateAccount(user){
     return axios.post(API_URL + 'deactivateAccount', {
       username: user.username,

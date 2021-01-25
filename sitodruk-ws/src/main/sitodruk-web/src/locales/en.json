@@ -105,5 +105,9 @@
     "changeSelectedUsersPassword":"Change password",
     "sendEmail":"Send email with activation link",
     "emailSent":"Email with activation link has been sent.",
-    "change.user.password ":"Password change form for user"
+    "change.user.password ":"Password change form for user",
+    "role.client":"Client role",
+    "role.manager":"Manager role",
+    "role.admin":"Admin role",
+    "cannot.deactivate.access.level":"User must have at least one active access level"
 }

@@ -54,6 +54,57 @@
           name="phoneNumber"
         />
       </div>
+      <div class="form-group">
+        <label for="roleClient">{{ $t('role.client') }}</label>
+         <b-button-group id="roleClient" v-if="hasClientRole == true">
+            <b-button disabled variant="success">{{ $t('activate') }}</b-button>
+            <b-button @click="deactivateRole('client')" variant="danger">
+              {{ $t('deactivate') }}</b-button
+            >
+          </b-button-group>
+          <b-button-group v-if="hasClientRole == false">
+            <b-button @click="activateRole('client')" variant="success">{{
+              $t('activate')
+            }}</b-button>
+            <b-button disabled variant="danger"
+              >{{ $t('deactivate') }}
+            </b-button>
+          </b-button-group>
+      </div>
+      <div class="form-group">
+        <label for="roleManager">{{ $t('role.manager') }}</label>
+         <b-button-group id="roleManager" v-if="hasManagerRole == true">
+            <b-button disabled variant="success">{{ $t('activate') }}</b-button>
+            <b-button @click="deactivateRole('manager')" variant="danger">
+              {{ $t('deactivate') }}</b-button
+            >
+          </b-button-group>
+          <b-button-group v-if="hasManagerRole == false">
+            <b-button @click="activateRole('manager')" variant="success">{{
+              $t('activate')
+            }}</b-button>
+            <b-button disabled variant="danger"
+              >{{ $t('deactivate') }}
+            </b-button>
+          </b-button-group>
+      </div>
+      <div class="form-group">
+        <label for="roleAdmin">{{ $t('role.admin') }}</label>
+         <b-button-group id="roleAdmin" v-if="hasAdminRole == true">
+            <b-button disabled variant="success">{{ $t('activate') }}</b-button>
+            <b-button @click="deactivateRole('admin')" variant="danger">
+              {{ $t('deactivate') }}</b-button
+            >
+          </b-button-group>
+          <b-button-group v-if="hasAdminRole == false">
+            <b-button @click="activateRole('admin')" variant="success">{{
+              $t('activate')
+            }}</b-button>
+            <b-button disabled variant="danger"
+              >{{ $t('deactivate') }}
+            </b-button>
+          </b-button-group>
+      </div>
       <div
         v-if="message"
         class="alert"
@@ -75,6 +126,9 @@ export default {
     return {
       user: new User(),
       message: '',
+      hasAdminRole: false,
+      hasManagerRole: false,
+      hasClientRole: false
     };
   },
   computed: {
@@ -112,7 +166,9 @@ export default {
               data.data.active,
               data.data.roles
             );
-            data.data;
+            this.hasClientRole = this.user.roles.includes("ROLE_CLIENT");
+            this.hasManagerRole = this.user.roles.includes("ROLE_MANAGER");
+            this.hasAdminRole = this.user.roles.includes("ROLE_ADMIN");
           },
           (error) => {
             this.message = error.response && error.response.data;
@@ -127,5 +183,77 @@ export default {
       }
     }
   },
-};
+  methods: {
+    activateRole(text) {
+     UserService.activateRole(this.user,text).then(
+        (data) => {
+          this.responseList = data.data;
+          this.$router.go();
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+            this.$store.dispatch('auth/logout');
+            this.$router.push({
+              path: '/login',
+            });
+          }
+        }
+      );
+    },
+    deactivateRole(text) {
+     UserService.deactivateRole(this.user,text).then(
+        (data) => {
+          this.responseList = data.data;
+          this.$router.go();
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+            this.$store.dispatch('auth/logout');
+            this.$router.push({
+              path: '/login',
+            });
+          }
+        }
+      );
+    }
+},
+}
 </script>
+
+
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+</style>

@@ -92,9 +92,9 @@ public class UserOperationsController {
     }
 
 
-    @PostMapping("/activateAccessLevel")
+    @PostMapping("/activateAccessLevel/{role}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<?> activateAccessLevel(@RequestBody UserDTO userDTO, String role) {
+    public ResponseEntity<?> activateAccessLevel(@RequestBody UserDTO userDTO,@PathVariable String role) {
         try {
             userService.activateUserAccessLevel(userDTO, role);
             return ResponseEntity.ok("access.level.activated");
@@ -107,12 +107,14 @@ public class UserOperationsController {
         }
     }
 
-    @PostMapping("/deactivateAccessLevel")
+    @PostMapping("/deactivateAccessLevel/{role}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deactivateAccessLevel(@RequestBody UserDTO userDTO, String role) {
+    public ResponseEntity<?> deactivateAccessLevel(@RequestBody UserDTO userDTO,@PathVariable String role) {
         try {
-            userService.activateUserAccessLevel(userDTO, role);
+            userService.deactivateUserAccessLevel(userDTO, role);
             return ResponseEntity.ok("access.level.deactivated");
+        } catch (UserAccessLevelDeactivationException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "cannot.deactivate.access.level", ex);
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
         } catch (UserNotFoundException ex) {
