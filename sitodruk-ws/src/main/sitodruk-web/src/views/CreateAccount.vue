@@ -6,7 +6,7 @@
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       />
-      <form name="form" @submit.prevent="handleRegister">
+      <form name="form" @submit.prevent="handleCreate">
         <div v-if="!successful">
           <div class="form-group">
             <label for="firstname">{{ $t('firstname') }}</label>
@@ -20,7 +20,9 @@
             <div
               v-if="submitted && errors.has('firstname')"
               class="alert-danger"
-            >{{errors.first('firstname')}}</div>
+            >
+              {{ errors.first('firstname') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="lastname">{{ $t('lastname') }}</label>
@@ -34,7 +36,9 @@
             <div
               v-if="submitted && errors.has('lastName')"
               class="alert-danger"
-            >{{errors.first('lastame')}}</div>
+            >
+              {{ errors.first('lastame') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="username">{{ $t('username') }}</label>
@@ -48,7 +52,9 @@
             <div
               v-if="submitted && errors.has('username')"
               class="alert-danger"
-            >{{errors.first('username')}}</div>
+            >
+              {{ errors.first('username') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="email">{{ $t('email') }}</label>
@@ -59,10 +65,9 @@
               class="form-control"
               name="email"
             />
-            <div
-              v-if="submitted && errors.has('email')"
-              class="alert-danger"
-            >{{errors.first('email')}}</div>
+            <div v-if="submitted && errors.has('email')" class="alert-danger">
+              {{ errors.first('email') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="password">{{ $t('password') }}</label>
@@ -72,12 +77,15 @@
               type="password"
               class="form-control"
               name="password"
-            />            <div
+            />
+            <div
               v-if="submitted && errors.has('password')"
               class="alert-danger"
-            >{{errors.first('password')}}</div>
+            >
+              {{ errors.first('password') }}
+            </div>
           </div>
-           <div class="form-group">
+          <div class="form-group">
             <label for="confirmPassword">{{ $t('confirmPassword') }}</label>
             <input
               v-model="user.confirmPassword"
@@ -89,13 +97,15 @@
             <div
               v-if="submitted && errors.has('confirmPassword')"
               class="alert-danger"
-            >{{errors.first('confirmPassword')}}</div>
+            >
+              {{ errors.first('confirmPassword') }}
+            </div>
           </div>
           <div class="form-group">
             <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
             <input
               v-model="user.phoneNumber"
-              v-validate="{ required: true, digits:9}"
+              v-validate="{ required: true, digits: 9 }"
               type="text"
               class="form-control"
               name="phoneNumber"
@@ -103,10 +113,32 @@
             <div
               v-if="submitted && errors.has('phoneNumber')"
               class="alert-danger"
-            >{{errors.first('phoneNumber')}}</div>
+            >
+              {{ errors.first('phoneNumber') }}
+            </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-block">{{ $t('signup') }}</button>
+            <label for="roles">{{ $t('select.user.roles') }}</label>
+            <b-form-group id="roles" v-slot="{ ariaDescribedby }">
+              <b-form-checkbox
+                v-for="option in options"
+                v-model="selectedRoles"
+                :key="option.value"
+                :value="option.value"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-3a"
+              >
+                {{ $t(option.text) }}
+              </b-form-checkbox>
+              <b-form-invalid-feedback :state="state">{{
+                $t('select.user.role.required')
+              }}</b-form-invalid-feedback>
+            </b-form-group>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary btn-block">
+              {{ $t('signup') }}
+            </button>
           </div>
         </div>
       </form>
@@ -115,46 +147,69 @@
         v-if="message"
         class="alert"
         :class="successful ? 'alert-success' : 'alert-danger'"
-      >{{message}}</div>
+      >
+        {{ message }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import User from '../models/user';
+import UserService from '../services/user.service';
 
 export default {
-  name: 'Register',
+  name: 'CreateAccount',
   data() {
     return {
-      user: new User('', '', '','','','',''),
+      user: new User('', '', '', '', '', '', ''),
+      selectedRoles: [],
+      options: [
+        { text: 'role.admin', value: 'admin' },
+        { text: 'role.manager', value: 'manager' },
+        { text: 'role.client', value: 'client' },
+      ],
       submitted: false,
       successful: false,
-      message: ''
+      message: '',
     };
   },
   computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    }
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+    isAdminInRole() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes('ROLE_ADMIN');
+      }
+      return false;
+    },
+    state() {
+      if (this.selectedRoles.length >= 1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   mounted() {
-    if (this.loggedIn) {
-      this.$router.push('/profile');
+    if (this.isAdminInRole == false) {
+      this.$router.push('/home');
     }
   },
   methods: {
-    handleRegister() {
+    handleCreate() {
       this.message = '';
       this.submitted = true;
-      this.$validator.validate().then(isValid => {
+      this.$validator.validate().then((isValid) => {
         if (isValid) {
-          this.$store.dispatch('auth/register', this.user).then(
-            data => {
+          UserService.createUser(this.user, this.selectedRoles).then(
+            (data) => {
               this.message = data.message;
               this.successful = true;
+              this.$router.push('/home');
             },
-            error => {
+            (error) => {
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||
@@ -164,8 +219,8 @@ export default {
           );
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

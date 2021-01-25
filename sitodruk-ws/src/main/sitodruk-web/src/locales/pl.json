@@ -111,5 +111,7 @@
     "role.client":"Rola klienta",
     "role.manager":"Rola menadżera",
     "role.admin":"Rola administratora",
-    "cannot.deactivate.access.level":"Użytkownik musi mieć aktywny przynajmniej jednej poziom dostępu"
+    "cannot.deactivate.access.level":"Użytkownik musi mieć aktywny przynajmniej jednej poziom dostępu",
+    "select.user.roles":"Proszę wybrać poziomy dostępu dla tego konta",
+    "select.user.role.required":"Musisz wybrać przynajmniej jeden poziom dostępu"
 }

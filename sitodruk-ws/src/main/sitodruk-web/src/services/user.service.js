@@ -114,8 +114,18 @@ class UserService {
     }, { headers: authHeader() }
     );
   }
-
-  
+  createUser(user,selectedRoles) {
+    return axios.post(API_URL + 'createUser', {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phoneNumber: user.phoneNumber,
+      confirmPassword: user.confirmPassword,
+      roles: selectedRoles
+    }, { headers: authHeader() });
+  }
 
   getAllUsers() {
     return axios.get(API_URL + 'findAllAccounts', { headers: authHeader() }

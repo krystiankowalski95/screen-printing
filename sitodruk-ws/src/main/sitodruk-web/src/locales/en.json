@@ -109,5 +109,7 @@
     "role.client":"Client role",
     "role.manager":"Manager role",
     "role.admin":"Admin role",
-    "cannot.deactivate.access.level":"User must have at least one active access level"
+    "cannot.deactivate.access.level":"User must have at least one active access level",
+    "select.user.roles":"Please select access level for this account",
+    "select.user.role.required":"You have to select at least one access level"
 }

@@ -65,11 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
         String appRoleName = "";
-        if(role.equalsIgnoreCase("admin")){
+        if (role.equalsIgnoreCase("admin")) {
             appRoleName = "ROLE_ADMIN";
-        }else if(role.equalsIgnoreCase("manager")){
+        } else if (role.equalsIgnoreCase("manager")) {
             appRoleName = "ROLE_MANAGER";
-        }else if(role.equalsIgnoreCase("client")){
+        } else if (role.equalsIgnoreCase("client")) {
             appRoleName = "ROLE_CLIENT";
         }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
@@ -90,25 +90,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deactivateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
         String appRoleName = "";
-        if(role.equalsIgnoreCase("admin")){
+        if (role.equalsIgnoreCase("admin")) {
             appRoleName = "ROLE_ADMIN";
-        }else if(role.equalsIgnoreCase("manager")){
+        } else if (role.equalsIgnoreCase("manager")) {
             appRoleName = "ROLE_MANAGER";
-        }else if(role.equalsIgnoreCase("client")){
+        } else if (role.equalsIgnoreCase("client")) {
             appRoleName = "ROLE_CLIENT";
         }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
                 List<UserAccessLevelEntity> list = user.get().getUserAccessLevelsById().stream().filter(UserAccessLevelEntity::getActive).collect(Collectors.toList());
-                if(list.size() > 1){
+                if (list.size() > 1) {
                     for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
                         if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
                             userAccessLevelEntity.setActive(false);
                         }
                     }
                     userRepository.saveAndFlush(user.get());
-                }else{
+                } else {
                     throw new UserAccessLevelDeactivationException();
                 }
             } else {
@@ -126,34 +126,32 @@ public class UserServiceImpl implements UserService {
         } else {
             UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
             user.setPassword(encoder.encode(userDTO.getPassword()));
-            if (userDTO.getRoles().contains("ROLE_CLIENT")) {
-                UserAccessLevelEntity client = new UserAccessLevelEntity();
-                client.setAccessLevelName("ROLE_CLIENT");
-                client.setActive(true);
-                client.setLoginDataByUserId(user);
-                user.getUserAccessLevelsById().add(client);
-            }
-            if (userDTO.getRoles().contains("ROLE_MANAGER")) {
-                UserAccessLevelEntity manager = new UserAccessLevelEntity();
-                manager.setAccessLevelName("ROLE_MANAGER");
-                manager.setActive(false);
-                manager.setLoginDataByUserId(user);
-                user.getUserAccessLevelsById().add(manager);
-            }
-            if (userDTO.getRoles().contains("ROLE_ADMIN")) {
-                UserAccessLevelEntity admin = new UserAccessLevelEntity();
-                admin.setAccessLevelName("ROLE_ADMIN");
-                admin.setActive(false);
-                admin.setLoginDataByUserId(user);
-                user.getUserAccessLevelsById().add(admin);
-            }
+            user.setConfirmed(true);
+
+            UserAccessLevelEntity client = new UserAccessLevelEntity();
+            client.setAccessLevelName("ROLE_CLIENT");
+            client.setActive(userDTO.getRoles().contains("client"));
+            client.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(client);
+
+            UserAccessLevelEntity manager = new UserAccessLevelEntity();
+            manager.setAccessLevelName("ROLE_MANAGER");
+            manager.setActive(userDTO.getRoles().contains("manager"));
+            manager.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(manager);
+
+            UserAccessLevelEntity admin = new UserAccessLevelEntity();
+            admin.setAccessLevelName("ROLE_ADMIN");
+            admin.setActive(userDTO.getRoles().contains("admin"));
+            admin.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(admin);
             userRepository.saveAndFlush(user);
         }
 
     }
 
     @Override
-    public void sendActivationLink(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException {
+    public void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -244,8 +242,8 @@ public class UserServiceImpl implements UserService {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
             userDTO.setDtoVersion(getVersionHash(user.get()));
             userDTO.setPassword("");
-            for(UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()){
-                if(userAccessLevelEntity.getActive()){
+            for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                if (userAccessLevelEntity.getActive()) {
                     userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
                 }
             }
@@ -259,8 +257,8 @@ public class UserServiceImpl implements UserService {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
             userDTO.setDtoVersion(getVersionHash(userEntity));
             userDTO.setPassword("");
-            for(UserAccessLevelEntity userAccessLevelEntity : userEntity.getUserAccessLevelsById()){
-                if(userAccessLevelEntity.getActive()){
+            for (UserAccessLevelEntity userAccessLevelEntity : userEntity.getUserAccessLevelsById()) {
+                if (userAccessLevelEntity.getActive()) {
                     userDTO.getRoles().add(userAccessLevelEntity.getAccessLevelName());
                 }
             }
@@ -300,17 +298,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
-        if(userEntity.isPresent()){
+        if (userEntity.isPresent()) {
             return userEntity.get().getConfirmed();
-        }else throw new UserNotFoundException();
+        } else throw new UserNotFoundException();
     }
 
     @Override
-    public Boolean isUserActive(UserDTO userDTO) throws BaseException{
+    public Boolean isUserActive(UserDTO userDTO) throws BaseException {
         Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
-        if(userEntity.isPresent()){
+        if (userEntity.isPresent()) {
             return userEntity.get().getActive();
-        }else throw new UserNotFoundException();
+        } else throw new UserNotFoundException();
     }
 
     public String getVersionHash(UserEntity userEntity) {
