@@ -132,14 +132,13 @@ export default {
     };
   },
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
+    currentUserAccessLevel() {
+      return this.$store.state.auth.currentAccessLevel;
     },
     isAdminInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_ADMIN');
+      if (this.currentUserAccessLevel == 'ADMIN') {
+        return true;
       }
-
       return false;
     },
   },
@@ -150,7 +149,7 @@ export default {
       if (!this.isAdminInRole) {
         this.$router.push('/home');
       } else {
-        UserService.getUserProfile(this.$store.selectedUser).then(
+        UserService.findAccount(this.$store.selectedUser).then(
           (data) => {
             this.user = new User(
               data.data.username,

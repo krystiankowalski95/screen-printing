@@ -2,7 +2,6 @@
   <div class="container">
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('cart') }}</h3>
-      <!-- <div v-if="isManagerInRole" class="navbar-nav ml-auto"> -->
     </header>
     <div v-if="this.$store.getters.shoppingListSize > 0">
       <b-container>
@@ -12,8 +11,6 @@
           <b-col>{{ $t('categoryName') }}</b-col>
           <b-col>{{ $t('numberOf') }}</b-col>
           <b-col></b-col>
-
-          <!-- <b-col v-if="isManagerInRole">{{ $t('removeSelectedProduct') }}</b-col> -->
         </b-row>
       </b-container>
       <b-container
@@ -37,7 +34,6 @@
               controls
             ></number-input
           ></b-col>
-          <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
           <b-col
             ><b-button pill variant="danger" @click="removeProduct(index)">{{
               $t('removeButton')

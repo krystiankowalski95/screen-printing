@@ -28,7 +28,6 @@
               disabled
             ></number-input
           ></b-col>
-          <!--  <b-col v-if="isManagerInRole"><b-button pill variant="danger" @click="removeProduct(index)">{{ $t('removeButton') }}</b-button></b-col> -->
         </b-row>
       </b-container>
       <b-container>

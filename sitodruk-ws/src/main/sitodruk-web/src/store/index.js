@@ -23,7 +23,7 @@ export default new Vuex.Store({
     },
     order: state => {
       return state.order;
-    }
+    },
   },
   mutations: {
     addProduct(state, productDTO){

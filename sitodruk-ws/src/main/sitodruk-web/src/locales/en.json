@@ -111,5 +111,9 @@
     "role.admin":"Admin role",
     "cannot.deactivate.access.level":"User must have at least one active access level",
     "select.user.roles":"Please select access level for this account",
-    "select.user.role.required":"You have to select at least one access level"
+    "select.user.role.required":"You have to select at least one access level",
+    "admin":"Administrator",
+    "manager":"Menadżer",
+    "client":"Klient",
+    "current.access.level":"Active access level"
 }

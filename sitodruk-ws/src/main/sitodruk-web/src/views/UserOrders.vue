@@ -65,21 +65,19 @@ export default {
     };
   },
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
+    currentUserAccessLevel() {
+      return this.$store.state.auth.currentAccessLevel;
     },
     isManagerInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_MANAGER');
+      if (this.currentUserAccessLevel == 'MANAGER') {
+        return true;
       }
-
       return false;
     },
     isClientInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_CLIENT');
+      if (this.currentUserAccessLevel == 'CLIENT') {
+        return true;
       }
-
       return false;
     },
   },

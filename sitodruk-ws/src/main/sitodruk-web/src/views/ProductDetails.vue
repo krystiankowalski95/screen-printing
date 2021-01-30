@@ -27,7 +27,7 @@
       >
       <b-row style="padding: 5px" />
       <b-row>
-        <b-col v-if="currentUser"> 
+        <b-col v-if="isClientInRole"> 
           <b-button v-if="product.stock > 0" pill variant="primary" @click="addProductToCart()">
             <font-awesome-icon icon="cart-arrow-down" />{{
               $t('addProcutToCart')
@@ -54,8 +54,20 @@ export default {
   name: 'ProductDetails',
   props: ['productName'],
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
+    currentUserAccessLevel() {
+      return this.$store.state.auth.currentAccessLevel;
+    },
+    isManagerInRole() {
+      if (this.currentUserAccessLevel == 'MANAGER') {
+        return true;
+      }
+      return false;
+    },
+    isClientInRole() {
+      if (this.currentUserAccessLevel == 'CLIENT') {
+        return true;
+      }
+      return false;
     },
   },
   data() {

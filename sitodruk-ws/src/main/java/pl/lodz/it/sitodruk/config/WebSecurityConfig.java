@@ -51,6 +51,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String[] publicRoutes = new String[]{"/api/auth/signin", "/api/auth/signup", "/api/auth/refreshToken", "/confirmAccount", "/resetPassword","/setNewPassword","/products/findAllActive","/products","/products/findByName/**"};
+        String[] clientRoutes = new String[]{"/findAccountByUsername", "/changeOwnPassword","/modifyOwnAccount","/orders/placeOrder","/orders/cancel","/orders/repeatPayment","/orders/findUsersOrders","/orders/findByPayUOrderId"};
+        String[] managerRoutes = new String[]{"/products/categories","/products/edit","/products/findAll","/products/addNew","/products/activateProduct","/products/deactivateProduct","/products/","/products/","/products/","/orders/cancel","/orders/complete","/orders/findUsersOrders","/orders/findByPayUOrderId","/orders/findAllOrders"};
+        String[] adminRoutes = new String[]{"/findAllAccounts","/findAccount","/changePassword","/modifyAccount","/createUser","/deactivateAccessLevel/**","/activateAccessLevel/**","/resendActivationLink","/deactivateAccount","/activateAccount"};
+
+
+
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

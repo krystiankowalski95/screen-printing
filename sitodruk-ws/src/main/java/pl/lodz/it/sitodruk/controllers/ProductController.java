@@ -62,8 +62,7 @@ public class ProductController {
     }
 
     @GetMapping("/findAll")
-//    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PermitAll
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<ProductDTO>> getAllManagerProducts() {
         try {
             return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);

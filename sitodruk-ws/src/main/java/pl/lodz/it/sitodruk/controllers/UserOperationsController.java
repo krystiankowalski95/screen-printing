@@ -141,7 +141,7 @@ public class UserOperationsController {
 
 
     @PostMapping("/modifyOwnAccount")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_MANAGER')")
     public ResponseEntity<?> editOwnAccount(@RequestBody UserDTO userDTO) {
         try {
             userService.modifyUser(userDTO);
@@ -171,7 +171,7 @@ public class UserOperationsController {
     }
 
     @PostMapping("/changeOwnPassword")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_MANAGER')")
     public ResponseEntity<?> changeOwnPassword(@RequestBody UserDTO userDTO) {
         try {
             userService.changePassword(userDTO);
@@ -232,7 +232,7 @@ public class UserOperationsController {
 
 
     @PostMapping("/findAccountByUsername")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_MANAGER')")
     public ResponseEntity<UserDTO> getAccountByUsername(@RequestBody Map<String, String> username) {
         try {
             return new ResponseEntity(userService.findUserByUsername(username.get("username")), HttpStatus.OK);

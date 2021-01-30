@@ -175,12 +175,12 @@ export default {
     };
   },
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
+    currentUserAccessLevel() {
+      return this.$store.state.auth.currentAccessLevel;
     },
     isAdminInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_ADMIN');
+      if (this.currentUserAccessLevel == 'ADMIN') {
+        return true;
       }
       return false;
     },

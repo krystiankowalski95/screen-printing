@@ -1,24 +1,12 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark" style="height: ">
+    <b-navbar toggleable="lg" type="dark" variant="dark">
       <a href class="navbar-brand" @click.prevent></a>
       <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/home" class="nav-link">
-            <font-awesome-icon icon="house-user" />{{ $t('homePage') }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/products" class="nav-link">
-            <font-awesome-icon icon="gifts" />{{ $t('products') }}
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="isManagerInRole == true">
-          <router-link to="/orders" class="nav-link">
-            <font-awesome-icon icon="gifts" />{{ $t('orders') }}
-          </router-link>
-        </li>
-        <b-dropdown  v-if="isAdminInRole" id="dropdown" class="m-md-2 navbar-nav ml-auto">
+         <b-nav-item href="/home"> <font-awesome-icon icon="house-user" />{{ $t('homePage') }}</b-nav-item>
+         <b-nav-item href="/products"> <font-awesome-icon icon="gifts" />{{ $t('products') }}</b-nav-item>
+         <b-nav-item  v-if="isManagerInRole == true" href="/orders"> <font-awesome-icon icon="gifts" />{{ $t('orders') }}</b-nav-item>
+         <b-dropdown  v-if="isAdminInRole" id="dropdown" class="m-md-2 navbar-nav ml-auto">
           <template #button-content>
             {{ $t('admin.panel') }}
           </template>
@@ -28,16 +16,8 @@
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" />{{ $t('signup') }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" />{{ $t('signin') }}
-          </router-link>
-        </li>
+        <b-nav-item href="/register"> <font-awesome-icon icon="user-plus" />{{ $t('signup') }}</b-nav-item>
+        <b-nav-item href="/login"> <font-awesome-icon icon="sign-in-alt" />{{ $t('signin') }}</b-nav-item>
       </div>
 
       <div v-if="currentUser" class="navbar-nav ml-auto">
@@ -50,18 +30,26 @@
           <b-dropdown-item  href="/changePassword">{{ $t('changePassword')}}</b-dropdown-item>
           <b-dropdown-item  href="/editUser">{{ $t('editUser')}}</b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item  href="/userOrders">{{ $t('userOrders')}}</b-dropdown-item>
+           <b-dropdown-text>{{ $t('current.access.level')}}
+             <span style="font-weight:bold" v-if="isClientInRole">{{ $t('client')}}</span>
+             <span style="font-weight:bold" v-if="isManagerInRole">{{ $t('manager')}}</span>
+             <span style="font-weight:bold" v-if="isAdminInRole">{{ $t('admin')}}</span>
+           </b-dropdown-text>
+          <b-dropdown-divider/>
+          <b-dropdown-item v-if="includesAdmin && isAdminInRole" disabled>{{ $t('admin')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+           <b-dropdown-item v-if="includesAdmin && isAdminInRole==false" @click="changeAccessLevel('ADMIN')">{{ $t('admin')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+          <b-dropdown-item v-if="includesManager && isManagerInRole" disabled>{{ $t('manager')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+          <b-dropdown-item v-if="includesManager && isManagerInRole==false" @click="changeAccessLevel('MANAGER')">{{ $t('manager')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+          <b-dropdown-item v-if="includesClient && isClientInRole" disabled>{{ $t('client')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+          <b-dropdown-item v-if="includesClient && isClientInRole==false" @click="changeAccessLevel('CLIENT')">{{ $t('client')}} <font-awesome-icon icon="user" /></b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+          <b-dropdown-item  v-if="isClientInRole" href="/userOrders">{{ $t('userOrders')}}</b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item @click.prevent="logOut">{{ $t('logout')}} <font-awesome-icon icon="sign-out-alt" /></b-dropdown-item>
         </b-dropdown>
       </div>
-      <div class="navbar-nav" v-if="currentUser">
-        <li class="nav-item">
-          <router-link to="/cart" class="nav-link">
-            <font-awesome-icon icon="shopping-cart" />
-            {{ $t('cart') }}
-          </router-link>
-        </li>
+      <div class="navbar-nav" v-if="isClientInRole">
+        <b-nav-item href="/cart"> <font-awesome-icon icon="shopping-cart" />{{ $t('cart') }}</b-nav-item>
       </div>
       <div class="navbar-nav">
         <b-select v-model="$i18n.locale">
@@ -69,7 +57,7 @@
           <option key="en" value="en">{{ $t('english') }}</option>
         </b-select>
       </div>
-    </nav>
+    </b-navbar>
 
     <div class="container">
       <router-view />
@@ -80,28 +68,46 @@
 <script>
 export default {
   computed: {
+    currentUserAccessLevel() {
+      return this.$store.state.auth.currentAccessLevel;
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },
-    isAdminInRole() {
-      if (this.currentUser && this.currentUser.roles) {
+    includesAdmin(){
+       if (this.currentUser && this.currentUser.roles) {
         return this.currentUser.roles.includes('ROLE_ADMIN');
       }
-
+      return false;
+    },
+    includesManager(){
+       if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes('ROLE_MANAGER');
+      }
+      return false;
+    },
+    includesClient(){
+       if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes('ROLE_CLIENT');
+      }
+      return false;
+    },
+    isAdminInRole() {
+      if (this.currentUserAccessLevel == 'ADMIN') {
+        return true;
+      }
       return false;
     },
     isManagerInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_MANAGER');
+    if (this.currentUserAccessLevel == 'MANAGER') {
+        return true;
       }
-
       return false;
     },
     isClientInRole() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_CLIENT');
+      if (this.currentUserAccessLevel == 'CLIENT') {
+        return true;
       }
-
       return false;
     },
   },
@@ -114,6 +120,10 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
+    changeAccessLevel(roleName){
+      this.$store.dispatch('auth/changeAccessLevel',roleName);
+      this.$router.go();
+    }
   },
 };
 </script>

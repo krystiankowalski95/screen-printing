@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 @Configuration
 public class RoutingConfiguration implements WebMvcConfigurer {
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -30,5 +32,11 @@ public class RoutingConfiguration implements WebMvcConfigurer {
                                 : new ClassPathResource("public/dist/index.html");
                     }
                 });
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry)
+    {
+        registry.addInterceptor(new Interceptor());
     }
 }
