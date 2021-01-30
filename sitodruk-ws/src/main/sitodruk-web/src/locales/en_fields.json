@@ -1,0 +1,9 @@
+{
+    "email":"email adress",
+    "username":"username",
+    "firstname":"firstname",
+    "lastname":"lastname",
+    "password":"password",
+    "confirmPassword":"confirm password",
+    "phoneNumber": "phone number"
+}

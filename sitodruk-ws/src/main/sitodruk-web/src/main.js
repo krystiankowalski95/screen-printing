@@ -12,6 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueSimpleAlert from "vue-simple-alert";
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import pl from "vee-validate/dist/locale/pl";
+import en from "vee-validate/dist/locale/en";
+import pl_attributes from './locales/pl_fields.json';
+import en_attributes from './locales/en_fields.json';
 import {
   faHome,
   faUser,
@@ -32,13 +36,25 @@ library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,f
 
 Vue.config.productionTip = false;
 
-Vue.use(VeeValidate);
 Vue.use(VueNumberInput);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(VueSimpleAlert);
 Vue.use(Vuex);
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VeeValidate, {
+  i18n,
+  dictionary: {
+    pl: {  
+      messages: pl.messages,
+      attributes: pl_attributes,
+    },
+    en: {
+      messages: en.messages,
+      attributes: en_attributes,
+    }
+  }
+});
 
 new Vue({
   i18n,

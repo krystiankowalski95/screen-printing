@@ -1,6 +1,6 @@
 {
   "name": "praca-inzynierska",
-  "version": "0.1.0",
+  "version": "0.7.6",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -13,7 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@vue/cli-service": "^4.5.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.18.1",
     "core-js": "^2.6.11",

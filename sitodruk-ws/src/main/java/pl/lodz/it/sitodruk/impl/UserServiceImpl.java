@@ -271,13 +271,9 @@ public class UserServiceImpl implements UserService {
     public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
-            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
                 user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
                 userRepository.saveAndFlush(user.get());
                 emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken());
-            } else {
-                throw new ApplicationOptimisticLockException();
-            }
         } else throw new UserNotFoundException();
     }
 
