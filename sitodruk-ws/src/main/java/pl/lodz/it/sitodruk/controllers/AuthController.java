@@ -87,20 +87,4 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
         }
     }
-
-    @GetMapping("/refreshToken")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
-        DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
-        Map<String, Object> expectedMap = getMapFromJWT(claims);
-        String token = jwtUtils.doGenerateRefreshToken(expectedMap, expectedMap.get("sub").toString());
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    private Map<String, Object> getMapFromJWT(DefaultClaims claims) {
-        Map<String, Object> expectedMap = new HashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : claims.entrySet()) {
-            expectedMap.put(entry.getKey(), entry.getValue());
-        }
-        return expectedMap;
-    }
 }

@@ -21,8 +21,8 @@ public class JwtUtils {
     @Value("${thesis.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    @Value("${thesis.app.jwtRefreshExpirationDateInMs}")
-    private int jwtRefreshMs;
+//    @Value("${thesis.app.jwtRefreshExpirationDateInMs}")
+//    private int jwtRefreshMs;
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -37,13 +37,14 @@ public class JwtUtils {
     }
 
 
-    public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
-
-    }
+//    public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
+//
+//        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshMs))
+//                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+//
+//    }
+    
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
