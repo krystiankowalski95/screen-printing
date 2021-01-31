@@ -115,5 +115,12 @@
     "admin":"Administrator",
     "manager":"Menadżer",
     "client":"Klient",
-    "current.access.level":"Active access level"
+    "current.access.level":"Active access level",
+    "user.registered":"Account has been created. Activation link has been send to the entered email address.",
+    "username.already.exists":"Username is already taken",
+    "email.already.exists":"Email address is already taken",
+    "account.confirmed":"Account has been confirmed. You can now proceed to login page.",
+    "email.has.been.sent":"If given email is valid you will recieve email with link to the form where you will be able to set new password",
+    "password.has.been.set":"New password has been set",
+    "user.not.found":"User has not been found"
 }

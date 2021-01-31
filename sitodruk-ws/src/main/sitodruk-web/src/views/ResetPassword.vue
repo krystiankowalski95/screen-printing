@@ -1,30 +1,35 @@
 <template>
   <div class="col-md-12">
-    <div class="card card-container">
+    <div class="card card-container" v-if="!successful">
       <form name="form" @submit.prevent="sendEmail">
         <div class="form-group">
-          <label for="email">{{ $t('email') }}</label>
+          <label for="email">{{ $t('email') }}*</label>
           <input
             v-model="user.email"
-            v-validate="'required'"
+            v-validate="'required|email|max:100'"
             type="text"
             class="form-control"
             name="email"
           />
-          <div
-            v-if="errors.has('email')"
-            class="alert alert-danger"
-            role="alert"
-          >{{ $t('emailRequired') }}</div>
+          <div v-if="submitted && errors.has('email')" class="alert-danger">
+            {{ errors.first('email') }}
+          </div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
-            <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+            <span
+              v-show="loading"
+              class="spinner-border spinner-border-sm"
+            ></span>
             <span>{{ $t('sendResetPasswordMail') }}</span>
           </button>
         </div>
-        <div class="form-group">
-          <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
+        <div
+          v-if="message"
+          class="alert"
+          :class="successful ? 'alert-success' : 'alert-danger'"
+        >
+          {{ $t(message.message) }}
         </div>
       </form>
     </div>
@@ -41,32 +46,39 @@ export default {
     return {
       user: new User(''),
       loading: false,
-      message: ''
+      message: '',
+      successful: false,
+      submitted: false
     };
   },
   methods: {
     sendEmail() {
       this.loading = true;
-      this.$validator.validateAll().then(isValid => {
+      this.submitted = true;
+      this.$validator.validateAll().then((isValid) => {
         if (!isValid) {
           this.loading = false;
           return;
-        }
-
-        if (this.user.email) {
+        } else {
           UserService.resetPassword(this.user).then(
-            error => {
+            (response) => {
+              this.message = response.data;
+              this.successful = true;
+              this.$alert(this.$t('email.has.been.sent'));
+              this.$router.push('/login');
+            },
+            (error) => {
+              this.$alert(this.$t('email.has.been.sent'));
+              this.$router.push('/login');
               this.loading = false;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+              this.successful = false;
+              this.message = error.response && error.response.data;
             }
           );
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -93,5 +105,4 @@ label {
   -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
-
 </style>

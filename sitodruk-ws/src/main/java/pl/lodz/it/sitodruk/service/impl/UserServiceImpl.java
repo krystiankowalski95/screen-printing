@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
-    public void activateUserAccount(UserDTO userDTO) throws BaseException , SQLException {
+    public void activateUserAccount(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deactivateUserAccount(UserDTO userDTO) throws BaseException, SQLException  {
+    public void deactivateUserAccount(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException, SQLException  {
+    public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException, SQLException {
         String appRoleName = "";
         if (role.equalsIgnoreCase("admin")) {
             appRoleName = SecurityConsts.ADMIN;
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUserByAdmin(UserDTO userDTO) throws BaseException, SQLException  {
+    public void createUserByAdmin(UserDTO userDTO) throws BaseException, SQLException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
         } else if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
+    public void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
+    public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
         } else if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -175,6 +175,7 @@ public class UserServiceImpl implements UserService {
         } else {
             UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
             user.setPassword(encoder.encode(userDTO.getPassword()));
+            user.setToken(UUID.randomUUID().toString().replace("-", ""));
             UserAccessLevelEntity client = new UserAccessLevelEntity();
             client.setAccessLevelName(SecurityConsts.CLIENT);
             client.setActive(true);
@@ -196,7 +197,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void modifyUser(UserDTO userDTO) throws BaseException, SQLException  {
+    public void modifyUser(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -212,20 +213,17 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException  {
+    public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
         if (user.isPresent()) {
-            if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                user.get().setPassword(encoder.encode(userDTO.getPassword()));
-                userRepository.saveAndFlush(user.get());
-            } else {
-                throw new ApplicationOptimisticLockException();
-            }
+            user.get().setPassword(encoder.encode(userDTO.getPassword()));
+            user.get().setToken("");
+            userRepository.saveAndFlush(user.get());
         } else throw new UserNotFoundException();
     }
 
     @Override
-    public void changePassword(UserDTO userDTO) throws BaseException, SQLException  {
+    public void changePassword(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -238,7 +236,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserByUsername(String username) throws BaseException, SQLException  {
+    public UserDTO findUserByUsername(String username) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
@@ -253,7 +251,7 @@ public class UserServiceImpl implements UserService {
         } else throw new UserNotFoundException();
     }
 
-    public List<UserDTO> getAllUsers() throws BaseException, SQLException  {
+    public List<UserDTO> getAllUsers() throws BaseException, SQLException {
         List<UserDTO> userDtos = new ArrayList<>();
         for (UserEntity userEntity : userRepository.findAll()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
@@ -270,17 +268,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
+    public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
-                user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
-                userRepository.saveAndFlush(user.get());
-                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken());
+            user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+            userRepository.saveAndFlush(user.get());
+            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken());
         } else throw new UserNotFoundException();
     }
 
     @Override
-    public void confirmUser(String token) throws BaseException, SQLException  {
+    public void confirmUser(String token) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
             if (user.get().getConfirmed()) {
@@ -294,7 +292,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException, SQLException  {
+    public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
         if (userEntity.isPresent()) {
             return userEntity.get().getConfirmed();

@@ -7,7 +7,7 @@
             <label for="password">{{ $t('password') }}</label>
             <input
               v-model="user.password"
-              v-validate="'required|min:6|max:40'"
+              v-validate="'required|min:8|max:40|confirmed:confirmPassword'"
               type="password"
               class="form-control"
               name="password"
@@ -20,8 +20,9 @@
             <label for="confirmPassword">{{ $t('confirmPassword') }}</label>
             <input
               v-model="user.confirmPassword"
-              v-validate="'required|min:6|max:40'"
+              v-validate="'required|min:8|max:40'"
               type="password"
+              ref="confirmPassword"
               class="form-control"
               name="confirmPassword"
             />
@@ -35,6 +36,13 @@
           </div>
         </div>
       </form>
+      <div
+          v-if="message"
+          class="alert"
+          :class="successful ? 'alert-success' : 'alert-danger'"
+        >
+          {{ $t(message.message) }}
+        </div>
     </div>
   </div>
 </template>
@@ -59,6 +67,7 @@ export default {
   methods: {
     setNewPassword() {
       this.loading = true;
+      this.submitted = true;
       this.$validator.validateAll().then(isValid => {
         if (!isValid) {
           this.loading = false;
@@ -67,15 +76,17 @@ export default {
 
         if (this.user.password && this.user.confirmPassword) {
           UserService.setNewPassword(this.user).then(
-            () => {
+            (response) => {
+              this.message = response.data;
+              this.successful = true;
+               this.$alert(this.$t('password.has.been.set'));
               this.$router.push('/home');
             },
             error => {
               this.loading = false;
               this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+                (error.response && error.response.data);
+                this.successful = false;
             }
           );
         }

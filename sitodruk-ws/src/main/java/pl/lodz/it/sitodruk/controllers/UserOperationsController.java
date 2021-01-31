@@ -245,8 +245,6 @@ public class UserOperationsController {
         try {
             userService.setNewPassword(userDTO);
             return ResponseEntity.ok("password.changed");
-        } catch (ApplicationOptimisticLockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         }  catch (BaseException e) {

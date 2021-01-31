@@ -8,7 +8,7 @@
       />
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">{{ $t('username') }}</label>
+          <label for="username">{{ $t('username') }}*</label>
           <input
             v-model="user.username"
             v-validate="'required'"
@@ -23,7 +23,7 @@
           >{{ $t('usernameRequired') }}</div>
         </div>
         <div class="form-group">
-          <label for="password">{{ $t('password') }}</label>
+          <label for="password">{{ $t('password') }}*</label>
           <input
             v-model="user.password"
             v-validate="'required'"

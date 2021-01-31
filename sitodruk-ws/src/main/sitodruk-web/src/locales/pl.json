@@ -117,5 +117,12 @@
     "admin":"Administrator",
     "manager":"Menadżer",
     "client":"Klient",
-    "current.access.level":"Wybrany poziom dostępu"
+    "current.access.level":"Wybrany poziom dostępu",
+    "user.registered":"Konto zostało utworzone. Na podany adres email wysłana została wiadomość email z kodem aktywacyjnym",
+    "username.already.exists":"Nazwa użytkownika jest już zajęta",
+    "email.already.exists":"Adres email jest już zajęty",
+    "account.confirmed":"Konto zostało potwierdzone. Możesz się teraz zalogować.",
+    "email.has.been.sent":"Jeżeli podany adres email jest poprawny, zostanie na niego wysłana wiadomość z łączem do formularza ustawiania nowego hasła",
+    "password.has.been.set":"Hasło zostało zmienione",
+    "user.not.found":"Użytkownik nie został znaleziony"
 }

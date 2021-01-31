@@ -3,7 +3,12 @@
     <header class="jumbotron">
       <h3>{{ $t('confirmAccount') }}</h3>
     </header>
-  </div>
+    <div
+        v-if="message"
+        class="alert"
+        :class="successful ? 'alert-success' : 'alert-danger'"
+      >{{ $t(message.message) }}</div>
+    </div>
 </template>
 
 <script>
@@ -13,17 +18,27 @@ export default {
   name: 'ConfirmAccount',
   data() {
     return {
-      content: ''
+      content: '',
+      message: '',
+      successful: false
     };
   },
   mounted() {
     let token = this.$route.query.token;
-    console.log(token);
     UserService.confirmAccount(token).then(
       response => {
-        this.content = response.data;
+        this.message = response.data;
+        this.successful = true;
+        this.$alert(this.$t('account.confirmed'));
+              this.$router.push("/login");
+
         // this.$router.push('home');
       },
+      error => {
+              this.message =
+                (error.response && error.response.data);
+              this.successful = false;
+            }
     );
   }
 };
