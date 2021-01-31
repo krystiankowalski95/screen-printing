@@ -4,10 +4,10 @@
       <form name="form" @submit.prevent="handleEdit">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="firstname">{{ $t('firstname') }}</label>
+            <label for="firstname">{{ $t('firstname') }}*</label>
             <input
               v-model="user.firstname"
-              v-validate="'required|min:3|max:20'"
+              v-validate="'required|min:3|max:64'"
               type="text"
               class="form-control"
               name="firstname"
@@ -20,19 +20,19 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="lastname">{{ $t('lastname') }}</label>
+            <label for="lastname">{{ $t('lastname') }}*</label>
             <input
               v-model="user.lastname"
-              v-validate="'required|min:2|max:20'"
+              v-validate="'required|min:3|max:100'"
               type="text"
               class="form-control"
               name="lastname"
             />
             <div
-              v-if="submitted && errors.has('lastName')"
+              v-if="submitted && errors.has('lastname')"
               class="alert-danger"
             >
-              {{ errors.first('lastame') }}
+              {{ errors.first('lastname') }}
             </div>
           </div>
           <div class="form-group">
@@ -55,7 +55,7 @@
               name="email"
             />
             <div class="form-group">
-              <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
+              <label for="phoneNumber">{{ $t('phoneNumber') }}*</label>
               <input
                 v-model="user.phoneNumber"
                 v-validate="{ required: true, digits: 9 }"
@@ -131,9 +131,8 @@ export default {
           this.message = error.response && error.response.data;
           if (this.message.status == 401) {
             this.$store.dispatch('auth/logout');
-            this.$router.push({
-              path: '/login',
-            });
+           this.$alert(this.$t('session.timed.out'));
+                this.$router.push('/login');
           }
         }
       );
@@ -149,17 +148,15 @@ export default {
             (data) => {
               this.message = data.message;
               this.successful = true;
-              this.$router.push({
-                  path: '/users',
-                });
+              this.$alert(this.$t('account.has.been.edited'));
+              this.$router.push('/users');
             },
             (error) => {
               this.message = error.response && error.response.data;
               if (this.message.status == 401) {
                 this.$store.dispatch('auth/logout');
-                this.$router.push({
-                  path: '/login',
-                });
+                this.$alert(this.$t('session.timed.out'));
+                this.$router.push('/login');
               }
               this.successful = false;
             }

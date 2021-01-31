@@ -15,7 +15,7 @@ public class OrderDTO {
     private Collection<ProductDTO> products = new ArrayList<>();
     private Double totalValue;
     private String username;
-    private Long blikCode;
+    private String blikCode;
     private AddressDTO addressDTO;
     private String ipAddress;
     private String orderStatus;

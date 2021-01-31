@@ -39,7 +39,9 @@
             }}
           </b-button>
         </b-col>
-        <b-col></b-col>
+        <b-col>
+           <b-button class="btn btn-primary pill" @click="goBack()">{{ $t('goBack') }}</b-button>
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -91,6 +93,9 @@ export default {
     }
   },
   methods: {
+    goBack(){
+      this.$router.push("/products");
+    },
     addProductToCart() {
       this.$store.commit(
         'addProduct',

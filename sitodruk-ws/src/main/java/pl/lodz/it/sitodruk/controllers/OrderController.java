@@ -42,9 +42,7 @@ public class OrderController {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.createOrder(orderDTO);
             return ResponseEntity.ok("order.placed");
-        } catch (PaymentException ex) {
-            return ResponseEntity.ok(ex.getMessage());
-        } catch (InsufficientStockException ex) {
+        }  catch (InsufficientStockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());

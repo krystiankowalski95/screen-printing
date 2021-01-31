@@ -5,5 +5,17 @@
     "lastname":"nazwisko",
     "password":"hasło",
     "confirmPassword":"potwierdź hasło",
-    "phoneNumber": "numer telefonu"
+    "phoneNumber": "numer telefonu",
+    "country":"",
+    "voivodeship":"",
+    "city":"",
+    "postalCode":"",
+    "street":"",
+    "streetNumber":"",
+    "blikCode":"kod blik",
+    "categoryName":"kategoria",
+    "name":"nazwa produktu"
+
+
+
 }

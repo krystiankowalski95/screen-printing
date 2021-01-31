@@ -38,8 +38,7 @@
           >{{ $t('passwordRequired') }}</div>
         </div>
         <div class="form-group">
-          <button class="btn btn-primary btn-block" :disabled="loading">
-            <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+          <button class="btn btn-primary btn-block">
             <span>{{ $t('signinButton') }}</span>
           </button>
         </div>

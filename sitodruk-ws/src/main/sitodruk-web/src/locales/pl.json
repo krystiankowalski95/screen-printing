@@ -79,10 +79,11 @@
     "canceled": "Anulowane",
     "completed": "Zakończone",
     "paid": "Opłacone",
+    "pending":"Płatność jest przetwarzana",
     "emulsje": "Emulsje",
     "siatki": "Siatki do sitodruku",
     "order.created":"Zamówienie zostało utworzone ale wystąpiły problemy z płatnością. Konto nie zostało obciążone. Możesz ponownie spróbować opłacić zamówienie z poziomu listy zamówień.",
-    "order.placed":"Zamówienie zostało utworzono i opłacone.",
+    "order.placed":"Zamówienie zostało utworzone a płatność jest przetwarzana",
     "insufficient.stock":"Zamówienie nie mogło zostać utworzone. Niewystarczający stan magazynowy jednego z produktów.",
     "cancelOrder":"Anuluj zamówienie",
     "cancelorder.msg":"Czy jesteś pewien ,że chcesz anulować to zamówienie?",
@@ -124,5 +125,14 @@
     "account.confirmed":"Konto zostało potwierdzone. Możesz się teraz zalogować.",
     "email.has.been.sent":"Jeżeli podany adres email jest poprawny, zostanie na niego wysłana wiadomość z łączem do formularza ustawiania nowego hasła",
     "password.has.been.set":"Hasło zostało zmienione",
-    "user.not.found":"Użytkownik nie został znaleziony"
+    "user.not.found":"Użytkownik nie został znaleziony",
+    "bad.credentials":"Nazwa użytkownika lub hasło są niepoprawne",
+    "account.has.been.edited":"Dane zostały pomyślnie zaktualizowane",
+    "session.timed.out":"Sesja wygasła",
+    "account.has.been.created":"Konto zostało utworzone",
+    "product.has.been.added":"Produkt został dodany",
+    "product.already.exists":"Produkt z taką nazwą już istnieje",
+    "goBack":"Wróć",
+    "adding.product":"Czy na pewno chcesz dodać produkt?",
+    "creating.user":"Czy na pewno chcesz utworzyć konto użytkownika?"
 }

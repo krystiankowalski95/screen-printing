@@ -75,9 +75,6 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
             orderEntity.setUsername(userEntity.get().getUsername());
             orderRepository.saveAndFlush(orderEntity);
-            if(orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase("created")){
-                throw new PaymentException();
-            }
         } else throw new UserNotFoundException();
     }
 
@@ -133,9 +130,9 @@ public class OrderServiceImpl implements OrderService {
     public void repeatPayment(OrderDTO orderDTO) throws BaseException {
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         Optional<UserEntity> userEntity = userRepository.findByUsername(orderDTO.getUsername());
-        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        OrderStatusEntity pending = orderStatusRepository.findByStatusName("pending");
         if(orderEntity.isPresent()){
-            if(orderEntity.get().getOrderStatus().equals(created)){
+            if(orderEntity.get().getOrderStatus().equals(pending)){
                 orderEntity.get().setPayUOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
                 orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity.get());
@@ -148,10 +145,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> findUsersOrders(String username) throws BaseException, SQLException {
         List<OrderDTO> orderDtos = new ArrayList<>();
-        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        OrderStatusEntity pending = orderStatusRepository.findByStatusName("pending");
         List<OrderEntity> orderEntities = orderRepository.findAllByUsername(username);
         for (OrderEntity orderEntity : orderEntities) {
-            if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
+            if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(pending.getStatusName())) {
                 orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity);
             }
@@ -173,9 +170,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> findAllOrders() throws BaseException, SQLException {
         List<OrderDTO> orderDtos = new ArrayList<>();
-        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        OrderStatusEntity pending = orderStatusRepository.findByStatusName("pending");
         for (OrderEntity orderEntity : orderRepository.findAll()) {
-            if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
+            if (orderEntity.getOrderStatus().getStatusName().equalsIgnoreCase(pending.getStatusName())) {
                 orderEntity.setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity);
             }
@@ -195,10 +192,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO findOrderByPayuOrderId(OrderDTO orderDTO) throws BaseException, SQLException  {
-        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
+        OrderStatusEntity pending = orderStatusRepository.findByStatusName("pending");
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         if(orderEntity.isPresent()){
-            if (orderEntity.get().getOrderStatus().getStatusName().equalsIgnoreCase(created.getStatusName())) {
+            if (orderEntity.get().getOrderStatus().getStatusName().equalsIgnoreCase(pending.getStatusName())) {
                 orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity.get());
             }

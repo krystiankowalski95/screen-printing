@@ -1,16 +1,16 @@
 <template>
   <div class="col-md-12">
     <header class="jumbotron">
-      <h3>{{ $t('change.user.password') }} {{user.username}}</h3>
+      <h3>{{ $t('change.user.password') }} {{ user.username }}</h3>
     </header>
     <div class="card card-container">
       <form name="form" @submit.prevent="changePassword">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="password">{{ $t('password') }}</label>
+            <label for="password">{{ $t('password') }}*</label>
             <input
               v-model="user.password"
-              v-validate="'required|min:6|max:40|confirmed:confirmPassword'"
+              v-validate="'required|min:8|max:40|confirmed:confirmPassword'"
               type="password"
               class="form-control"
               name="password"
@@ -23,10 +23,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="confirmPassword">{{ $t('confirmPassword') }}</label>
+            <label for="confirmPassword">{{ $t('confirmPassword') }}*</label>
             <input
               v-model="user.confirmPassword"
-              v-validate="'required|min:6|max:40'"
+              v-validate="'required|min:8|max:40'"
               type="password"
               ref="confirmPassword"
               class="form-control"
@@ -72,7 +72,7 @@ export default {
     };
   },
   computed: {
-     currentUserAccessLevel() {
+    currentUserAccessLevel() {
       return this.$store.state.auth.currentAccessLevel;
     },
     isAdminInRole() {
@@ -130,11 +130,17 @@ export default {
             (data) => {
               this.message = data.message;
               this.successful = true;
+              this.$alert(this.$t('password.has.been.set'));
               this.$router.push('/users');
             },
             (error) => {
               this.message = error.response && error.response.data;
-
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$router.push({
+                  path: '/login',
+                });
+              }
               this.successful = false;
             }
           );
@@ -144,3 +150,40 @@ export default {
   },
 };
 </script>
+
+
+
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+</style>

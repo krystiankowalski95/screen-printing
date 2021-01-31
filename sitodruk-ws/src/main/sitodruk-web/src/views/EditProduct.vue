@@ -48,6 +48,9 @@
           </div>
         </div>
       </form>
+      <div class="form-group">
+            <button class="btn btn-primary btn-block swal2-confirm swal2-styled " @click="goBack()">{{ $t('goBack') }}</button>
+      </div>
 
       <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
         {{ $t(message.message) }}
@@ -97,6 +100,9 @@ export default {
     };
   },
   methods: {
+    goBack(){
+      this.$router.push("/products");
+    },
     editProduct() {
       this.$validator.validate().then((isValid) => {
         if (isValid) {

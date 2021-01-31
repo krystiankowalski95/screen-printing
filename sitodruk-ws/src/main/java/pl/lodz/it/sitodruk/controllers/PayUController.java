@@ -73,7 +73,7 @@ public class PayUController {
         }
         PayMethodPayU payMethod = new PayMethodPayU();
         payMethod.setBlikData(new BlikData(true));
-        payMethod.setAuthorizationCode(orderDTO.getBlikCode().toString());
+        payMethod.setAuthorizationCode(orderDTO.getBlikCode());
         payMethod.setType("BLIK_TOKEN");
         order.setPayMethods(new PayMethodsPayU());
         order.getPayMethods().setPayMethod(payMethod);
@@ -95,7 +95,11 @@ public class PayUController {
             return "paid";
         } else if (status.equalsIgnoreCase("cancelled")) {
             return "cancelled";
-        }else return "created";
+        } else if (status.equalsIgnoreCase("pending")) {
+            return "pending";
+        } else {
+            return "created";
+        }
     }
 
 

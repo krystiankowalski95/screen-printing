@@ -9,10 +9,10 @@
       <form name="form" @submit.prevent="addProduct">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="name">{{ $t('productName') }}</label>
+            <label for="name">{{ $t('productName') }}*</label>
             <input
               v-model="product.name"
-              v-validate="'required|min:3|max:20'"
+              v-validate="'required|min:3|max:200'"
               type="text"
               class="form-control"
               name="name"
@@ -24,8 +24,8 @@
           </div>
 
           <div class="form-group">
-            <label for="categoryName">{{ $t('categoryName') }}</label>
-             <select  name="categoryName" class="form-control" @change="changeProductCategory($event)">
+            <label for="categoryName">{{ $t('categoryName') }}*</label>
+             <select v-validate="'required'" name="categoryName" class="form-control" @change="changeProductCategory($event)">
                 <option value="" selected disabled>{{$t('choose')}}</option>
                 <option v-for="(category,index) in productCategories" :value="category.category" :key="index">
                 {{ $t(category.category) }}
@@ -38,7 +38,7 @@
           </div>
 
             <div class="form-group">
-            <label for="stock">{{ $t('quantity') }}</label>
+            <label for="stock">{{ $t('quantity') }}*</label>
              <number-input name="stock"  v-model="product.stock" :min="0" :max="99" inline controls></number-input>
             <div
               v-if="submitted && errors.has('stock')"
@@ -48,7 +48,7 @@
 
 
           <div class="form-group">
-            <label for="price">{{ $t('price') }}</label>
+            <label for="price">{{ $t('price') }}*</label>
             <money v-model="product.price" v-bind="money"
             v-validate="'required'"
             class="form-control"
@@ -63,6 +63,9 @@
           </div>
         </div>
       </form>
+      <div class="form-group">
+            <button class="btn btn-primary btn-block" @click="goBack()">{{ $t('goBack') }}</button>
+      </div>
 
       <div
         v-if="message"
@@ -115,25 +118,34 @@ export default {
   })
   },
   methods: {
+    goBack(){
+      this.$router.push("/products")
+    },
     addProduct() {
       this.message = '';
       this.submitted = true;
       this.$validator.validate().then(isValid => {
         if (isValid) {
+          this.$confirm(this.$t("areyousure"), this.$t("adding.product"), "info")
+        .then(() => {
           this.product.isActive = false;
           ProductService.addProduct(this.product).then(
             data => {
               this.message = data.message;
               this.successful = true;
+              this.$alert(this.$t('product.has.been.added'));
+              this.$router.push('/products');
             },
-            error => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+            (error) => {
+              this.message = error.response && error.response.data;
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$alert(this.$t('session.timed.out'));
+                this.$router.push('/login');
+              }
               this.successful = false;
             }
-          );
+          );});
         }
       });
     },

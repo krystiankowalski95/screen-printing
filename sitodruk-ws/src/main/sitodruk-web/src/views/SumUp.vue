@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>{{ $t('sumup')}}</h3>
+      <h3>{{ $t('sumup') }}</h3>
     </header>
     <div v-if="this.$store.getters.shoppingListSize > 0">
       <b-container>
@@ -50,13 +50,13 @@
           <b-container>
             <b-row>
               <b-col
-                ><label for="country">{{ $t('country') }}</label></b-col
+                ><label for="country">{{ $t('country') }}*</label></b-col
               >
               <b-col>
                 <div class="form-group">
                   <input
                     v-model="address.country"
-                    v-validate="'required|min:3|max:200'"
+                    v-validate="'required|min:3|max:100'"
                     type="text"
                     class="form-control"
                     name="country"
@@ -70,13 +70,15 @@
                 </div></b-col
               >
               <b-col
-                ><label for="voivodeship">{{ $t('voivodeship') }}</label></b-col
+                ><label for="voivodeship"
+                  >{{ $t('voivodeship') }}*</label
+                ></b-col
               >
               <b-col>
                 <div class="form-group">
                   <input
                     v-model="address.voivodeship"
-                    v-validate="'required|min:3|max:200'"
+                    v-validate="'required|min:3|max:100'"
                     type="text"
                     class="form-control"
                     name="voivodeship"
@@ -92,13 +94,13 @@
             </b-row>
             <b-row>
               <b-col
-                ><label for="city">{{ $t('city') }}</label></b-col
+                ><label for="city">{{ $t('city') }}*</label></b-col
               >
               <b-col>
                 <div class="form-group">
                   <input
                     v-model="address.city"
-                    v-validate="'required|min:3|max:200'"
+                    v-validate="'required|min:3|max:100'"
                     type="text"
                     class="form-control"
                     name="city"
@@ -112,11 +114,16 @@
                 </div></b-col
               >
               <b-col
-                ><label for="postalCode">{{ $t('postalCode') }}</label></b-col
+                ><label for="postalCode">{{ $t('postalCode') }}*</label></b-col
               >
               <b-col>
                 <div class="form-group">
-                   <the-mask name="postalCode" :mask="['##-###']" v-model="address.postalCode" v-validate="'required'" />
+                  <the-mask
+                    name="postalCode"
+                    :mask="['##-###']"
+                    v-model="address.postalCode"
+                    v-validate="'required'"
+                  />
                   <div
                     v-if="submitted && errors.has('postalCode')"
                     class="alert-danger"
@@ -127,14 +134,14 @@
               >
             </b-row>
             <b-row>
-               <b-col
-                ><label for="street">{{ $t('street') }}</label></b-col
+              <b-col
+                ><label for="street">{{ $t('street') }}*</label></b-col
               >
               <b-col>
                 <div class="form-group">
                   <input
                     v-model="address.street"
-                    v-validate="'min:3|max:200'"
+                    v-validate="'required|min:3|max:100'"
                     type="text"
                     class="form-control"
                     name="street"
@@ -148,15 +155,15 @@
                 </div></b-col
               >
               <b-col
-                ><label for="streetNumber">{{
-                  $t('streetNumber')
-                }}</label></b-col
+                ><label for="streetNumber"
+                  >{{ $t('streetNumber') }}*</label
+                ></b-col
               >
               <b-col>
                 <div class="form-group">
                   <input
                     v-model="address.streetNumber"
-                    v-validate="'required|min:1|max:200'"
+                    v-validate="'required|min:1|max:11'"
                     type="text"
                     class="form-control"
                     name="streetNumber"
@@ -178,11 +185,16 @@
               <b-col></b-col>
               <b-col></b-col>
               <b-col
-                ><label for="blikCode">{{ $t('blikCode') }}</label></b-col
+                ><label for="blikCode">{{ $t('blikCode') }}*</label></b-col
               >
               <b-col>
                 <div class="form-group">
-                  <the-mask name="blikCode" :mask="['### ###']" v-model="order.blikCode" />
+                  <the-mask
+                    name="blikCode"
+                    :mask="['### ###']"
+                    v-validate="'required'"
+                    v-model="order.blikCode"
+                  />
                   <div
                     v-if="submitted && errors.has('blikCode')"
                     class="alert-danger"
@@ -192,7 +204,7 @@
                 </div></b-col
               >
             </b-row>
-            <br/>
+            <br />
             <b-row>
               <b-col></b-col>
               <b-col></b-col>
@@ -203,19 +215,33 @@
                 }}</b-button></b-col
               >
             </b-row>
+            <b-row>
+              <b-col
+                ><b-button pill variant="primary" @click="goBack()">{{
+                  $t('goBack')
+                }}</b-button></b-col
+              ><b-col></b-col>
+              <b-col></b-col>
+              <b-col></b-col>
+              <b-col></b-col>
+              <b-col></b-col>
+            </b-row>
           </b-container>
         </div>
       </form>
     </div>
-    <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-        {{ $t(message) }}
-      </div>
-      <div v-if="successful == true">
-        <b-button pill variant="primary" @click="goToHomePage()">{{
-                  $t('OK')
-                }}</b-button>
-      </div>
-    <div v-if="(this.$store.getters.shoppingListSize == 0) && (this.successful == false)">
+    <div
+      v-if="message"
+      class="alert"
+      :class="successful ? 'alert-success' : 'alert-danger'"
+    >
+      {{ $t(message) }}
+    </div>
+    <div
+      v-if="
+        this.$store.getters.shoppingListSize == 0 && this.successful == false
+      "
+    >
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
   </div>
@@ -223,10 +249,10 @@
 
 <script>
 import { Money } from 'v-money';
-import {TheMask} from 'vue-the-mask'
+import { TheMask } from 'vue-the-mask';
 import Address from '../models/address';
 import Order from '../models/order';
-import OrderService from "../services/order.service";
+import OrderService from '../services/order.service';
 
 export default {
   components: { Money, TheMask },
@@ -235,10 +261,10 @@ export default {
     return {
       submitted: false,
       successful: false,
-      message: "",
+      message: '',
       productList: this.$store.getters.shoppingList,
       totalcost: 0.0,
-      order: new Order('','','','','',''),
+      order: new Order('', '', '', '', '', ''),
       address: new Address('', '', '', '', '', ''),
       money: {
         decimal: '.',
@@ -254,52 +280,58 @@ export default {
     this.calculatePrice();
   },
   methods: {
+    goBack() {
+      this.$router.push('/cart');
+    },
     goToHomePage() {
       this.$store.commit('clearShoppingList');
-       this.$router.push({
-                  path: '/home',
-                });
+      this.$router.push({
+        path: '/home',
+      });
     },
     calculatePrice() {
       this.totalcost = 0;
       for (let i = 0; i < this.productList.length; i++) {
-        let price =
-          this.productList[i].price *
-          this.productList[i].quantity;
+        let price = this.productList[i].price * this.productList[i].quantity;
         this.totalcost = this.totalcost + price;
       }
     },
     placeOrder() {
+      this.submitted = true;
       this.order.products = this.productList;
       this.order.address = this.address;
       this.order.totalValue = this.totalcost;
       this.order.username = this.$store.state.auth.user.username;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
-          this.$confirm(this.$t("areyousure"), this.$t("placingorder"), "info")
-        .then(() => {
-          OrderService.placeOrder(this.order).then(
-            (data) => {
-              this.responseList = data;
-              if(this.responseList.data == "order.created" && this.responseList.status == 200){
-                this.message =this.responseList.data;
+          this.$confirm(
+            this.$t('areyousure'),
+            this.$t('placingorder'),
+            'info'
+          ).then(() => {
+            OrderService.placeOrder(this.order).then(
+              (data) => {
+                this.responseList = data;
+                this.message = this.responseList.data;
+                this.successful = true;
                 this.$store.commit('clearShoppingList');
+                this.$alert(this.$t('order.placed'));
+                this.$router.push("/home");
+              },
+              (error) => {
+                this.message = error.response && error.response.data;
+                if (this.message.status == 401) {
+                  this.$store.dispatch('auth/logout');
+                  this.$router.push({
+                    path: '/login',
+                  });
+                }
+                this.successful = false;
               }
-              this.successful = true;
-            },
-            (error) => {
-              this.message = (error.response && error.response.data);
-              if (this.message.status == 401) {
-                this.$store.dispatch('auth/logout');
-                this.$router.push({
-                  path: '/login',
-                });
-              }
-              this.successful = false;
-            }
-          );
-        })
-        }});
+            );
+          });
+        }
+      });
     },
   },
 };

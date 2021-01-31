@@ -65,6 +65,9 @@ export default {
     };
   },
   computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
     currentUserAccessLevel() {
       return this.$store.state.auth.currentAccessLevel;
     },

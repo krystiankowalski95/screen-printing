@@ -170,6 +170,9 @@
             </b-row>
     </b-container>
     </form>
+    <b-col>
+           <b-button class="btn btn-primary pill" @click="goBack()">{{ $t('goBack') }}</b-button>
+    </b-col>
     <div
       v-if="message"
       class="alert"
@@ -264,6 +267,9 @@ export default {
     }
  },
   methods: {
+    goBack(){
+      this.$router.push("/orders");
+    },
     repeatPayment(){
      this.order.username = this.$store.state.auth.user.username;
      this.$confirm(this.$t("areyousure"), this.$t("repeatpayment.msg"), "warning")

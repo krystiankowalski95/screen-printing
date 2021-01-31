@@ -31,8 +31,6 @@ export default {
         this.successful = true;
         this.$alert(this.$t('account.confirmed'));
               this.$router.push("/login");
-
-        // this.$router.push('home');
       },
       error => {
               this.message =

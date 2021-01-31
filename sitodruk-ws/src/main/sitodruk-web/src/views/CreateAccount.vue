@@ -9,10 +9,10 @@
       <form name="form" @submit.prevent="handleCreate">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="firstname">{{ $t('firstname') }}</label>
+            <label for="firstname">{{ $t('firstname') }}*</label>
             <input
               v-model="user.firstname"
-              v-validate="'required|min:3|max:20'"
+              v-validate="'required|min:3|max:64'"
               type="text"
               class="form-control"
               name="firstname"
@@ -25,26 +25,26 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="lastname">{{ $t('lastname') }}</label>
+            <label for="lastname">{{ $t('lastname') }}*</label>
             <input
               v-model="user.lastname"
-              v-validate="'required|min:2|max:20'"
+              v-validate="'required|min:3|max:100'"
               type="text"
               class="form-control"
               name="lastname"
             />
             <div
-              v-if="submitted && errors.has('lastName')"
+              v-if="submitted && errors.has('lastname')"
               class="alert-danger"
             >
-              {{ errors.first('lastame') }}
+              {{ errors.first('lastname') }}
             </div>
           </div>
           <div class="form-group">
-            <label for="username">{{ $t('username') }}</label>
+            <label for="username">{{ $t('username') }}*</label>
             <input
               v-model="user.username"
-              v-validate="'required|min:3|max:20'"
+              v-validate="'required|min:3|max:100'"
               type="text"
               class="form-control"
               name="username"
@@ -57,10 +57,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="email">{{ $t('email') }}</label>
+            <label for="email">{{ $t('email') }}*</label>
             <input
               v-model="user.email"
-              v-validate="'required|email|max:50'"
+              v-validate="'required|email|max:100'"
               type="email"
               class="form-control"
               name="email"
@@ -70,10 +70,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="password">{{ $t('password') }}</label>
+            <label for="password">{{ $t('password') }}*</label>
             <input
               v-model="user.password"
-              v-validate="'required|min:6|max:40'"
+              v-validate="'required|min:8|max:40|confirmed:confirmPassword'"
               type="password"
               class="form-control"
               name="password"
@@ -86,13 +86,14 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="confirmPassword">{{ $t('confirmPassword') }}</label>
+            <label for="confirmPassword">{{ $t('confirmPassword') }}*</label>
             <input
               v-model="user.confirmPassword"
-              v-validate="'required|min:6|max:40'"
+              v-validate="'required|min:8|max:40'"
               type="password"
               class="form-control"
               name="confirmPassword"
+              ref="confirmPassword"
             />
             <div
               v-if="submitted && errors.has('confirmPassword')"
@@ -102,7 +103,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="phoneNumber">{{ $t('phoneNumber') }}</label>
+            <label for="phoneNumber">{{ $t('phoneNumber') }}*</label>
             <input
               v-model="user.phoneNumber"
               v-validate="{ required: true, digits: 9 }"
@@ -118,7 +119,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="roles">{{ $t('select.user.roles') }}</label>
+            <label for="roles">{{ $t('select.user.roles') }}*</label>
             <b-form-group id="roles" v-slot="{ ariaDescribedby }">
               <b-form-checkbox
                 v-for="option in options"
@@ -148,7 +149,7 @@
         class="alert"
         :class="successful ? 'alert-success' : 'alert-danger'"
       >
-        {{ message }}
+        {{ $t(message.message) }}
       </div>
     </div>
   </div>
@@ -203,20 +204,26 @@ export default {
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
+          this.$confirm(this.$t("areyousure"), this.$t("creating.user"), "info")
+        .then(() => {
           UserService.createUser(this.user, this.selectedRoles).then(
             (data) => {
               this.message = data.message;
               this.successful = true;
-              this.$router.push('/home');
+              this.$alert(this.$t('account.has.been.created'));
+              this.$router.push('/users');
             },
             (error) => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+              this.message = error.response && error.response.data;
+              if (this.message.status == 401) {
+                this.$store.dispatch('auth/logout');
+                this.$alert(this.$t('session.timed.out'));
+                this.$router.push('/login');
+              }
               this.successful = false;
             }
           );
+          });
         }
       });
     },
