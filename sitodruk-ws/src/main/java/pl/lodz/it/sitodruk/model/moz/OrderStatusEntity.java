@@ -15,6 +15,6 @@ import java.util.List;
 public class OrderStatusEntity implements Serializable {
     @Id@Column(name = "id", nullable = false)
     private Long id;
-    @Basic@Column(name = "status_name", nullable = false)
+    @Basic@Column(name = "status_name", nullable = false, length = 100)
     private String statusName;
 }

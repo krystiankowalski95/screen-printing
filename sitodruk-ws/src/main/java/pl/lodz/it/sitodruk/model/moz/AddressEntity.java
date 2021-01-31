@@ -16,22 +16,22 @@ public class AddressEntity {
     @SequenceGenerator(name = "address_generator", sequenceName = "address_seq", allocationSize = 1)
     private Long id;
     @Basic
-    @Column(name = "country", nullable = false, length = -1)
+    @Column(name = "country", nullable = false, length = 100)
     private String country;
     @Basic
-    @Column(name = "voivodeship", nullable = false, length = -1)
+    @Column(name = "voivodeship", nullable = false, length = 100)
     private String voivodeship;
     @Basic
-    @Column(name = "city", nullable = false, length = -1)
+    @Column(name = "city", nullable = false, length = 100)
     private String city;
     @Basic
-    @Column(name = "postal_code", nullable = false, length = -1)
+    @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;
     @Basic
-    @Column(name = "street", nullable = false, length = -1)
+    @Column(name = "street", nullable = false, length = 100)
     private String street;
     @Basic
-    @Column(name = "street_number", nullable = false, length = -1)
+    @Column(name = "street_number", nullable = false, length = 11)
     private String streetNumber;
     @Column(name = "version", nullable = false)
     @Version

@@ -14,6 +14,6 @@ public class CategoryEntity {
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic
-    @Column(name = "category_name", nullable = false, length = -1)
+    @Column(name = "category_name", nullable = false, length = 100)
     private String categoryName;
 }

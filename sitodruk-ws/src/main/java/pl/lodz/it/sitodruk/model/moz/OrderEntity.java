@@ -14,16 +14,16 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_generator")
     @SequenceGenerator(name = "order_generator", sequenceName = "orders_seq", allocationSize = 1)
     private Long id;
-    @Basic@Column(name = "payu_order_id", nullable = false)
+    @Basic@Column(name = "payu_order_id", nullable = false, length = 255)
     private String payUOrderId;
     @Basic@Column(name = "timestamp", nullable = true)
     private LocalDateTime timestamp = LocalDateTime.now();
     @Version
     @Basic@Column(name = "version", nullable = false)
     private Long version;
-    @Basic@Column(name = "username", nullable = false)
+    @Basic@Column(name = "username", nullable = false, length = 64)
     private String username;
-    @Basic@Column(name = "total_value", nullable = false)
+    @Basic@Column(name = "total_value", nullable = false, scale = 2)
     private Double totalValue;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
@@ -36,7 +36,7 @@ public class OrderEntity {
     private List<OrderProductEntity> orderProductEntities = new ArrayList<>();
 
     public OrderEntity(){
-
+        this.version = 1L;
     }
 
 }

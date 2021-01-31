@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                user.get().setToken(UUID.randomUUID().toString());
+                user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
                 userRepository.saveAndFlush(user.get());
                 emailSenderService.sendRegistrationEmail(user.get().getEmail(), requestUrl, user.get().getToken());
             } else {

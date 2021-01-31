@@ -16,12 +16,12 @@ public class ProductEntity {
     private Long id;
     @Basic@Column(name = "name", nullable = false, length = 200)
     private String name;
-    @Basic@Column(name = "price", nullable = false, precision = 0)
+    @Basic@Column(name = "price", nullable = false, scale = 2)
     private Double price;
     @Basic
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
-    @Basic@Column(name = "category", nullable = false, length = -1)
+    @Basic@Column(name = "category", nullable = false, length = 100)
     private String categoryName;
     @Basic@Column(name = "stock", nullable = false)
     private  Long stock;

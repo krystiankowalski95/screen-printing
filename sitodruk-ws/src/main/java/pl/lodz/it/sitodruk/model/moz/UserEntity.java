@@ -37,7 +37,7 @@ public class UserEntity implements Serializable {
     private Boolean confirmed;
 
     @Basic
-    @Column(name = "token", unique = true)
+    @Column(name = "token", unique = true, length = 32)
     private String token;
 
     @OneToMany(mappedBy = "loginDataByUserId", cascade = CascadeType.ALL)
@@ -48,11 +48,11 @@ public class UserEntity implements Serializable {
     private String firstname;
 
     @Basic
-    @Column(name = "lastname", table = "user_personal_data", nullable = false, length = 64)
+    @Column(name = "lastname", table = "user_personal_data", nullable = false, length = 100)
     private String lastname;
 
     @Basic
-    @Column(name = "email", table = "user_personal_data", nullable = false, length = 64)
+    @Column(name = "email", table = "user_personal_data", nullable = false, length = 100)
     private String email;
     @Basic
     @Column(name = "phone_number", table = "user_personal_data", nullable = false, length = 15)
@@ -62,10 +62,4 @@ public class UserEntity implements Serializable {
     @Version
     @Column(name = "version", table = "user_personal_data", nullable = false)
     private Long version;
-
-    public UserEntity(){
-        this.active = true;
-        this.token = UUID.randomUUID().toString().replace("-", "");
-    }
-
 }
