@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.model.mok.UserEntity;
 import pl.lodz.it.sitodruk.repositories.auth.AuthUserRepository;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "authTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "authTransactionManager", rollbackFor = BaseException.class)
 public class UserDetailsServiceImpl implements UserDetailsService, pl.lodz.it.sitodruk.service.UserDetailsService {
     @Autowired
     AuthUserRepository userRepository;

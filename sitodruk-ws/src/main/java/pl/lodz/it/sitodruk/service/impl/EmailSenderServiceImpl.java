@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -37,8 +37,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String link = request.getRequestURL()
                     .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/confirmAccount?token=");
             String body = "<a href=\"" + link + token + "\">"+"Verify Account"+ "</a>";
-//mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
-            helper.setText(body, true); // Use this or above line.
+            helper.setText(body, true);
             helper.setTo(to);
             helper.setSubject("Welcome");
             helper.setFrom("noreplay@gmail.com");
@@ -56,8 +55,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String link = request.getRequestURL()
                     .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/setNewPassword?token=");
             String body = "<a href=\"" + link + token + "\">"+"Reset password"+ "</a>";
-//mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
-            helper.setText(body, true); // Use this or above line.
+            helper.setText(body, true);
             helper.setTo(to);
             helper.setSubject("Reset password");
             helper.setFrom("noreplay@gmail.com");

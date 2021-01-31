@@ -48,6 +48,19 @@ class OrderService {
       dtoVersion: order.dtoVersion
     } , { headers: authHeader() });
   }
+
+  cancelClientOrder(order) {
+    return axios.post(API_URL + '/cancelClient',
+    {
+      payUOrderId: order.payUOrderId,
+      products: order.products,
+      totalValue: order.totalValue,
+      username: order.username,
+      addressDTO: order.addressDTO,
+      orderStatus: order.orderStatus,
+      dtoVersion: order.dtoVersion
+    } , { headers: authHeader() });
+  }
   
   repeatPayment(order) {
     return axios.post(API_URL + '/repeatPayment',

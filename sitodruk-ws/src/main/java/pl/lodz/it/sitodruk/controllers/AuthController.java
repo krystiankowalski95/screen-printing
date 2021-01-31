@@ -1,13 +1,12 @@
 package pl.lodz.it.sitodruk.controllers;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 
-import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.config.JwtUtils;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
-import pl.lodz.it.sitodruk.impl.UserDetailsImpl;
+import pl.lodz.it.sitodruk.service.impl.UserDetailsImpl;
 import pl.lodz.it.sitodruk.payload.JwtResponse;
 import pl.lodz.it.sitodruk.service.UserService;
 
@@ -67,7 +66,9 @@ public class AuthController {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"account.notactive");
             }
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -84,7 +85,9 @@ public class AuthController {
             return ResponseEntity.ok("user.registered");
 
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -21,13 +21,14 @@ import pl.lodz.it.sitodruk.repositories.moz.ProductRepositoryMoz;
 import pl.lodz.it.sitodruk.repositories.moz.UserRepositoryMoz;
 import pl.lodz.it.sitodruk.service.OrderService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mozTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mozTransactionManager",rollbackFor = BaseException.class)
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
@@ -145,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> findUsersOrders(String username) throws BaseException {
+    public List<OrderDTO> findUsersOrders(String username) throws BaseException, SQLException {
         List<OrderDTO> orderDtos = new ArrayList<>();
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         List<OrderEntity> orderEntities = orderRepository.findAllByUsername(username);
@@ -170,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderDTO> findAllOrders() throws BaseException {
+    public List<OrderDTO> findAllOrders() throws BaseException, SQLException {
         List<OrderDTO> orderDtos = new ArrayList<>();
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         for (OrderEntity orderEntity : orderRepository.findAll()) {
@@ -193,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOrderByPayuOrderId(OrderDTO orderDTO) throws BaseException {
+    public OrderDTO findOrderByPayuOrderId(OrderDTO orderDTO) throws BaseException, SQLException  {
         OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         if(orderEntity.isPresent()){

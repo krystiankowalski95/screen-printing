@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.it.sitodruk.SecurityConsts;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.dto.mappers.UserMapper;
 import pl.lodz.it.sitodruk.exceptions.*;
@@ -17,6 +18,7 @@ import pl.lodz.it.sitodruk.service.EmailSenderService;
 import pl.lodz.it.sitodruk.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mokTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mokTransactionManager", rollbackFor = BaseException.class)
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
-    public void activateUserAccount(UserDTO userDTO) throws BaseException {
+    public void activateUserAccount(UserDTO userDTO) throws BaseException , SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deactivateUserAccount(UserDTO userDTO) throws BaseException {
+    public void deactivateUserAccount(UserDTO userDTO) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -63,14 +65,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+    public void activateUserAccessLevel(UserDTO userDTO, String role) throws BaseException, SQLException  {
         String appRoleName = "";
         if (role.equalsIgnoreCase("admin")) {
-            appRoleName = "ROLE_ADMIN";
+            appRoleName = SecurityConsts.ADMIN;
         } else if (role.equalsIgnoreCase("manager")) {
-            appRoleName = "ROLE_MANAGER";
+            appRoleName = SecurityConsts.MANAGER;
         } else if (role.equalsIgnoreCase("client")) {
-            appRoleName = "ROLE_CLIENT";
+            appRoleName = SecurityConsts.CLIENT;
         }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
@@ -88,14 +90,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deactivateUserAccessLevel(UserDTO userDTO, String role) throws BaseException {
+    public void deactivateUserAccessLevel(UserDTO userDTO, String role) throws BaseException, SQLException {
         String appRoleName = "";
         if (role.equalsIgnoreCase("admin")) {
-            appRoleName = "ROLE_ADMIN";
+            appRoleName = SecurityConsts.ADMIN;
         } else if (role.equalsIgnoreCase("manager")) {
-            appRoleName = "ROLE_MANAGER";
+            appRoleName = SecurityConsts.MANAGER;
         } else if (role.equalsIgnoreCase("client")) {
-            appRoleName = "ROLE_CLIENT";
+            appRoleName = SecurityConsts.CLIENT;
         }
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
@@ -118,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUserByAdmin(UserDTO userDTO) throws BaseException {
+    public void createUserByAdmin(UserDTO userDTO) throws BaseException, SQLException  {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
         } else if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -129,19 +131,19 @@ public class UserServiceImpl implements UserService {
             user.setConfirmed(true);
 
             UserAccessLevelEntity client = new UserAccessLevelEntity();
-            client.setAccessLevelName("ROLE_CLIENT");
+            client.setAccessLevelName(SecurityConsts.CLIENT);
             client.setActive(userDTO.getRoles().contains("client"));
             client.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(client);
 
             UserAccessLevelEntity manager = new UserAccessLevelEntity();
-            manager.setAccessLevelName("ROLE_MANAGER");
+            manager.setAccessLevelName(SecurityConsts.MANAGER);
             manager.setActive(userDTO.getRoles().contains("manager"));
             manager.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(manager);
 
             UserAccessLevelEntity admin = new UserAccessLevelEntity();
-            admin.setAccessLevelName("ROLE_ADMIN");
+            admin.setAccessLevelName(SecurityConsts.ADMIN);
             admin.setActive(userDTO.getRoles().contains("admin"));
             admin.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(admin);
@@ -151,7 +153,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
+    public void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -165,7 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
+    public void createUser(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UsernameAlreadyExistsException();
         } else if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -174,17 +176,17 @@ public class UserServiceImpl implements UserService {
             UserEntity user = UserMapper.INSTANCE.createNewUser(userDTO);
             user.setPassword(encoder.encode(userDTO.getPassword()));
             UserAccessLevelEntity client = new UserAccessLevelEntity();
-            client.setAccessLevelName("ROLE_CLIENT");
+            client.setAccessLevelName(SecurityConsts.CLIENT);
             client.setActive(true);
             client.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(client);
             UserAccessLevelEntity manager = new UserAccessLevelEntity();
-            manager.setAccessLevelName("ROLE_MANAGER");
+            manager.setAccessLevelName(SecurityConsts.MANAGER);
             manager.setActive(false);
             manager.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(manager);
             UserAccessLevelEntity admin = new UserAccessLevelEntity();
-            admin.setAccessLevelName("ROLE_ADMIN");
+            admin.setAccessLevelName(SecurityConsts.ADMIN);
             admin.setActive(false);
             admin.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(admin);
@@ -194,7 +196,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void modifyUser(UserDTO userDTO) throws BaseException {
+    public void modifyUser(UserDTO userDTO) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -210,7 +212,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void setNewPassword(UserDTO userDTO) throws BaseException {
+    public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -223,7 +225,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(UserDTO userDTO) throws BaseException {
+    public void changePassword(UserDTO userDTO) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
@@ -236,7 +238,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserByUsername(String username) throws BaseException {
+    public UserDTO findUserByUsername(String username) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
@@ -251,7 +253,7 @@ public class UserServiceImpl implements UserService {
         } else throw new UserNotFoundException();
     }
 
-    public List<UserDTO> getAllUsers() throws BaseException {
+    public List<UserDTO> getAllUsers() throws BaseException, SQLException  {
         List<UserDTO> userDtos = new ArrayList<>();
         for (UserEntity userEntity : userRepository.findAll()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
@@ -268,7 +270,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException {
+    public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
                 user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
@@ -278,7 +280,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmUser(String token) throws BaseException {
+    public void confirmUser(String token) throws BaseException, SQLException  {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
             if (user.get().getConfirmed()) {
@@ -292,7 +294,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException {
+    public Boolean isUserConfirmed(UserDTO userDTO) throws BaseException, SQLException  {
         Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
         if (userEntity.isPresent()) {
             return userEntity.get().getConfirmed();
@@ -300,7 +302,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isUserActive(UserDTO userDTO) throws BaseException {
+    public Boolean isUserActive(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> userEntity = userRepository.findByUsername(userDTO.getUsername());
         if (userEntity.isPresent()) {
             return userEntity.get().getActive();

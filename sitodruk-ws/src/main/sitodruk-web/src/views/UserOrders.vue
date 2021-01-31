@@ -145,7 +145,7 @@ export default {
     cancelOrder(index) {
       this.$confirm(this.$t("areyousure"), this.$t("cancelorder.msg"), "warning")
         .then(() => {
-          OrderService.cancelOrder(this.orderList[index]).then(
+          OrderService.cancelClientOrder(this.orderList[index]).then(
         (data) => {
           this.responseList = data.data;
           this.successful = true;

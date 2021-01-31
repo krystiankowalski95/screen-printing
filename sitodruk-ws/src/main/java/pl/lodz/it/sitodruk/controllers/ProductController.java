@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.lodz.it.sitodruk.SecurityConsts;
 import pl.lodz.it.sitodruk.dto.CategoryDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.exceptions.ApplicationOptimisticLockException;
@@ -21,6 +22,7 @@ import pl.lodz.it.sitodruk.service.ProductService;
 
 import javax.annotation.security.PermitAll;
 import javax.persistence.OptimisticLockException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,35 +41,41 @@ public class ProductController {
     private Properties exceptionProperties;
 
     @GetMapping("/categories")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<List<CategoryDTO>> getAllProductCategories() {
         try {
             return new ResponseEntity(productCategoryService.getAllProductCategories(), HttpStatus.OK);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/edit")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> editProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.modifyProduct(productDTO);
             return ResponseEntity.ok("");
         } catch (ApplicationOptimisticLockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @GetMapping("/findAll")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<List<ProductDTO>> getAllManagerProducts() {
         try {
             return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
@@ -77,7 +85,9 @@ public class ProductController {
         try {
             return new ResponseEntity(productService.findAllActiveProducts(), HttpStatus.OK);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
@@ -87,53 +97,61 @@ public class ProductController {
         try {
             return new ResponseEntity(productService.findProductByName(name), HttpStatus.OK);
         } catch (ProductNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.not.found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
 
     @PostMapping("/addNew")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.createProduct(productDTO);
             return ResponseEntity.ok("product.added");
         } catch (ProductAlreadyExistsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.already.exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/activateProduct")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> activateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.activateProduct(productDTO);
             return ResponseEntity.ok("product.activated");
         } catch (ApplicationOptimisticLockException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (ProductNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.not.found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/deactivateProduct")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> deactivateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.deactivateProduct(productDTO);
             return ResponseEntity.ok("product.deactivated");
         } catch (ApplicationOptimisticLockException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (ProductNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "product.not.found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 }

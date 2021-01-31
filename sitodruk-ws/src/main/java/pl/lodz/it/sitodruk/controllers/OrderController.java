@@ -2,7 +2,6 @@ package pl.lodz.it.sitodruk.controllers;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +11,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.lodz.it.sitodruk.SecurityConsts;
+import pl.lodz.it.sitodruk.config.annotations.ClientAuthenticatedAndUsernameFromOrderDto;
+import pl.lodz.it.sitodruk.config.annotations.ClientAuthenticatedAndUsernameFromUserDto;
+import pl.lodz.it.sitodruk.config.annotations.UserOrManagerAuthenticated;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
-import pl.lodz.it.sitodruk.dto.ProductDTO;
+import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.*;
 import pl.lodz.it.sitodruk.service.OrderService;
-import pl.lodz.it.sitodruk.service.ProductCategoryService;
 
-import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -35,102 +36,134 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/placeOrder")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.CLIENT + "')")
     public ResponseEntity<?> placeOrder(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {
         try {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.createOrder(orderDTO);
             return ResponseEntity.ok("order.placed");
         } catch (PaymentException ex) {
-            return ResponseEntity.ok("order.created");
+            return ResponseEntity.ok(ex.getMessage());
         } catch (InsufficientStockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "insufficient.stock", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not.found", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
+    @PostMapping("/cancelClient")
+    @ClientAuthenticatedAndUsernameFromOrderDto
+    public ResponseEntity<?> cancelOrderByUser(@RequestBody OrderDTO orderDTO) {
+        try {
+            orderService.cancelOrder(orderDTO);
+            return ResponseEntity.ok("order.cancelled");
+        } catch (ApplicationOptimisticLockException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        } catch (OrderNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }  catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
+        }
+    }
+
+
     @PostMapping("/cancel")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> cancelOrder(@RequestBody OrderDTO orderDTO) {
         try {
             orderService.cancelOrder(orderDTO);
             return ResponseEntity.ok("order.cancelled");
         } catch (ApplicationOptimisticLockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "order.not.found", ex);
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }  catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/complete")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<?> completeOrder(@RequestBody OrderDTO orderDTO) {
         try {
             orderService.markOrderAsCompleted(orderDTO);
             return ResponseEntity.ok("order.completed");
-        } catch (ApplicationOptimisticLockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
+        }catch (ApplicationOptimisticLockException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "order.not.found", ex);
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }  catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/repeatPayment")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.CLIENT + "')")
     public ResponseEntity<?> repeatPayment(@RequestBody OrderDTO orderDTO, HttpServletRequest request) {
         try {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.repeatPayment(orderDTO);
             return ResponseEntity.ok("order.completed");
         } catch (InvalidOrderStatusException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "invalid.order.status", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (ApplicationOptimisticLockException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "optimistic.lock", ex);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "order.not.found", ex);
-        } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }  catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/findUsersOrders")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
-    public ResponseEntity<List<OrderDTO>> getAllUsersOrders(@RequestBody OrderDTO orderDTO) {
+    @ClientAuthenticatedAndUsernameFromUserDto
+    public ResponseEntity<List<OrderDTO>> getAllUsersOrders(@RequestBody UserDTO userDTO) {
         try {
-            List<OrderDTO> orderDTOS = orderService.findUsersOrders(orderDTO.getUsername());
+            List<OrderDTO> orderDTOS = orderService.findUsersOrders(userDTO.getUsername());
             return new ResponseEntity(orderDTOS, HttpStatus.OK);
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @PostMapping("/findByPayUOrderId")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
+    @UserOrManagerAuthenticated
     public ResponseEntity<OrderDTO> findOrderByPayUOrderId(@RequestBody OrderDTO orderDTO) {
         try {
             OrderDTO dto = orderService.findOrderByPayuOrderId(orderDTO);
             return new ResponseEntity(dto, HttpStatus.OK);
         }catch (OrderNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "order.not.found");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 
     @GetMapping("/findAllOrders")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);
-        }catch (BaseException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected.error");
+        } catch (BaseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
 

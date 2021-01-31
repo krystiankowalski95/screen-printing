@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +16,20 @@ import pl.lodz.it.sitodruk.model.mop.ProductEntity;
 import pl.lodz.it.sitodruk.repositories.mop.ProductRepository;
 import pl.lodz.it.sitodruk.service.ProductService;
 
-import javax.persistence.OptimisticLockException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager",rollbackFor = BaseException.class)
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    public void createProduct(ProductDTO productDTO) throws BaseException {
+    public void createProduct(ProductDTO productDTO) throws BaseException, SQLException {
         if (productRepository.existsByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName())) {
             throw new ProductAlreadyExistsException();
         } else {
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void modifyProduct(ProductDTO productDTO) throws BaseException {
+    public void modifyProduct(ProductDTO productDTO) throws BaseException, SQLException  {
         Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
         if (productEntity.isPresent()) {
             if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deactivateProduct(ProductDTO productDTO) throws BaseException {
+    public void deactivateProduct(ProductDTO productDTO) throws BaseException, SQLException  {
         Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
         if (productEntity.isPresent()) {
             if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void activateProduct(ProductDTO productDTO) throws BaseException {
+    public void activateProduct(ProductDTO productDTO) throws BaseException, SQLException  {
         Optional<ProductEntity> productEntity = productRepository.findByNameAndCategoryName(productDTO.getName(), productDTO.getCategoryName());
         if (productEntity.isPresent()) {
             if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO findProductByName(String productName) throws BaseException {
+    public ProductDTO findProductByName(String productName) throws BaseException, SQLException {
         Optional<ProductEntity> product = productRepository.findByName(productName);
         if (product.isPresent()) {
             ProductDTO productDTO = ProductMapper.INSTANCE.toProductDTO(product.get());
@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findAllActiveProducts() throws BaseException {
+    public List<ProductDTO> findAllActiveProducts() throws BaseException, SQLException  {
         List<ProductDTO> products = new ArrayList<>();
         List<ProductEntity> productEntities = productRepository.findAllByIsActiveIsTrue();
         for (ProductEntity prod : productEntities) {
@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findAllProducts() throws BaseException {
+    public List<ProductDTO> findAllProducts() throws BaseException, SQLException  {
         List<ProductDTO> products = new ArrayList<>();
         List<ProductEntity> productEntities = productRepository.findAll();
         for (ProductEntity prod : productEntities) {

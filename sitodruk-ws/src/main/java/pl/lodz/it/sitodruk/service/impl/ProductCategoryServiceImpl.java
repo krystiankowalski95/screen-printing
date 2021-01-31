@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.impl;
+package pl.lodz.it.sitodruk.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.it.sitodruk.dto.CategoryDTO;
+import pl.lodz.it.sitodruk.exceptions.BaseException;
 import pl.lodz.it.sitodruk.model.mop.CategoryEntity;
 import pl.lodz.it.sitodruk.repositories.mop.ProductCategoryRepository;
 import pl.lodz.it.sitodruk.service.ProductCategoryService;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager")
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW, transactionManager = "mopTransactionManager",rollbackFor = BaseException.class)
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Autowired

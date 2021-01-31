@@ -15,8 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Interceptor extends HandlerInterceptorAdapter {
 
     private String transactionId;
-    private boolean lastTransactionStatus;
-
 
     @Override
     public boolean preHandle(HttpServletRequest requestServlet, HttpServletResponse httpServletResponse, Object o) throws Exception {

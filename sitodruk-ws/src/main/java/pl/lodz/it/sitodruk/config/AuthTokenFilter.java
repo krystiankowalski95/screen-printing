@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.lodz.it.sitodruk.impl.UserDetailsServiceImpl;
+import pl.lodz.it.sitodruk.service.impl.UserDetailsServiceImpl;
 
 @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.NEVER , transactionManager = "authTransactionManager")
 public class AuthTokenFilter extends OncePerRequestFilter {
