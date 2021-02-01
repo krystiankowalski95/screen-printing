@@ -3,7 +3,7 @@
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('sumup') }}</h3>
     </header>
-    <div v-if="this.$store.getters.shoppingListSize > 0">
+    <div v-if="this.$store.getters['cart/shoppingListSize'] > 0">
       <b-container>
         <b-row>
           <b-col>{{ $t('productName') }}</b-col>
@@ -237,11 +237,7 @@
     >
       {{ $t(message) }}
     </div>
-    <div
-      v-if="
-        this.$store.getters.shoppingListSize == 0 && this.successful == false
-      "
-    >
+    <div v-if="this.$store.getters['cart/shoppingListSize'] == 0 && this.successful == false">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
   </div>
@@ -262,7 +258,7 @@ export default {
       submitted: false,
       successful: false,
       message: '',
-      productList: this.$store.getters.shoppingList,
+      productList: [],
       totalcost: 0.0,
       order: new Order('', '', '', '', '', ''),
       address: new Address('', '', '', '', '', ''),
@@ -277,12 +273,16 @@ export default {
     };
   },
   mounted() {
+    if(this.$store.getters['cart/shoppingListSize'] == 0){
+      this.$router.push("/cart");
+    }
+    this.productList = this.$store.getters['cart/shoppingList'];
     this.calculatePrice();
   },
   methods: {
-    goBack() {
-      this.$router.push('/cart');
-    },
+      goBack() {
+        this.$router.push('/cart');
+      },
     goToHomePage() {
       this.$store.commit('clearShoppingList');
       this.$router.push({
@@ -314,9 +314,10 @@ export default {
                 this.responseList = data;
                 this.message = this.responseList.data;
                 this.successful = true;
-                this.$store.commit('clearShoppingList');
+                this.$store.dispatch('cart/clearShoppingList');
                 this.$alert(this.$t('order.placed'));
                 this.$router.push("/home");
+                this.$router.go();
               },
               (error) => {
                 this.message = error.response && error.response.data;

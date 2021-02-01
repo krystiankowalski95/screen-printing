@@ -3,7 +3,7 @@
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('cart') }}</h3>
     </header>
-    <div v-if="this.$store.getters.shoppingListSize > 0">
+    <div v-if="this.$store.getters['cart/shoppingListSize'] > 0">
       <b-container>
         <b-row>
           <b-col>{{ $t('productId') }}</b-col>
@@ -24,7 +24,7 @@
           <b-col>{{ $t(product.categoryName) }}</b-col>
           <b-col>
             <number-input
-              @change="calculatePrice()"
+              @click="setChanges()"
               size="small"
               name="quantity"
               v-model="product.quantity"
@@ -62,7 +62,7 @@
         $t('sumup')
       }}</b-button>
     </div>
-    <div v-if="this.$store.getters.shoppingListSize == 0">
+    <div v-if="this.$store.getters['cart/shoppingListSize'] == 0">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
   </div>
@@ -76,10 +76,10 @@ export default {
   name: 'Products',
   data() {
     return {
-      productList: this.$store.getters.shoppingList,
+      productList: [],
       totalcost: 0.0,
       money: {
-        decimal: '.',
+        decimal: ',',
         thousands: '',
         prefix: '',
         suffix: ' PLN',
@@ -89,6 +89,7 @@ export default {
     };
   },
   mounted(){
+    this.productList = this.$store.getters['cart/shoppingList'];
     this.calculatePrice()
   },
   methods: {
@@ -99,7 +100,8 @@ export default {
         'warning'
       )
         .then(() => {
-          this.$store.commit('removeProduct', index);
+          this.$store.dispatch('cart/removeProduct', index);
+          this.$router.go();
         })
     },
     goToSumUp() {
@@ -107,6 +109,11 @@ export default {
         path: '/sumup',
         params: { productList: this.productList },
       });
+    },
+    setChanges() {
+      localStorage.setItem('shoppingList', JSON.stringify(this.productList));
+      this.calculatePrice();
+      this.$router.go();
     },
     calculatePrice() {
       this.totalcost = 0.0;

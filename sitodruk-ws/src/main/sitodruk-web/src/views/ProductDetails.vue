@@ -88,6 +88,9 @@ export default {
     };
   },
   mounted() {
+    if(this.product == undefined){
+      this.$router.push("/products");
+    }
     for (let i = 0; i < 10; i++) {
       this.quantityList.push({ option: i + 1 });
     }
@@ -97,8 +100,8 @@ export default {
       this.$router.push("/products");
     },
     addProductToCart() {
-      this.$store.commit(
-        'addProduct',
+      this.$store.dispatch(
+        'cart/addProduct',
         new Product(
           this.product.id,
           this.product.name,
@@ -112,6 +115,7 @@ export default {
       );
       this.$alert(this.$t('productadded'));
       this.$router.push('home');
+      this.$router.go();
     },
   },
 };
