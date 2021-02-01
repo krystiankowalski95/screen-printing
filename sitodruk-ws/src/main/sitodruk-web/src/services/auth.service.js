@@ -32,6 +32,7 @@ class AuthService {
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('accessLevel');
+    localStorage.removeItem('shoppingList');
   }
 
   register(user) {
