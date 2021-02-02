@@ -134,5 +134,8 @@
     "product.already.exists":"Produkt z taką nazwą już istnieje",
     "goBack":"Wróć",
     "adding.product":"Czy na pewno chcesz dodać produkt?",
-    "creating.user":"Czy na pewno chcesz utworzyć konto użytkownika?"
+    "creating.user":"Czy na pewno chcesz utworzyć konto użytkownika?",
+    "user.already.confirmed":"Konto zostało już potwierdzone",
+    "ramy":"Ramy do sitodruku",
+    "token.expired":"Konto zostało już aktywowane"
 }

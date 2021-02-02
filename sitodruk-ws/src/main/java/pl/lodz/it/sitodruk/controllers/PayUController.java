@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@SessionScope
 @Data
 public class PayUController {
 

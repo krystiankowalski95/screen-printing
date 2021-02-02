@@ -25,6 +25,7 @@ export default {
   },
   mounted() {
     let token = this.$route.query.token;
+    console.log(token);
     UserService.confirmAccount(token).then(
       response => {
         this.message = response.data;

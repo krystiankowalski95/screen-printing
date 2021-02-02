@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.SecurityConsts;
 import pl.lodz.it.sitodruk.config.annotations.AnyUserAuthenticatedAndDtoUsername;
 import pl.lodz.it.sitodruk.config.annotations.AnyUserAuthenticatedAndMapUsername;
-import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.*;
 import pl.lodz.it.sitodruk.service.UserService;
@@ -23,11 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/")
+@RequestMapping("/app/users")
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.NEVER, transactionManager = "mokTransactionManager")
 public class UserOperationsController {
 
@@ -41,8 +39,10 @@ public class UserOperationsController {
         try {
             userService.confirmUser(tokenRequest.get("token"));
             return ResponseEntity.ok("account.confirmed");
-        }catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not.found", ex);
+        }catch (TokenExpiredException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         }catch (BaseException e) {
@@ -109,7 +109,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -128,7 +128,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -145,7 +145,7 @@ public class UserOperationsController {
         } catch (UsernameAlreadyExistsException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (EmailAlreadyExistsException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -163,7 +163,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -180,7 +180,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -197,7 +197,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -214,7 +214,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -231,7 +231,7 @@ public class UserOperationsController {
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {
@@ -245,8 +245,10 @@ public class UserOperationsController {
         try {
             userService.setNewPassword(userDTO);
             return ResponseEntity.ok("password.changed");
-        } catch (UserNotFoundException ex) {
+        } catch (TokenExpiredException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }  catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {

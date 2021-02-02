@@ -37,6 +37,7 @@ public class RoutingConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry)
     {
-        registry.addInterceptor(new Interceptor());
+        registry.addInterceptor(new Interceptor()).addPathPatterns("/api/**");
+        registry.addInterceptor(new Interceptor()).addPathPatterns("/app/**");
     }
 }

@@ -28,7 +28,7 @@ import java.util.Properties;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/app/products")
 @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.NEVER, transactionManager = "mopTransactionManager")
 public class ProductController {
 

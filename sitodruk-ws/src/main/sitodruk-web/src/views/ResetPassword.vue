@@ -60,6 +60,7 @@ export default {
           this.loading = false;
           return;
         } else {
+          this.user.language = this.$i18n.locale;
           UserService.resetPassword(this.user).then(
             (response) => {
               this.message = response.data;

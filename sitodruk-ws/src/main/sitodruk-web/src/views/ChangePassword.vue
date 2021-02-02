@@ -77,7 +77,8 @@ export default {
             data.data.dtoVersion,
             data.data.confirmed,
             data.data.active,
-            data.data.roles
+            data.data.roles,
+            data.data.language
           );
           data.data;
         },

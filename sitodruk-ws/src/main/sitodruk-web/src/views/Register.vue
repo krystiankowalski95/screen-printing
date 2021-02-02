@@ -127,7 +127,7 @@ export default {
   name: 'Register',
   data() {
     return {
-      user: new User('', '', '','','','',''),
+      user: new User('', '', '','','','','',''),
       submitted: false,
       successful: false,
       message: ''
@@ -147,6 +147,7 @@ export default {
     handleRegister() {
       this.message = '';
       this.submitted = true;
+      this.user.language = this.$i18n.locale;
       this.$validator.validate().then(isValid => {
         if (isValid) {
           this.$store.dispatch('auth/register', this.user).then(

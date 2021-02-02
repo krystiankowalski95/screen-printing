@@ -43,7 +43,8 @@ class AuthService {
       firstname: user.firstname,
       lastname: user.lastname,
       phoneNumber: user.phoneNumber,
-      confirmPassword: user.confirmPassword
+      confirmPassword: user.confirmPassword,
+      language: user.language
     });
   }
 }

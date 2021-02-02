@@ -27,7 +27,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Slf4j
-@RequestMapping("/orders")
+@RequestMapping("/app/orders")
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.NEVER, transactionManager = "mozTransactionManager")
 public class OrderController {
 

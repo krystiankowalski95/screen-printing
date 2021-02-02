@@ -63,6 +63,14 @@ public class UserEntity implements Serializable {
     @Column(name = "version", table = "login_data", nullable = false)
     private Long version;
 
+    @Basic
+    @Column(name = "is_token_used")
+    private Boolean isTokenExpired;
+
+    @Basic
+    @Column(name = "register_lang", length = 4, nullable = true)
+    private String registeredLang;
+
     public UserEntity(){
         this.active = true;
         this.version = 1L;

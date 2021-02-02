@@ -11,6 +11,10 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
+import pl.lodz.it.sitodruk.utils.MessageProvider;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 @Component
@@ -30,17 +34,16 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public void sendRegistrationEmail(String to , HttpServletRequest request,String token) {
+    public void sendRegistrationEmail(String to , HttpServletRequest request,String token,String lanuage) {
         try {
             MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = request.getRequestURL()
                     .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/confirmAccount?token=");
-            String body = "<a href=\"" + link + token + "\">"+"Verify Account"+ "</a>";
+            String body = "<a href=\"" + link + token + "\">"+ MessageProvider.getTranslatedText("confirm.account.msg",lanuage) + "</a>";
             helper.setText(body, true);
             helper.setTo(to);
-            helper.setSubject("Welcome");
-            helper.setFrom("noreplay@gmail.com");
+            helper.setSubject(MessageProvider.getTranslatedText("confirm.account.subject",lanuage));
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -48,17 +51,19 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public void sendPasswordChangeEmail(String to , HttpServletRequest request,String token) {
+    public void sendPasswordChangeEmail(String to , HttpServletRequest request,String token,String lanuage) {
         try {
+
+
+
             MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = request.getRequestURL()
                     .substring(0, (request.getRequestURL().length() - request.getServletPath().length())).concat("/setNewPassword?token=");
-            String body = "<a href=\"" + link + token + "\">"+"Reset password"+ "</a>";
+            String body = "<a href=\"" + link + token + "\">"+ MessageProvider.getTranslatedText("reset.password.msg", lanuage) + "</a>";
             helper.setText(body, true);
             helper.setTo(to);
-            helper.setSubject("Reset password");
-            helper.setFrom("noreplay@gmail.com");
+            helper.setSubject(MessageProvider.getTranslatedText("reset.password.subject", lanuage) );
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             e.printStackTrace();

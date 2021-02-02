@@ -1,17 +1,17 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = process.env.VUE_APP_BASE_API_URL + '/';
+const API_URL = process.env.VUE_APP_BASE_API_URL + '/app/users';
 
 class UserService {
   confirmAccount(token) {
-    return axios.post(API_URL + 'confirmAccount', {
+    return axios.post(API_URL + '/confirmAccount', {
       token: token,
     });
   }
 
   changePassword(user) {
-    return axios.post(API_URL + 'changeOwnPassword', {
+    return axios.post(API_URL + '/changeOwnPassword', {
       username: user.username,
       password: user.password,
       confirmPassword: user.confirmPassword,
@@ -20,7 +20,7 @@ class UserService {
   }
 
   changeOtherUserPassword(user) {
-    return axios.post(API_URL + 'changePassword', {
+    return axios.post(API_URL + '/changePassword', {
       username: user.username,
       password: user.password,
       confirmPassword: user.confirmPassword,
@@ -28,7 +28,7 @@ class UserService {
     }, { headers: authHeader() });
   }
   editOwnAccount(user){
-    return axios.post(API_URL + 'modifyOwnAccount', {
+    return axios.post(API_URL + '/modifyOwnAccount', {
       username: user.username,
       firstname: user.firstname,
       lastname: user.lastname,
@@ -38,7 +38,7 @@ class UserService {
   }
 
   editSelectedAccount(user){
-    return axios.post(API_URL + 'modifyAccount', {
+    return axios.post(API_URL + '/modifyAccount', {
       username: user.username,
       firstname: user.firstname,
       lastname: user.lastname,
@@ -48,7 +48,7 @@ class UserService {
   }
 
   sendActivationLink(user){
-    return axios.post(API_URL + 'resendActivationLink', {
+    return axios.post(API_URL + '/resendActivationLink', {
       username: user.username,
       dtoVersion: user.dtoVersion
     }, { headers: authHeader() });
@@ -58,7 +58,7 @@ class UserService {
 
   
   activateAccount(user){
-    return axios.post(API_URL + 'activateAccount', {
+    return axios.post(API_URL + '/activateAccount', {
       username: user.username,
       active: true,
       dtoVersion: user.dtoVersion
@@ -66,21 +66,21 @@ class UserService {
   }
 
   activateRole(user,role){
-    return axios.post(API_URL + 'activateAccessLevel/' + role, {
+    return axios.post(API_URL + '/activateAccessLevel/' + role, {
       username: user.username,
       dtoVersion: user.dtoVersion
     }, { headers: authHeader() });
 }
 
   deactivateRole(user,role){
-      return axios.post(API_URL + 'deactivateAccessLevel/' + role, {
+      return axios.post(API_URL + '/deactivateAccessLevel/' + role, {
         username: user.username,
         dtoVersion: user.dtoVersion
       }, { headers: authHeader() });
   }
 
   deactivateAccount(user){
-    return axios.post(API_URL + 'deactivateAccount', {
+    return axios.post(API_URL + '/deactivateAccount', {
       username: user.username,
       active: false,
       dtoVersion: user.dtoVersion
@@ -88,13 +88,13 @@ class UserService {
   }
 
   resetPassword(user) {
-    return axios.post(API_URL + 'resetPassword', {
+    return axios.post(API_URL + '/resetPassword', {
       email: user.email,
     });
   }
 
   setNewPassword(user) {
-    return axios.post(API_URL + 'setNewPassword', {
+    return axios.post(API_URL + '/setNewPassword', {
       token: user.token,
       password: user.password,
       confirmPassword: user.password
@@ -102,20 +102,20 @@ class UserService {
   }
 
   getUserProfile(user) {
-    return axios.post(API_URL + 'findAccountByUsername', {
+    return axios.post(API_URL + '/findAccountByUsername', {
       username: user.username
     }, { headers: authHeader() }
     );
   }
 
   findAccount(user) {
-    return axios.post(API_URL + 'findAccount', {
+    return axios.post(API_URL + '/findAccount', {
       username: user.username
     }, { headers: authHeader() }
     );
   }
   createUser(user,selectedRoles) {
-    return axios.post(API_URL + 'createUser', {
+    return axios.post(API_URL + '/createUser', {
       username: user.username,
       email: user.email,
       password: user.password,
@@ -128,7 +128,7 @@ class UserService {
   }
 
   getAllUsers() {
-    return axios.get(API_URL + 'findAllAccounts', { headers: authHeader() }
+    return axios.get(API_URL + '/findAllAccounts', { headers: authHeader() }
     );
   }
 }

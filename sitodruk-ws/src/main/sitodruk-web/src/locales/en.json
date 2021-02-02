@@ -132,5 +132,8 @@
     "product.already.exists":"Product with this name already exists",
     "goBack":"Go back",
     "adding.product":"Are you sure that you want to create this product?",
-    "creating.user":"Are you sure that you want to create user account?"
+    "creating.user":"Are you sure that you want to create user account?",
+    "user.already.confirmed":"Account has already been confirmed",
+    "ramy":"Screen printing frame",
+    "token.expired":"Account has been confirmed"
 }

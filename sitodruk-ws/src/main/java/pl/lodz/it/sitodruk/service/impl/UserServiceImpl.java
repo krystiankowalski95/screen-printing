@@ -158,8 +158,9 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
                 user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+                user.get().setIsTokenExpired(false);
                 userRepository.saveAndFlush(user.get());
-                emailSenderService.sendRegistrationEmail(user.get().getEmail(), requestUrl, user.get().getToken());
+                emailSenderService.sendRegistrationEmail(user.get().getEmail(), requestUrl, user.get().getToken(), user.get().getRegisteredLang());
             } else {
                 throw new ApplicationOptimisticLockException();
             }
@@ -191,8 +192,10 @@ public class UserServiceImpl implements UserService {
             admin.setActive(false);
             admin.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(admin);
+            user.setIsTokenExpired(false);
+            user.setRegisteredLang(userDTO.getLanguage());
             userRepository.saveAndFlush(user);
-            emailSenderService.sendRegistrationEmail(user.getEmail(), requestUrl, user.getToken());
+            emailSenderService.sendRegistrationEmail(user.getEmail(), requestUrl, user.getToken(), userDTO.getLanguage());
         }
     }
 
@@ -216,9 +219,13 @@ public class UserServiceImpl implements UserService {
     public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
         if (user.isPresent()) {
-            user.get().setPassword(encoder.encode(userDTO.getPassword()));
-            user.get().setToken("");
-            userRepository.saveAndFlush(user.get());
+            if (user.get().getIsTokenExpired()) {
+                throw new TokenExpiredException();
+            } else {
+                user.get().setPassword(encoder.encode(userDTO.getPassword()));
+                user.get().setIsTokenExpired(true);
+                userRepository.saveAndFlush(user.get());
+            }
         } else throw new UserNotFoundException();
     }
 
@@ -272,8 +279,9 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
             user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+            user.get().setIsTokenExpired(false);
             userRepository.saveAndFlush(user.get());
-            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken());
+            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), userDTO.getLanguage());
         } else throw new UserNotFoundException();
     }
 
@@ -284,9 +292,14 @@ public class UserServiceImpl implements UserService {
             if (user.get().getConfirmed()) {
                 throw new UserAlreadyConfirmedException();
             } else {
-                user.get().setConfirmed(true);
-                user.get().setActive(true);
-                userRepository.saveAndFlush(user.get());
+                if (user.get().getIsTokenExpired()) {
+                    throw new TokenExpiredException();
+                } else {
+                    user.get().setIsTokenExpired(true);
+                    user.get().setConfirmed(true);
+                    user.get().setActive(true);
+                    userRepository.saveAndFlush(user.get());
+                }
             }
         } else throw new UserNotFoundException();
     }
