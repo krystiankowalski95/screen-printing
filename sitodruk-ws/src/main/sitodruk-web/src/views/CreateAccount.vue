@@ -203,27 +203,32 @@ export default {
       this.message = '';
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
-        if (isValid) {
-          this.$confirm(this.$t("areyousure"), this.$t("creating.user"), "info")
-        .then(() => {
-          UserService.createUser(this.user, this.selectedRoles).then(
-            (data) => {
-              this.message = data.message;
-              this.successful = true;
-              this.$alert(this.$t('account.has.been.created'));
-              this.$router.push('/users');
-            },
-            (error) => {
-              this.message = error.response && error.response.data;
-              if (this.message.status == 401) {
-                this.$store.dispatch('auth/logout');
-                this.$alert(this.$t('session.timed.out'));
-                this.$router.push('/login');
-              }
-              this.successful = false;
-            }
-          );
-          });
+        if (state) {
+          if (isValid) {
+            this.$confirm(
+              this.$t('areyousure'),
+              this.$t('creating.user'),
+              'info'
+            ).then(() => {
+              UserService.createUser(this.user, this.selectedRoles).then(
+                (data) => {
+                  this.message = data.message;
+                  this.successful = true;
+                  this.$alert(this.$t('account.has.been.created'));
+                  this.$router.push('/users');
+                },
+                (error) => {
+                  this.message = error.response && error.response.data;
+                  if (this.message.status == 401) {
+                    this.$store.dispatch('auth/logout');
+                    this.$alert(this.$t('session.timed.out'));
+                    this.$router.push('/login');
+                  }
+                  this.successful = false;
+                }
+              );
+            });
+          }
         }
       });
     },
