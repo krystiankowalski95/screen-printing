@@ -321,6 +321,12 @@ export default {
               },
               (error) => {
                 this.message = error.response && error.response.data;
+                if(this.message.message = "product.not.available"){
+                  this.$store.dispatch('cart/clearShoppingList');
+                  this.$alert(this.$t('product.not.available'));
+                  this.$router.push("/home");
+                this.$router.go();
+                }
                 if (this.message.status == 401) {
                   this.$store.dispatch('auth/logout');
                   this.$router.push({

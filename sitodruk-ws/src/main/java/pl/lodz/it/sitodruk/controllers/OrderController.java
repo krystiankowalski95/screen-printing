@@ -44,7 +44,9 @@ public class OrderController {
             return ResponseEntity.ok("order.placed");
         } catch (InsufficientStockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        } catch (UserNotFoundException ex) {
+        } catch (ProductNotAvailableException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (PaymentException ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());

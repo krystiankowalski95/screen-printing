@@ -56,12 +56,17 @@ public class OrderServiceImpl implements OrderService {
             for (ProductDTO product : orderDTO.getProducts()) {
                 Optional<ProductEntity> prdEnt = productRepository.findByNameAndStockGreaterThanEqual(product.getName(), product.getQuantity());
                 if (prdEnt.isPresent()) {
-                    prdEnt.get().setStock(prdEnt.get().getStock() - product.getQuantity());
-                    OrderProductEntity orderProductEntity = new OrderProductEntity();
-                    orderProductEntity.setOrderEntity(orderEntity);
-                    orderProductEntity.setProductEntity(prdEnt.get());
-                    orderProductEntity.setAmount(product.getQuantity().intValue());
-                    orderEntity.getOrderProductEntities().add(orderProductEntity);
+                    if(prdEnt.get().getIsActive()){
+                        prdEnt.get().setStock(prdEnt.get().getStock() - product.getQuantity());
+                        OrderProductEntity orderProductEntity = new OrderProductEntity();
+                        orderProductEntity.setOrderEntity(orderEntity);
+                        orderProductEntity.setProductEntity(prdEnt.get());
+                        orderProductEntity.setAmount(product.getQuantity().intValue());
+                        orderEntity.getOrderProductEntities().add(orderProductEntity);
+                    }else{
+                        throw new ProductNotAvailableException();
+                    }
+
                 } else {
                     throw new InsufficientStockException();
                 }
