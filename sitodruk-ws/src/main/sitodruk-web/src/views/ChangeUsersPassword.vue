@@ -46,6 +46,13 @@
           </div>
         </div>
       </form>
+       <div class="form-group">
+        <button
+          class="btn btn-primary btn-block swal2-confirm swal2-styled"
+          @click="goBack()"
+        >
+          {{ $t('goBack') }}
+        </button>
       <div
         v-if="message"
         class="alert"
@@ -121,6 +128,9 @@ export default {
     }
   },
   methods: {
+    goBack() {
+      this.$router.push('/users');
+    },
     changePassword() {
       this.message = '';
       this.submitted = true;
