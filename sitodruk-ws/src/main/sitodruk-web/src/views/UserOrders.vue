@@ -152,9 +152,7 @@ export default {
         (data) => {
           this.responseList = data.data;
           this.successful = true;
-          this.$router.push({
-          path: '/userOrders',
-        });
+          this.$router.go();
         },
         (error) => {
           this.message = error.response && error.response.data;
