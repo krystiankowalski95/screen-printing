@@ -75,7 +75,7 @@
     "id":"Id",
     "orderDetails":"Order details",
     "created": "Created",
-    "canceled": "Canceled",
+    "cancelled": "Canceled",
     "completed": "Completed",
     "paid": "Paid",
     "pending":"Payment is being processed",
@@ -135,5 +135,11 @@
     "creating.user":"Are you sure that you want to create user account?",
     "user.already.confirmed":"Account has already been confirmed",
     "ramy":"Screen printing frame",
-    "token.expired":"Account has been confirmed"
+    "token.expired":"Account has been confirmed",
+    "email.sending.exception":"An error occured while sending email",
+    "invalid.order.status":"Invalid order status",
+    "order.not.found":"Order not found",
+    "payment.exception":"An error occured while processing payment",
+    "product.not.found":"Product not found",
+    "Forbidden":"Action forbidden"
 }

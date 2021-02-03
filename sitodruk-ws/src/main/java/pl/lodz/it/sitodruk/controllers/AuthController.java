@@ -24,6 +24,9 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.config.JwtUtils;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
+import pl.lodz.it.sitodruk.exceptions.EmailAlreadyExistsException;
+import pl.lodz.it.sitodruk.exceptions.EmailSendingException;
+import pl.lodz.it.sitodruk.exceptions.UsernameAlreadyExistsException;
 import pl.lodz.it.sitodruk.service.impl.UserDetailsImpl;
 import pl.lodz.it.sitodruk.payload.JwtResponse;
 import pl.lodz.it.sitodruk.service.UserService;
@@ -83,7 +86,12 @@ public class AuthController {
         try {
             userService.createUser(userDTO, request);
             return ResponseEntity.ok("user.registered");
-
+        }catch (UsernameAlreadyExistsException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }catch (EmailAlreadyExistsException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }catch (EmailSendingException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {

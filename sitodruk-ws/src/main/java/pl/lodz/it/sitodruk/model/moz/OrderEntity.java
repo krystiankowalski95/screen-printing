@@ -17,7 +17,7 @@ public class OrderEntity {
     @Basic@Column(name = "payu_order_id", nullable = false, length = 255)
     private String payUOrderId;
     @Basic@Column(name = "timestamp", nullable = true)
-    private LocalDateTime timestamp = LocalDateTime.now();
+        private LocalDateTime timestamp = LocalDateTime.now();
     @Version
     @Basic@Column(name = "version", nullable = false)
     private Long version;

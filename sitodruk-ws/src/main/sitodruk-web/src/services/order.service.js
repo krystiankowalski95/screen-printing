@@ -49,13 +49,13 @@ class OrderService {
     } , { headers: authHeader() });
   }
 
-  cancelClientOrder(order) {
+  cancelClientOrder(order,user) {
     return axios.post(API_URL + '/cancelClient',
     {
       payUOrderId: order.payUOrderId,
       products: order.products,
       totalValue: order.totalValue,
-      username: order.username,
+      username: user.username,
       addressDTO: order.addressDTO,
       orderStatus: order.orderStatus,
       dtoVersion: order.dtoVersion

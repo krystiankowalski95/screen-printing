@@ -235,7 +235,7 @@
       class="alert"
       :class="successful ? 'alert-success' : 'alert-danger'"
     >
-      {{ $t(message) }}
+      {{ $t(message.message) }}
     </div>
     <div v-if="this.$store.getters['cart/shoppingListSize'] == 0 && this.successful == false">
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>

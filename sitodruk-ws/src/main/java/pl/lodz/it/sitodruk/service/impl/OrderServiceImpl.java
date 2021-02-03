@@ -3,6 +3,8 @@ package pl.lodz.it.sitodruk.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@Retryable(maxAttempts = 5, include = {SQLException.class})
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "mozTransactionManager",rollbackFor = BaseException.class)
 public class OrderServiceImpl implements OrderService {
     @Autowired
@@ -81,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cancelOrder(OrderDTO orderDTO) throws BaseException {
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
-        OrderStatusEntity cancelled = orderStatusRepository.findByStatusName("canceled");
+        OrderStatusEntity cancelled = orderStatusRepository.findByStatusName("cancelled");
 
         if (orderEntity.isPresent()) {
             if (String.valueOf(orderDTO.getDtoVersion()).equals(getOrderVersionHash(orderEntity.get()))) {
@@ -130,9 +133,9 @@ public class OrderServiceImpl implements OrderService {
     public void repeatPayment(OrderDTO orderDTO) throws BaseException {
         Optional<OrderEntity> orderEntity = orderRepository.findByPayUOrderId(orderDTO.getPayUOrderId());
         Optional<UserEntity> userEntity = userRepository.findByUsername(orderDTO.getUsername());
-        OrderStatusEntity pending = orderStatusRepository.findByStatusName("pending");
+        OrderStatusEntity created = orderStatusRepository.findByStatusName("created");
         if(orderEntity.isPresent()){
-            if(orderEntity.get().getOrderStatus().equals(pending)){
+            if(orderEntity.get().getOrderStatus().equals(created)){
                 orderEntity.get().setPayUOrderId(payUController.payuTransaction(userEntity.get(), orderDTO));
                 orderEntity.get().setOrderStatus(orderStatusRepository.findByStatusName(payUController.getPaymentStatus(orderEntity.get().getPayUOrderId())));
                 orderRepository.saveAndFlush(orderEntity.get());

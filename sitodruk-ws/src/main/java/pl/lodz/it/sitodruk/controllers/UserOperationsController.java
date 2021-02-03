@@ -92,6 +92,8 @@ public class UserOperationsController {
             return ResponseEntity.ok("email.send");
         }catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }catch (EmailSendingException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }catch (SQLException e) {

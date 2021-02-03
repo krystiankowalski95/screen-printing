@@ -76,7 +76,7 @@
     "id":"Identyfikator",
     "orderDetails":"Szczegóły zamówienia",
     "created": "Utworzone",
-    "canceled": "Anulowane",
+    "cancelled": "Anulowane",
     "completed": "Zakończone",
     "paid": "Opłacone",
     "pending":"Płatność jest przetwarzana",
@@ -137,5 +137,13 @@
     "creating.user":"Czy na pewno chcesz utworzyć konto użytkownika?",
     "user.already.confirmed":"Konto zostało już potwierdzone",
     "ramy":"Ramy do sitodruku",
-    "token.expired":"Konto zostało już aktywowane"
+    "token.expired":"Konto zostało już aktywowane",
+    "email.sending.exception":"Wystąpił problem podczas wysyłania wiadomości email",
+    "invalid.order.status":"Niewłaściwy status zamówienia",
+    "order.not.found":"Zamówienie nie zostało znalezione",
+    "payment.exception":"Wystąpił problem z płatnością",
+    "product.not.found":"Produkt nie został znaleziony",
+    "Forbidden":"Operacja niedozwolona"
+
+
 }

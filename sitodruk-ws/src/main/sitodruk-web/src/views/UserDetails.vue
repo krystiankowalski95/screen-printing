@@ -105,6 +105,14 @@
             </b-button>
           </b-button-group>
       </div>
+       <div class="form-group">
+        <button
+          class="btn btn-primary btn-block swal2-confirm swal2-styled"
+          @click="goBack()"
+        >
+          {{ $t('goBack') }}
+        </button>
+      </div>
       <div
         v-if="message"
         class="alert"
@@ -183,6 +191,9 @@ export default {
     }
   },
   methods: {
+    goBack() {
+      this.$router.push('/users');
+    },
     activateRole(text) {
      UserService.activateRole(this.user,text).then(
         (data) => {

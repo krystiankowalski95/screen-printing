@@ -170,7 +170,7 @@ export default {
             this.responseList = data.data;
             this.successful = true;
             this.$router.push({
-              path: '/userOrders',
+              path: '/orders',
             });
           },
           (error) => {

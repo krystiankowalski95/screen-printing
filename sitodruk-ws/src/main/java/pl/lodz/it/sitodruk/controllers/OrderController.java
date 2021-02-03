@@ -42,13 +42,15 @@ public class OrderController {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.createOrder(orderDTO);
             return ResponseEntity.ok("order.placed");
-        }  catch (InsufficientStockException ex) {
+        } catch (InsufficientStockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        } catch (PaymentException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -63,9 +65,9 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }  catch (BaseException e) {
+        } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -81,9 +83,9 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }  catch (BaseException e) {
+        } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -94,13 +96,13 @@ public class OrderController {
         try {
             orderService.markOrderAsCompleted(orderDTO);
             return ResponseEntity.ok("order.completed");
-        }catch (ApplicationOptimisticLockException ex) {
+        } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }  catch (BaseException e) {
+        } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -118,9 +120,11 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }  catch (BaseException e) {
+        } catch (PaymentException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -133,7 +137,7 @@ public class OrderController {
             return new ResponseEntity(orderDTOS, HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -144,11 +148,11 @@ public class OrderController {
         try {
             OrderDTO dto = orderService.findOrderByPayuOrderId(orderDTO);
             return new ResponseEntity(dto, HttpStatus.OK);
-        }catch (OrderNotFoundException e) {
+        } catch (OrderNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }
@@ -160,7 +164,7 @@ public class OrderController {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "database.error");
         }
     }

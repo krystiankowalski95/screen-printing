@@ -38,7 +38,6 @@ public class ProductController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
-    private Properties exceptionProperties;
 
     @GetMapping("/categories")
     @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")

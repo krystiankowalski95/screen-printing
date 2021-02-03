@@ -1,6 +1,8 @@
 package pl.lodz.it.sitodruk.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 @Service
+@Retryable(maxAttempts = 5, include = {SQLException.class})
 @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRES_NEW , transactionManager = "authTransactionManager", rollbackFor = BaseException.class)
 public class UserDetailsServiceImpl implements UserDetailsService, pl.lodz.it.sitodruk.service.UserDetailsService {
     @Autowired
