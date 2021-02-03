@@ -137,7 +137,7 @@
     "creating.user":"Czy na pewno chcesz utworzyć konto użytkownika?",
     "user.already.confirmed":"Konto zostało już potwierdzone",
     "ramy":"Ramy do sitodruku",
-    "token.expired":"Konto zostało już aktywowane",
+    "token.expired":"Link został już wykorzystany",
     "email.sending.exception":"Wystąpił problem podczas wysyłania wiadomości email",
     "invalid.order.status":"Niewłaściwy status zamówienia",
     "order.not.found":"Zamówienie nie zostało znalezione",

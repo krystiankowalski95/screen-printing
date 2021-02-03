@@ -135,7 +135,7 @@
     "creating.user":"Are you sure that you want to create user account?",
     "user.already.confirmed":"Account has already been confirmed",
     "ramy":"Screen printing frame",
-    "token.expired":"Account has been confirmed",
+    "token.expired":"Link has already been used",
     "email.sending.exception":"An error occured while sending email",
     "invalid.order.status":"Invalid order status",
     "order.not.found":"Order not found",
