@@ -172,6 +172,7 @@ export default {
               data.data.confirmed,
               data.data.active,
               data.data.roles,
+              data.data.language,
               data.data.accessLevelDtoVersion,
             );
             this.hasClientRole = this.user.roles.includes("ROLE_CLIENT");
