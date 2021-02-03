@@ -141,5 +141,6 @@
     "order.not.found":"Order not found",
     "payment.exception":"An error occured while processing payment",
     "product.not.found":"Product not found",
-    "Forbidden":"Action forbidden"
+    "Forbidden":"Action forbidden",
+    "product.not.available":"One of the products has become unavailable"
 }

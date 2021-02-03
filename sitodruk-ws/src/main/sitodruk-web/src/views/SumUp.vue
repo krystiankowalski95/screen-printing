@@ -325,7 +325,13 @@ export default {
                   this.$store.dispatch('cart/clearShoppingList');
                   this.$alert(this.$t('product.not.available'));
                   this.$router.push("/home");
-                this.$router.go();
+                  this.$router.go();
+                }
+                if(this.message.message = "insufficient.stock"){
+                  this.$store.dispatch('cart/clearShoppingList');
+                  this.$alert(this.$t('insufficient.stock'));
+                  this.$router.push("/home");
+                  this.$router.go();
                 }
                 if (this.message.status == 401) {
                   this.$store.dispatch('auth/logout');

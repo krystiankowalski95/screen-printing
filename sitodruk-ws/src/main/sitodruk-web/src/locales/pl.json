@@ -143,7 +143,8 @@
     "order.not.found":"Zamówienie nie zostało znalezione",
     "payment.exception":"Wystąpił problem z płatnością",
     "product.not.found":"Produkt nie został znaleziony",
-    "Forbidden":"Operacja niedozwolona"
+    "Forbidden":"Operacja niedozwolona",
+    "product.not.available":"Jeden z wybranych produktów przestał być dostępny"
 
 
 }
