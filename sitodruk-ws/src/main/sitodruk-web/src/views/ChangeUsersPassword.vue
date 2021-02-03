@@ -53,6 +53,7 @@
         >
           {{ $t('goBack') }}
         </button>
+       </div>
       <div
         v-if="message"
         class="alert"

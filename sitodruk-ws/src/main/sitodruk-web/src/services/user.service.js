@@ -68,14 +68,16 @@ class UserService {
   activateRole(user,role){
     return axios.post(API_URL + '/activateAccessLevel/' + role, {
       username: user.username,
-      dtoVersion: user.dtoVersion
+      dtoVersion: user.dtoVersion,
+      accessLevelDtoVersion: user.accessLevelDtoVersion
     }, { headers: authHeader() });
 }
 
   deactivateRole(user,role){
       return axios.post(API_URL + '/deactivateAccessLevel/' + role, {
         username: user.username,
-        dtoVersion: user.dtoVersion
+        dtoVersion: user.dtoVersion,
+        accessLevelDtoVersion: user.accessLevelDtoVersion
       }, { headers: authHeader() });
   }
 

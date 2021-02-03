@@ -25,5 +25,6 @@ public class UserDTO {
     private String token;
     private Set<String> roles = new HashSet<>();
     private String dtoVersion;
+    private String accessLevelDtoVersion;
     private String language;
 }

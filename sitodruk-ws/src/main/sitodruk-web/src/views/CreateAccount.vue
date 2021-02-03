@@ -203,7 +203,7 @@ export default {
       this.message = '';
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
-        if (state) {
+        if (this.state) {
           if (isValid) {
             this.$confirm(
               this.$t('areyousure'),

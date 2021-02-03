@@ -1,5 +1,5 @@
 export default class User {
-  constructor(username, email, password,confirmPassword,firstname,lastname,phoneNumber,token,dtoVersion,confirmed,active,roles,language) {
+  constructor(username, email, password,confirmPassword,firstname,lastname,phoneNumber,token,dtoVersion,confirmed,active,roles,language,accessLevelDtoVersion) {
     this.username = username;
     this.email = email;
     this.password = password;
@@ -13,5 +13,6 @@ export default class User {
     this.active = active;
     this.roles = roles;
     this.language = language;
+    this.accessLevelDtoVersion = accessLevelDtoVersion;
   }
 }

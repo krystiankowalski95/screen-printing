@@ -80,13 +80,17 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
-                    if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
-                        userAccessLevelEntity.setActive(true);
+                if(userDTO.getAccessLevelDtoVersion().equals(getAccessLevelVersionHash(user.get()))){
+                    for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                        if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
+                            userAccessLevelEntity.setActive(true);
+                        }
                     }
+                    userRepository.saveAndFlush(user.get());
+                }else{
+                    throw new ApplicationOptimisticLockException();
                 }
-                userRepository.saveAndFlush(user.get());
-            } else {
+             } else {
                 throw new ApplicationOptimisticLockException();
             }
         } else throw new UserNotFoundException();
@@ -105,16 +109,20 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                List<UserAccessLevelEntity> list = user.get().getUserAccessLevelsById().stream().filter(UserAccessLevelEntity::getActive).collect(Collectors.toList());
-                if (list.size() > 1) {
-                    for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
-                        if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
-                            userAccessLevelEntity.setActive(false);
+                if(userDTO.getAccessLevelDtoVersion().equalsIgnoreCase(getAccessLevelVersionHash(user.get()))){
+                    List<UserAccessLevelEntity> list = user.get().getUserAccessLevelsById().stream().filter(UserAccessLevelEntity::getActive).collect(Collectors.toList());
+                    if (list.size() > 1) {
+                        for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
+                            if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
+                                userAccessLevelEntity.setActive(false);
+                            }
                         }
+                        userRepository.saveAndFlush(user.get());
+                    } else {
+                        throw new UserAccessLevelDeactivationException();
                     }
-                    userRepository.saveAndFlush(user.get());
-                } else {
-                    throw new UserAccessLevelDeactivationException();
+                }else{
+                    throw new ApplicationOptimisticLockException();
                 }
             } else {
                 throw new ApplicationOptimisticLockException();
@@ -251,6 +259,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(user.get());
             userDTO.setDtoVersion(getVersionHash(user.get()));
+            userDTO.setAccessLevelDtoVersion(getAccessLevelVersionHash(user.get()));
             userDTO.setPassword("");
             for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
                 if (userAccessLevelEntity.getActive()) {
@@ -266,6 +275,7 @@ public class UserServiceImpl implements UserService {
         for (UserEntity userEntity : userRepository.findAll()) {
             UserDTO userDTO = UserMapper.INSTANCE.toUserDTO(userEntity);
             userDTO.setDtoVersion(getVersionHash(userEntity));
+            userDTO.setAccessLevelDtoVersion(getAccessLevelVersionHash(userEntity));
             userDTO.setPassword("");
             for (UserAccessLevelEntity userAccessLevelEntity : userEntity.getUserAccessLevelsById()) {
                 if (userAccessLevelEntity.getActive()) {
@@ -325,6 +335,14 @@ public class UserServiceImpl implements UserService {
 
     public String getVersionHash(UserEntity userEntity) {
         return DigestUtils.sha256Hex(userEntity.getEmail() + userEntity.getVersion());
+    }
+
+    public String getAccessLevelVersionHash(UserEntity userEntity) {
+        StringBuilder hash = new StringBuilder();
+        for (UserAccessLevelEntity ual : userEntity.getUserAccessLevelsById()) {
+            hash.append(ual.getAccessLevelName() + ual.getVersion());
+        }
+        return DigestUtils.sha256Hex(hash.toString());
     }
 
 }

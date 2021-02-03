@@ -171,7 +171,8 @@ export default {
               data.data.dtoVersion,
               data.data.confirmed,
               data.data.active,
-              data.data.roles
+              data.data.roles,
+              data.data.accessLevelDtoVersion,
             );
             this.hasClientRole = this.user.roles.includes("ROLE_CLIENT");
             this.hasManagerRole = this.user.roles.includes("ROLE_MANAGER");
