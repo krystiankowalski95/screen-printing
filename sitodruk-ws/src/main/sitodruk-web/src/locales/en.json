@@ -153,5 +153,8 @@
     "listEmpty":"There are no products available",
     "noFilteredItemsFound":"There are no products matching your request",
     "employeeOperations":"Employee operations",
-    "user.not.active":"Account has been blocked. You cannot proceed to reseting password procedure"
+    "user.not.active":"Account has been blocked. You cannot proceed to reseting password procedure",
+    "orderListEmpty":"Order list is empty",
+    "noFilteredOrdersFound":"There are no orders matching uour request",
+    "adresDostawy":"Delivery address"
 }

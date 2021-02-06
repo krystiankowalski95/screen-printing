@@ -4,31 +4,36 @@
       <h3>{{ $t('sumup') }}</h3>
     </header>
     <div v-if="this.$store.getters['cart/shoppingListSize'] > 0">
-      <b-container>
-        <b-row>
-          <b-col>{{ $t('productName') }}</b-col>
-          <b-col>{{ $t('categoryName') }}</b-col>
-          <b-col>{{ $t('numberOf') }}</b-col>
-        </b-row>
-      </b-container>
-      <b-container
-        class="bv-example-row"
-        v-for="(product, index) in productList"
-        :key="index"
-      >
-        <b-row style="padding: 5px">
-          <b-col>{{ product.name }}</b-col>
-          <b-col>{{ $t(product.categoryName) }}</b-col>
-          <b-col>
-            <number-input
-              @change="calculatePrice()"
-              size="small"
-              name="quantity"
-              v-model="product.quantity"
-              disabled
-            ></number-input
-          ></b-col>
-        </b-row>
+      <b-container fluid>
+        <b-table
+          :items="productList"
+          :fields="fieldSet"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          :sort-direction="sortDirection"
+          stacked="md"
+          :empty-text="$t('listEmpty')"
+          show-empty
+          striped
+          @filtered="onFiltered"
+        >
+          <template #cell(name)="row">
+            {{ row.value }}
+          </template>
+
+          <template #cell(categoryName)="row">
+            {{ $t(row.value) }}
+          </template>
+
+          <template #cell(price)="row">
+            {{
+              new Intl.NumberFormat($i18n.locale, {
+                style: 'currency',
+                currency: 'PLN',
+              }).format(row.value)
+            }}
+          </template>
+        </b-table>
       </b-container>
       <b-container>
         <b-row>
@@ -54,13 +59,7 @@
               >
               <b-col>
                 <div class="form-group">
-                  <input
-                    v-model="address.country"
-                    v-validate="'required|min:3|max:100'"
-                    type="text"
-                    class="form-control"
-                    name="country"
-                  />
+                  <country-select name="country" countryName="true" usei18n="true" removePlaceholder="true" v-model="address.country" :country="address.country" topCountry="PL" />
                   <div
                     v-if="submitted && errors.has('country')"
                     class="alert-danger"
@@ -76,13 +75,7 @@
               >
               <b-col>
                 <div class="form-group">
-                  <input
-                    v-model="address.voivodeship"
-                    v-validate="'required|min:3|max:100'"
-                    type="text"
-                    class="form-control"
-                    name="voivodeship"
-                  />
+                   <region-select  name="voivodeship" removePlaceholder="true" regionName="true" v-model="address.voivodeship" :country="address.country" defaultRegion='PL' :region="region" />
                   <div
                     v-if="submitted && errors.has('voivodeship')"
                     class="alert-danger"
@@ -210,10 +203,13 @@
               <b-col></b-col>
               <b-col></b-col>
               <b-col>
-                <b-button pill variant="primary" @click="placeOrder()">{{
-                  $t('placeOrder')
-                }}</b-button></b-col
-              >
+                <b-button pill variant="primary" @click="placeOrder()"
+                  >{{ $t('placeOrder') }}
+                  <b-icon
+                    icon="credit-card"
+                    aria-hidden="true"
+                  ></b-icon> </b-button
+              ></b-col>
             </b-row>
             <b-row>
               <b-col
@@ -237,7 +233,12 @@
     >
       {{ $t(message.message) }}
     </div>
-    <div v-if="this.$store.getters['cart/shoppingListSize'] == 0 && this.successful == false">
+    <div
+      v-if="
+        this.$store.getters['cart/shoppingListSize'] == 0 &&
+        this.successful == false
+      "
+    >
       <h3 style="text-align: center">{{ $t('cartempty') }}</h3>
     </div>
   </div>
@@ -249,6 +250,9 @@ import { TheMask } from 'vue-the-mask';
 import Address from '../models/address';
 import Order from '../models/order';
 import OrderService from '../services/order.service';
+import Vue from 'vue'
+import vueCountryRegionSelect from 'vue-country-region-select'
+Vue.use(vueCountryRegionSelect)
 
 export default {
   components: { Money, TheMask },
@@ -270,19 +274,49 @@ export default {
         precision: 2,
         masked: false,
       },
+      sortDesc: false,
+      sortDirection: 'asc',
+      fieldSet: [
+        {
+          key: 'name',
+          label: `${this.$t('productName')}`,
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'categoryName',
+          label: `${this.$t('categoryName')}`,
+          sortable: true,
+          class: 'text-center',
+        },
+        {
+          key: 'stock',
+          label: `${this.$t('quantity')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+        {
+          key: 'price',
+          label: `${this.$t('price')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+      ],
     };
   },
   mounted() {
-    if(this.$store.getters['cart/shoppingListSize'] == 0){
-      this.$router.push("/cart");
+    if (this.$store.getters['cart/shoppingListSize'] == 0) {
+      this.$router.push('/cart');
     }
     this.productList = this.$store.getters['cart/shoppingList'];
     this.calculatePrice();
   },
   methods: {
-      goBack() {
-        this.$router.push('/cart');
-      },
+    goBack() {
+      this.$router.push('/cart');
+    },
     goToHomePage() {
       this.$store.commit('clearShoppingList');
       this.$router.push({
@@ -316,21 +350,21 @@ export default {
                 this.successful = true;
                 this.$store.dispatch('cart/clearShoppingList');
                 this.$alert(this.$t('order.placed'));
-                this.$router.push("/home");
+                this.$router.push('/home');
                 this.$router.go();
               },
               (error) => {
                 this.message = error.response && error.response.data;
-                if(this.message.message == "product.not.available"){
+                if (this.message.message == 'product.not.available') {
                   this.$store.dispatch('cart/clearShoppingList');
                   this.$alert(this.$t('product.not.available'));
-                  this.$router.push("/home");
+                  this.$router.push('/home');
                   this.$router.go();
                 }
-                if(this.message.message == "insufficient.stock"){
+                if (this.message.message == 'insufficient.stock') {
                   this.$store.dispatch('cart/clearShoppingList');
                   this.$alert(this.$t('insufficient.stock'));
-                  this.$router.push("/home");
+                  this.$router.push('/home');
                   this.$router.go();
                 }
                 if (this.message.status == 401) {

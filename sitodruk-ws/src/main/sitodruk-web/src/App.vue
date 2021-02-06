@@ -1,23 +1,11 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href class="navbar-brand" @click.prevent></a>
       <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/home" class="nav-link">
-            <font-awesome-icon icon="house-user" />{{ $t("homePage") }}
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/products" class="nav-link">
-            <font-awesome-icon icon="gifts" />{{ $t("products") }}
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="isEmployeeInRole == true">
-          <router-link to="/orders" class="nav-link">
-            <font-awesome-icon icon="gifts" />{{ $t("orders") }}
-          </router-link>
-        </li>
+        <b-nav-item href="/home"><font-awesome-icon icon="house-user" />{{ $t("homePage") }}</b-nav-item>
+        <b-nav-item href="/products"><font-awesome-icon icon="gifts" />{{ $t("products") }}</b-nav-item>
+        <b-nav-item href="/orders" v-if="isEmployeeInRole == true"><font-awesome-icon icon="gifts" />{{ $t("orders") }}</b-nav-item>
+        <b-nav-item href="/orders" v-if="isAdminInRole == true"><font-awesome-icon icon="gifts" />{{ $t("orders") }}</b-nav-item>
         <b-dropdown v-if="isAdminInRole" id="dropdown" class="m-md-2 navbar-nav ml-auto">
           <template #button-content>
             {{ $t("admin.panel") }}

@@ -6,7 +6,6 @@
     <div v-if="this.$store.getters['cart/shoppingListSize'] > 0">
       <b-container>
         <b-row>
-          <b-col>{{ $t('productId') }}</b-col>
           <b-col>{{ $t('productName') }}</b-col>
           <b-col>{{ $t('categoryName') }}</b-col>
           <b-col>{{ $t('numberOf') }}</b-col>
@@ -19,7 +18,6 @@
         :key="index"
       >
         <b-row style="padding: 5px">
-          <b-col draggable="true">{{ index + 1 }}</b-col>
           <b-col>{{ product.name }}</b-col>
           <b-col>{{ $t(product.categoryName) }}</b-col>
           <b-col>

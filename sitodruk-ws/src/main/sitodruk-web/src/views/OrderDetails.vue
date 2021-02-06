@@ -1,138 +1,95 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>{{ $t("orderDetails") }}</h3>
+      <h3>{{ $t('orderDetails') }}: {{ order.payUOrderId }}</h3>
     </header>
     <form>
+      <b-container fluid>
+        <b-table
+          :items="order.products"
+          :fields="fieldSet"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          :sort-direction="sortDirection"
+          stacked="md"
+          :empty-text="$t('listEmpty')"
+          show-empty
+          striped
+          @filtered="onFiltered"
+        >
+          <template #cell(name)="row">
+            {{ row.value }}
+          </template>
+
+          <template #cell(categoryName)="row">
+            {{ $t(row.value) }}
+          </template>
+
+          <template #cell(price)="row">
+            {{
+              new Intl.NumberFormat($i18n.locale, {
+                style: 'currency',
+                currency: 'PLN',
+              }).format(row.value)
+            }}
+          </template>
+        </b-table>
+      </b-container>
       <b-container>
         <b-row>
-          <b-col>{{ $t("productName") }}</b-col>
-          <b-col>{{ $t("categoryName") }}</b-col>
-          <b-col>{{ $t("numberOf") }}</b-col>
-        </b-row>
-      </b-container>
-      <b-container
-        class="bv-example-row"
-        v-for="(product, index) in order.products"
-        :key="index"
-      >
-        <b-row style="padding: 5px">
-          <b-col>{{ product.name }}</b-col>
-          <b-col>{{ $t(product.categoryName) }}</b-col>
-          <b-col>
-            <number-input
-              size="small"
-              name="quantity"
-              v-model="product.quantity"
-              disabled
-            ></number-input
-          ></b-col>
-        </b-row>
-      </b-container>
-      <b-container>
-        <b-row>
-          <b-col style="font-weight: bold">{{ $t("totalcost") }}</b-col>
-          <b-col
-            ><money
-              disabled
-              v-model="order.totalValue"
-              v-bind="money"
-              class="form-input"
-              name="price"
-          /></b-col>
+          <b-col style="font-weight: bold">{{ $t('totalcost') }}:</b-col>
+          <b-col>{{
+            new Intl.NumberFormat($i18n.locale, {
+              style: 'currency',
+              currency: 'PLN',
+            }).format(order.totalValue)
+          }}</b-col>
+          <b-col></b-col>
+          <b-col></b-col>
+          <b-col></b-col>
         </b-row>
         <br />
         <b-row>
-          <b-col style="font-weight: bold">{{ $t("status") }}</b-col>
+          <b-col style="font-weight: bold">{{ $t('status') }}:</b-col>
           <b-col>{{ $t(order.orderStatus) }}</b-col>
+          <b-col></b-col>
+          <b-col></b-col>
+          <b-col></b-col>
         </b-row>
       </b-container>
       <br />
       <b-container>
-        <b-row>
-          <b-col
-            ><label for="country">{{ $t("country") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <input
-                v-model="order.addressDTO.country"
-                type="text"
-                disabled
-                name="country"
-              /></div
-          ></b-col>
-          <b-col
-            ><label for="voivodeship">{{ $t("voivodeship") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <input
-                v-model="order.addressDTO.voivodeship"
-                disabled
-                type="text"
-                name="voivodeship"
-              />
-              <div v-if="submitted && errors.has('voivodeship')" class="alert-danger">
-                {{ errors.first("voivodeship") }}
-              </div>
-            </div></b-col
-          >
-        </b-row>
-        <b-row>
-          <b-col
-            ><label for="city">{{ $t("city") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <input
-                v-model="order.addressDTO.city"
-                disabled
-                type="text"
-                name="city"
-              /></div
-          ></b-col>
-          <b-col
-            ><label for="postalCode">{{ $t("postalCode") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <the-mask
-                name="postalCode"
-                :mask="['##-###']"
-                disabled
-                v-model="order.addressDTO.postalCode"
-              /></div
-          ></b-col>
-        </b-row>
-        <b-row>
-          <b-col
-            ><label for="street">{{ $t("street") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <input
-                v-model="order.addressDTO.street"
-                type="text"
-                disabled
-                name="street"
-              /></div
-          ></b-col>
-          <b-col
-            ><label for="streetNumber">{{ $t("streetNumber") }}</label></b-col
-          >
-          <b-col>
-            <div class="form-group">
-              <input
-                v-model="order.addressDTO.streetNumber"
-                disabled
-                type="text"
-                name="streetNumber"
-              /></div
-          ></b-col>
-        </b-row>
+        <b-card no-body class="overflow-hidden" style="max-width: 740px">
+          <b-row no-gutters>
+            <b-col md="6">
+              <b-card-img
+                src="https://images.pexels.com/photos/1078850/pexels-photo-1078850.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                alt="Image"
+                class="rounded-0"
+              ></b-card-img>
+            </b-col>
+            <b-col md="6">
+              <b-card-body :title="$t('adresDostawy')">
+                <b-card-text>
+                  {{ order.addressDTO.country }},
+                  {{ order.addressDTO.voivodeship }}
+                </b-card-text>
+                <b-card-text>
+                  <the-mask
+                    name="postalCode"
+                    :mask="['##-###']"
+                    disabled
+                    v-model="order.addressDTO.postalCode"
+                  />, {{ order.addressDTO.city }}
+                </b-card-text>
+                 <b-card-text>
+                  {{ $t('street') }}: {{ order.addressDTO.street }}   {{ order.addressDTO.streetNumber }}
+                </b-card-text>
+              </b-card-body>
+            </b-col>
+          </b-row>
+        </b-card>
       </b-container>
-      <br />
       <br />
       <b-container>
         <b-row>
@@ -140,7 +97,7 @@
           <b-col></b-col>
           <b-col
             ><label v-if="order.orderStatus == 'created'" for="blikCode">{{
-              $t("blikCode")
+              $t('blikCode')
             }}</label></b-col
           >
           <b-col>
@@ -148,9 +105,16 @@
               v-if="order.orderStatus == 'created' && isClientInRole"
               class="form-group"
             >
-              <the-mask name="blikCode" :mask="['### ###']" v-model="order.blikCode" />
-              <div v-if="submitted && errors.has('blikCode')" class="alert-danger">
-                {{ errors.first("blikCode") }}
+              <the-mask
+                name="blikCode"
+                :mask="['### ###']"
+                v-model="order.blikCode"
+              />
+              <div
+                v-if="submitted && errors.has('blikCode')"
+                class="alert-danger"
+              >
+                {{ errors.first('blikCode') }}
               </div>
             </div></b-col
           >
@@ -166,17 +130,18 @@
               pill
               variant="primary"
               @click="repeatPayment()"
-              >{{ $t("repeatPayment") }}</b-button
-            ></b-col
-          >
+              >{{ $t('repeatPayment') }}
+              <b-icon icon="credit-card" aria-hidden="true"></b-icon></b-button
+          ></b-col>
         </b-row>
       </b-container>
     </form>
     <b-col>
       <b-button class="btn btn-primary pill" @click="goBack()">{{
-        $t("goBack")
+        $t('goBack')
       }}</b-button>
     </b-col>
+     <br />
     <div
       v-if="message"
       class="alert"
@@ -188,31 +153,52 @@
 </template>
 
 <script>
-import { Money } from "v-money";
-import { TheMask } from "vue-the-mask";
-import Address from "../models/address";
-import Product from "../models/product";
-import Order from "../models/order";
-import OrderService from "../services/order.service";
+import { TheMask } from 'vue-the-mask';
+import Address from '../models/address';
+import Product from '../models/product';
+import Order from '../models/order';
+import OrderService from '../services/order.service';
 
 export default {
-  components: { Money, TheMask },
-  name: "OrderDetails",
+  components: { TheMask },
+  name: 'OrderDetails',
   data() {
     return {
       submitted: false,
       successful: false,
-      message: "",
+      message: '',
       payUOrderId: this.$store.payUOrderId,
       order: {},
-      money: {
-        decimal: ".",
-        thousands: "",
-        prefix: "",
-        suffix: " PLN",
-        precision: 2,
-        masked: false,
-      },
+      sortDesc: false,
+      sortDirection: 'asc',
+      fieldSet: [
+        {
+          key: 'name',
+          label: `${this.$t('productName')}`,
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'categoryName',
+          label: `${this.$t('categoryName')}`,
+          sortable: true,
+          class: 'text-center',
+        },
+        {
+          key: 'stock',
+          label: `${this.$t('quantity')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+        {
+          key: 'price',
+          label: `${this.$t('price')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+      ],
     };
   },
   computed: {
@@ -220,13 +206,13 @@ export default {
       return this.$store.state.auth.currentAccessLevel;
     },
     isEmployeeInRole() {
-      if (this.currentUserAccessLevel == "EMPLOYEE") {
+      if (this.currentUserAccessLevel == 'EMPLOYEE') {
         return true;
       }
       return false;
     },
     isClientInRole() {
-      if (this.currentUserAccessLevel == "CLIENT") {
+      if (this.currentUserAccessLevel == 'CLIENT') {
         return true;
       }
       return false;
@@ -236,11 +222,11 @@ export default {
     if (this.payUOrderId == undefined) {
       if (this.isEmployeeInRole) {
         this.$router.push({
-          path: "/orders",
+          path: '/orders',
         });
       } else if (this.isClientInRole) {
         this.$router.push({
-          path: "/userOrders",
+          path: '/userOrders',
         });
       }
     } else {
@@ -284,9 +270,9 @@ export default {
         (error) => {
           this.message = error.response && error.response.data;
           if (this.message.status == 401) {
-            this.$store.dispatch("auth/logout");
+            this.$store.dispatch('auth/logout');
             this.$router.push({
-              path: "/login",
+              path: '/login',
             });
           }
         }
@@ -296,38 +282,40 @@ export default {
   methods: {
     goBack() {
       if (this.isClientInRole) {
-        this.$router.push("/userOrders");
+        this.$router.push('/userOrders');
       } else if (this.isEmployeeInRole) {
-        this.$router.push("/orders");
+        this.$router.push('/orders');
       } else {
-        this.$router.push("/home");
+        this.$router.push('/home');
       }
     },
     repeatPayment() {
       this.order.username = this.$store.state.auth.user.username;
-      this.$confirm(this.$t("areyousure"), this.$t("repeatpayment.msg"), "warning").then(
-        () => {
-          OrderService.repeatPayment(this.order).then(
-            (data) => {
-              this.responseList = data.data;
-              this.successful = true;
+      this.$confirm(
+        this.$t('areyousure'),
+        this.$t('repeatpayment.msg'),
+        'warning'
+      ).then(() => {
+        OrderService.repeatPayment(this.order).then(
+          (data) => {
+            this.responseList = data.data;
+            this.successful = true;
+            this.$router.push({
+              path: '/userOrders',
+            });
+          },
+          (error) => {
+            this.message = error.response && error.response.data;
+            if (this.message.status == 401) {
+              this.$store.dispatch('auth/logout');
               this.$router.push({
-                path: "/userOrders",
+                path: '/login',
               });
-            },
-            (error) => {
-              this.message = error.response && error.response.data;
-              if (this.message.status == 401) {
-                this.$store.dispatch("auth/logout");
-                this.$router.push({
-                  path: "/login",
-                });
-              }
-              this.successful = false;
             }
-          );
-        }
-      );
+            this.successful = false;
+          }
+        );
+      });
     },
   },
 };

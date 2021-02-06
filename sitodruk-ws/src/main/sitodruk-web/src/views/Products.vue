@@ -278,7 +278,8 @@ export default {
                 productDTO.dtoVersion,
                 productDTO.quantity,
                 productDTO.stock,
-                productDTO.isActive
+                productDTO.isActive,
+                productDTO.description
               )
             );
           });
@@ -308,7 +309,8 @@ export default {
                 productDTO.dtoVersion,
                 productDTO.quantity,
                 productDTO.stock,
-                productDTO.isActive
+                productDTO.isActive,
+                productDTO.description
               )
             );
           });
