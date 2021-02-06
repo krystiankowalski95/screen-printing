@@ -7,7 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("hasRole(T(pl.lodz.it.sitodruk.SecurityConsts).CLIENT) " +
-        "|| hasRole(T(pl.lodz.it.sitodruk.SecurityConsts).EMPLOYEE)" +
-        "|| (hasRole(T(pl.lodz.it.sitodruk.SecurityConsts).ADMIN) && #userDTO.username == principal.username)")
-public @interface AnyUserAuthenticatedAndDtoUsername {
+        "|| hasRole(T(pl.lodz.it.sitodruk.SecurityConsts).EMPLOYEE)")
+public @interface UserOrEmployeeAuthenticated {
 }

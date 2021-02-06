@@ -1,5 +1,5 @@
 export default class Product {
-    constructor(id,name, categoryName,price,dtoVersion,quantity,stock,isActive) {
+    constructor(id,name, categoryName,price,dtoVersion,quantity,stock,isActive,description) {
       this.id = id;
       this.name = name;
       this.price = price;
@@ -8,5 +8,6 @@ export default class Product {
       this.quantity = quantity,
       this.stock = stock,
       this.isActive = isActive;
+      this.description = description
     }
   }

@@ -230,6 +230,8 @@ public class UserOperationsController {
         try {
             userService.resetPassword(userDTO, requestUrl);
             return ResponseEntity.ok("email.sent");
+        }catch (UserNotActiveException ex){
+            throw new ResponseStatusException(HttpStatus.LOCKED, ex.getMessage());
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {

@@ -116,7 +116,7 @@
     "select.user.roles":"Proszę wybrać poziomy dostępu dla tego konta",
     "select.user.role.required":"Musisz wybrać przynajmniej jeden poziom dostępu",
     "admin":"Administrator",
-    "manager":"Menadżer",
+    "manager":"Pracownik",
     "client":"Klient",
     "current.access.level":"Wybrany poziom dostępu",
     "user.registered":"Konto zostało utworzone. Na podany adres email wysłana została wiadomość email z kodem aktywacyjnym",
@@ -144,7 +144,18 @@
     "payment.exception":"Wystąpił problem z płatnością",
     "product.not.found":"Produkt nie został znaleziony",
     "Forbidden":"Operacja niedozwolona",
-    "product.not.available":"Jeden z wybranych produktów przestał być dostępny"
+    "product.not.available":"Jeden z wybranych produktów przestał być dostępny",
+    "options":"Dostępne operacje",
+    "clearFilter":"Wyczyść",
+    "typeToSearch":"Wyszukaj",
+    "filter":"Filtrowanie",
+    "perPage":"Produkty na stronę",
+    "none":"Wszystkie kategorie",
+    "selectCategory":"Kategorie produktów",
+    "listEmpty":"Aktualnie nie ma żadnych dostępnych produktów",
+    "noFilteredItemsFound":"Żaden z produktów nie spełnia warunków wyszukiwania",
+    "employeeOperations":"Operacje pracownika",
+    "user.not.active":"Konto jest zablokowane. Nie można przystąpić do procesu resetowania hasła"
 
 
 }

@@ -33,7 +33,7 @@
     "phoneNumber":"Phone number",
     "confirmPassword":"Confirm password",
     "roleClient":"Client",
-    "roleManager":"Manager",
+    "roleEmployee":"Employee",
     "roleAdmin":"Admin",
     "confirmAccount":"Confirm account",
     "changePasswordButton":"Change password",
@@ -142,5 +142,16 @@
     "payment.exception":"An error occured while processing payment",
     "product.not.found":"Product not found",
     "Forbidden":"Action forbidden",
-    "product.not.available":"One of the products has become unavailable"
+    "product.not.available":"One of the products has become unavailable",
+    "options":"Available operations",
+    "clearFilter":"Clear",
+    "typeToSearch":"Type to search",
+    "filter":"Filter",
+    "perPage":"Products per page",
+    "none":"All categories",
+    "selectCategory":"Product categories",
+    "listEmpty":"There are no products available",
+    "noFilteredItemsFound":"There are no products matching your request",
+    "employeeOperations":"Employee operations",
+    "user.not.active":"Account has been blocked. You cannot proceed to reseting password procedure"
 }

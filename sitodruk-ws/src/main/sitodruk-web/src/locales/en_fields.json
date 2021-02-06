@@ -5,5 +5,6 @@
     "lastname":"lastname",
     "password":"password",
     "confirmPassword":"confirm password",
-    "phoneNumber": "phone number"
+    "phoneNumber": "phone number",
+    "description":"description"
 }

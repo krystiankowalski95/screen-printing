@@ -14,7 +14,8 @@
     "streetNumber":"",
     "blikCode":"kod blik",
     "categoryName":"kategoria",
-    "name":"nazwa produktu"
+    "name":"nazwa produktu",
+    "description":"opis"
 
 
 

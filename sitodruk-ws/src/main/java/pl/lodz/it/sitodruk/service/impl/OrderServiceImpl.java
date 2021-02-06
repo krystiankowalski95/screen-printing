@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PayUController payUController;
+
+    @Value("${thesis.app.dtoSecret}")
+    private String dtoSecret;
 
     @Override
     public void createOrder(OrderDTO orderDTO) throws BaseException {
@@ -221,10 +225,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public String getOrderVersionHash(OrderEntity orderEntity) {
-        return DigestUtils.sha256Hex(orderEntity.getUsername() + orderEntity.getVersion());
+        return DigestUtils.sha256Hex(orderEntity.getId() + dtoSecret + orderEntity.getVersion());
     }
 
     public String getProductVersionHash(ProductEntity productEntity) {
-        return DigestUtils.sha256Hex(productEntity.getName() + productEntity.getVersion());
+        return DigestUtils.sha256Hex(productEntity.getId() + dtoSecret + productEntity.getVersion());
     }
 }

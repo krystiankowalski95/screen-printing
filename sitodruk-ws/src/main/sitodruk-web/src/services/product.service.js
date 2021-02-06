@@ -15,9 +15,7 @@ class ProductService {
   }
 
   getAllProductCategories() {
-    return axios.get(API_URL + '/categories'
-      , { headers: authHeader() }
-    );
+    return axios.get(API_URL + '/categories');
   }
 
   editProduct(product) {

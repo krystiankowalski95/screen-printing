@@ -21,10 +21,8 @@ import pl.lodz.it.sitodruk.service.ProductCategoryService;
 import pl.lodz.it.sitodruk.service.ProductService;
 
 import javax.annotation.security.PermitAll;
-import javax.persistence.OptimisticLockException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -52,7 +50,7 @@ public class ProductController {
     }
 
     @PostMapping("/edit")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
     public ResponseEntity<?> editProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.modifyProduct(productDTO);
@@ -67,8 +65,8 @@ public class ProductController {
     }
 
     @GetMapping("/findAll")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
-    public ResponseEntity<List<ProductDTO>> getAllManagerProducts() {
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
+    public ResponseEntity<List<ProductDTO>> getAllEmployeeProducts() {
         try {
             return new ResponseEntity(productService.findAllProducts(), HttpStatus.OK);
         } catch (BaseException e) {
@@ -106,7 +104,7 @@ public class ProductController {
 
 
     @PostMapping("/addNew")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
     public ResponseEntity<?> addNewProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.createProduct(productDTO);
@@ -121,7 +119,7 @@ public class ProductController {
     }
 
     @PostMapping("/activateProduct")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
     public ResponseEntity<?> activateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.activateProduct(productDTO);
@@ -138,7 +136,7 @@ public class ProductController {
     }
 
     @PostMapping("/deactivateProduct")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
     public ResponseEntity<?> deactivateProduct(@RequestBody ProductDTO productDTO) {
         try {
             productService.deactivateProduct(productDTO);

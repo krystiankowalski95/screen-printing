@@ -16,4 +16,5 @@ public class ProductDTO {
     private Long quantity;
     private Long stock;
     private Boolean isActive;
+    private String description;
 }

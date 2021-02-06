@@ -14,7 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.it.sitodruk.SecurityConsts;
 import pl.lodz.it.sitodruk.config.annotations.ClientAuthenticatedAndUsernameFromOrderDto;
 import pl.lodz.it.sitodruk.config.annotations.ClientAuthenticatedAndUsernameFromUserDto;
-import pl.lodz.it.sitodruk.config.annotations.UserOrManagerAuthenticated;
+import pl.lodz.it.sitodruk.config.annotations.EmployeeAuthenticatedAndUsernameDifferent;
+import pl.lodz.it.sitodruk.config.annotations.UserOrEmployeeAuthenticated;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.UserDTO;
 import pl.lodz.it.sitodruk.exceptions.*;
@@ -76,7 +77,7 @@ public class OrderController {
 
 
     @PostMapping("/cancel")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @EmployeeAuthenticatedAndUsernameDifferent
     public ResponseEntity<?> cancelOrder(@RequestBody OrderDTO orderDTO) {
         try {
             orderService.cancelOrder(orderDTO);
@@ -93,7 +94,7 @@ public class OrderController {
     }
 
     @PostMapping("/complete")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @EmployeeAuthenticatedAndUsernameDifferent
     public ResponseEntity<?> completeOrder(@RequestBody OrderDTO orderDTO) {
         try {
             orderService.markOrderAsCompleted(orderDTO);
@@ -145,7 +146,7 @@ public class OrderController {
     }
 
     @PostMapping("/findByPayUOrderId")
-    @UserOrManagerAuthenticated
+    @UserOrEmployeeAuthenticated
     public ResponseEntity<OrderDTO> findOrderByPayUOrderId(@RequestBody OrderDTO orderDTO) {
         try {
             OrderDTO dto = orderService.findOrderByPayuOrderId(orderDTO);
@@ -160,7 +161,7 @@ public class OrderController {
     }
 
     @GetMapping("/findAllOrders")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PreAuthorize("hasAnyRole('" + SecurityConsts.EMPLOYEE + "')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
             return new ResponseEntity(orderService.findAllOrders(), HttpStatus.OK);

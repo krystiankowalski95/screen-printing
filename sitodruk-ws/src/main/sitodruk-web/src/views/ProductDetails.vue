@@ -110,7 +110,8 @@ export default {
           this.product.dtoVersion,
           this.selected,
           this.product.stock,
-          this.product.isActive
+          this.product.isActive,
+          this.product.description
         )
       );
       this.$alert(this.$t('productadded'));

@@ -39,6 +39,21 @@
           </div>
 
           <div class="form-group">
+            <label for="name">{{ $t('description') }}*</label>
+            <input
+              v-model="product.description"
+              v-validate="'required|min:3|max:200'"
+              type="text"
+              class="form-control"
+              name="description"
+            />
+            <div
+              v-if="submitted && errors.has('description')"
+              class="alert-danger"
+            >{{errors.first('description')}}</div>
+          </div>
+
+          <div class="form-group">
             <label for="stock">{{ $t('quantity') }}</label>
             <number-input
               name="stock"
@@ -134,7 +149,8 @@ export default {
           prod.dtoVersion,
           prod.quantity,
           prod.stock,
-          prod.isActive
+          prod.isActive,
+          prod.description
         );
       });
       (error) => {

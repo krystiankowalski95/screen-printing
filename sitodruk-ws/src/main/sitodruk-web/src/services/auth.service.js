@@ -14,11 +14,11 @@ class AuthService {
           localStorage.setItem('user', JSON.stringify(response.data));
           if(response.data.roles.includes('ROLE_CLIENT')){
             localStorage.setItem('accessLevel', JSON.stringify('CLIENT'));
-          }else if((response.data.roles.includes('ROLE_MANAGER') && (response.data.roles.includes('ROLE_ADMIN') && (!response.data.roles.includes('ROLE_CLIENT'))))){
+          }else if((response.data.roles.includes('ROLE_EMPLOYEE') && (response.data.roles.includes('ROLE_ADMIN') && (!response.data.roles.includes('ROLE_CLIENT'))))){
             localStorage.setItem('accessLevel', JSON.stringify('MANAGER'));
-          }else if((!response.data.roles.includes('ROLE_CLIENT') && (!response.data.roles.includes('ROLE_ADMIN') && (response.data.roles.includes('ROLE_MANAGER'))))){
+          }else if((!response.data.roles.includes('ROLE_CLIENT') && (!response.data.roles.includes('ROLE_ADMIN') && (response.data.roles.includes('ROLE_EMPLOYEE'))))){
             localStorage.setItem('accessLevel', JSON.stringify('MANAGER'));
-          }else if((!response.data.roles.includes('ROLE_CLIENT') && (!response.data.roles.includes('ROLE_MANAGER') && (response.data.roles.includes('ROLE_ADMIN'))))){
+          }else if((!response.data.roles.includes('ROLE_CLIENT') && (!response.data.roles.includes('ROLE_EMPLOYEE') && (response.data.roles.includes('ROLE_ADMIN'))))){
             localStorage.setItem('accessLevel', JSON.stringify('ADMIN'));
           }else{
             localStorage.setItem('accessLevel', JSON.stringify(''));

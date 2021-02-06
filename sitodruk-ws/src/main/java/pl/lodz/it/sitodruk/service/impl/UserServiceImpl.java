@@ -2,7 +2,7 @@ package pl.lodz.it.sitodruk.service.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Backoff;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +41,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder encoder;
 
+    @Value("${thesis.app.dtoSecret}")
+    private String dtoSecret;
+
     @Override
     public void activateUserAccount(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
@@ -72,8 +75,8 @@ public class UserServiceImpl implements UserService {
         String appRoleName = "";
         if (role.equalsIgnoreCase("admin")) {
             appRoleName = SecurityConsts.ADMIN;
-        } else if (role.equalsIgnoreCase("manager")) {
-            appRoleName = SecurityConsts.MANAGER;
+        } else if (role.equalsIgnoreCase("employee")) {
+            appRoleName = SecurityConsts.EMPLOYEE;
         } else if (role.equalsIgnoreCase("client")) {
             appRoleName = SecurityConsts.CLIENT;
         }
@@ -101,8 +104,8 @@ public class UserServiceImpl implements UserService {
         String appRoleName = "";
         if (role.equalsIgnoreCase("admin")) {
             appRoleName = SecurityConsts.ADMIN;
-        } else if (role.equalsIgnoreCase("manager")) {
-            appRoleName = SecurityConsts.MANAGER;
+        } else if (role.equalsIgnoreCase("employee")) {
+            appRoleName = SecurityConsts.EMPLOYEE;
         } else if (role.equalsIgnoreCase("client")) {
             appRoleName = SecurityConsts.CLIENT;
         }
@@ -147,11 +150,11 @@ public class UserServiceImpl implements UserService {
             client.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(client);
 
-            UserAccessLevelEntity manager = new UserAccessLevelEntity();
-            manager.setAccessLevelName(SecurityConsts.MANAGER);
-            manager.setActive(userDTO.getRoles().contains("manager"));
-            manager.setLoginDataByUserId(user);
-            user.getUserAccessLevelsById().add(manager);
+            UserAccessLevelEntity employee = new UserAccessLevelEntity();
+            employee.setAccessLevelName(SecurityConsts.EMPLOYEE);
+            employee.setActive(userDTO.getRoles().contains("employee"));
+            employee.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(employee);
 
             UserAccessLevelEntity admin = new UserAccessLevelEntity();
             admin.setAccessLevelName(SecurityConsts.ADMIN);
@@ -193,11 +196,11 @@ public class UserServiceImpl implements UserService {
             client.setActive(true);
             client.setLoginDataByUserId(user);
             user.getUserAccessLevelsById().add(client);
-            UserAccessLevelEntity manager = new UserAccessLevelEntity();
-            manager.setAccessLevelName(SecurityConsts.MANAGER);
-            manager.setActive(false);
-            manager.setLoginDataByUserId(user);
-            user.getUserAccessLevelsById().add(manager);
+            UserAccessLevelEntity employee = new UserAccessLevelEntity();
+            employee.setAccessLevelName(SecurityConsts.EMPLOYEE);
+            employee.setActive(false);
+            employee.setLoginDataByUserId(user);
+            user.getUserAccessLevelsById().add(employee);
             UserAccessLevelEntity admin = new UserAccessLevelEntity();
             admin.setAccessLevelName(SecurityConsts.ADMIN);
             admin.setActive(false);
@@ -291,10 +294,15 @@ public class UserServiceImpl implements UserService {
     public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
-            user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+            if(user.get().getActive()){
+                user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
+
             user.get().setIsTokenExpired(false);
             userRepository.saveAndFlush(user.get());
             emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), userDTO.getLanguage());
+            }else{
+                throw new UserNotActiveException();
+            }
         } else throw new UserNotFoundException();
     }
 
@@ -334,14 +342,15 @@ public class UserServiceImpl implements UserService {
     }
 
     public String getVersionHash(UserEntity userEntity) {
-        return DigestUtils.sha256Hex(userEntity.getEmail() + userEntity.getVersion());
+        return DigestUtils.sha256Hex(userEntity.getId() + dtoSecret + userEntity.getVersion());
     }
 
     public String getAccessLevelVersionHash(UserEntity userEntity) {
         StringBuilder hash = new StringBuilder();
         for (UserAccessLevelEntity ual : userEntity.getUserAccessLevelsById()) {
-            hash.append(ual.getAccessLevelName() + ual.getVersion());
+            hash.append(ual.getId()).append(dtoSecret).append(ual.getVersion());
         }
+        hash.append(userEntity.getId()).append(dtoSecret).append(userEntity.getVersion());
         return DigestUtils.sha256Hex(hash.toString());
     }
 

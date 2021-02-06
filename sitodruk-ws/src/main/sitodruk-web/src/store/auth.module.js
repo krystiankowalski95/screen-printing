@@ -49,13 +49,13 @@ export const auth = {
       if(user.roles.includes('ROLE_CLIENT')){
         state.currentAccessLevel = 'CLIENT';
         localStorage.setItem('accessLevel', JSON.stringify('CLIENT'));
-      }else if((user.roles.includes('ROLE_MANAGER') && (user.roles.includes('ROLE_ADMIN') && (!user.roles.includes('ROLE_CLIENT'))))){
-        state.currentAccessLevel = 'MANAGER';
-        localStorage.setItem('accessLevel', JSON.stringify('MANAGER'));
-      }else if((!user.roles.includes('ROLE_CLIENT') && (!user.roles.includes('ROLE_ADMIN') && (user.roles.includes('ROLE_MANAGER'))))){
-        state.currentAccessLevel = 'MANAGER';
-        localStorage.setItem('accessLevel', JSON.stringify('MANAGER'));
-      }else if((!user.roles.includes('ROLE_CLIENT') && (!user.roles.includes('ROLE_MANAGER') && (user.roles.includes('ROLE_ADMIN'))))){
+      }else if((user.roles.includes('ROLE_EMPLOYEE') && (user.roles.includes('ROLE_ADMIN') && (!user.roles.includes('ROLE_CLIENT'))))){
+        state.currentAccessLevel = 'EMPLOYEE';
+        localStorage.setItem('accessLevel', JSON.stringify('EMPLOYEE'));
+      }else if((!user.roles.includes('ROLE_CLIENT') && (!user.roles.includes('ROLE_ADMIN') && (user.roles.includes('ROLE_EMPLOYEE'))))){
+        state.currentAccessLevel = 'EMPLOYEE';
+        localStorage.setItem('accessLevel', JSON.stringify('EMPLOYEE'));
+      }else if((!user.roles.includes('ROLE_CLIENT') && (!user.roles.includes('ROLE_EMPLOYEE') && (user.roles.includes('ROLE_ADMIN'))))){
         state.currentAccessLevel = 'ADMIN';
         localStorage.setItem('accessLevel', JSON.stringify('ADMIN'));
       }else{
@@ -67,9 +67,9 @@ export const auth = {
       if(accessLevelName == 'CLIENT'){
         state.currentAccessLevel = 'CLIENT';
         localStorage.setItem('accessLevel', JSON.stringify('CLIENT'));
-      }else if(accessLevelName == 'MANAGER'){
-        state.currentAccessLevel = 'MANAGER';
-        localStorage.setItem('accessLevel', JSON.stringify('MANAGER'));
+      }else if(accessLevelName == 'EMPLOYEE'){
+        state.currentAccessLevel = 'EMPLOYEE';
+        localStorage.setItem('accessLevel', JSON.stringify('EMPLOYEE'));
       }else if(accessLevelName == 'ADMIN'){
         state.currentAccessLevel == 'ADMIN';
         localStorage.setItem('accessLevel', JSON.stringify('ADMIN'));

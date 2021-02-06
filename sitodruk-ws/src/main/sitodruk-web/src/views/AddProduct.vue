@@ -37,6 +37,21 @@
             >{{errors.first('categoryName')}}</div>
           </div>
 
+          <div class="form-group">
+            <label for="name">{{ $t('description') }}*</label>
+            <input
+              v-model="product.description"
+              v-validate="'required|min:3|max:200'"
+              type="text"
+              class="form-control"
+              name="description"
+            />
+            <div
+              v-if="submitted && errors.has('description')"
+              class="alert-danger"
+            >{{errors.first('description')}}</div>
+          </div>
+
             <div class="form-group">
             <label for="stock">{{ $t('quantity') }}*</label>
              <number-input name="stock"  v-model="product.stock" :min="0" :max="99" inline controls></number-input>
@@ -87,7 +102,7 @@ export default {
   name: 'AddProduct',
   data() {
     return {
-      product: new Product('','', '', '','','','',''),
+      product: new Product('','', '', '','','','','',''),
       productCategories: [],
       selectedProductCategory: null,
       submitted: false,

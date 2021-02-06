@@ -10,57 +10,156 @@
         </li>
       </div>
     </header>
-    <b-container>
+    <b-container fluid>
       <b-row>
-        <b-col>{{ $t('productName') }}</b-col>
-        <b-col>{{ $t('categoryName') }}</b-col>
-        <b-col>{{ $t('quantity') }}</b-col>
-        <b-col></b-col>
-        <b-col v-if="isManagerInRole"></b-col>
-        <b-col v-if="isManagerInRole"></b-col>
-        <b-col v-if="isManagerInRole"></b-col>
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            :label="$t('selectCategory')"
+            label-for="sort-by-select"
+            label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+            v-slot="{ ariaDescribedby }"
+          >
+            <b-input-group size="sm">
+              <b-form-select
+                id="sort-by-select"
+                v-model="filter"
+                :options="sortOptions"
+                :aria-describedby="ariaDescribedby"
+                class="w-75"
+              >
+                <template #first>
+                  <option value="">{{ $t('none') }}</option>
+                </template>
+              </b-form-select>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            :label="$t('filter')"
+            label-for="filter-input"
+            label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-input-group size="sm">
+              <b-form-input
+                id="filter-input"
+                v-model="filter"
+                type="search"
+                :placeholder="$t('typeToSearch')"
+              ></b-form-input>
+
+              <b-input-group-append>
+                <b-button :disabled="!filter" @click="filter = ''"
+                  >{{ $t('clearFilter') }}
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
       </b-row>
-    </b-container>
-    <b-container
-      class="bv-example-row"
-      v-for="(product, index) in productList"
-      :key="index"
-    >
-      <b-row v-if="isManagerInRole == true" style="padding: 5px">
-        <b-col>{{ product.name }}</b-col>
-        <b-col>{{ $t(product.categoryName) }}</b-col>
-        <b-col>{{ product.stock }}</b-col>
-        <b-col
-          ><b-button pill variant="primary" @click="getDetails(index)">{{
-            $t('details')
-          }}</b-button></b-col
-        >
-        <b-button-group  v-if="product.isActive == true">
-          <b-button disabled variant="success">{{$t('activate') }}</b-button>
-          <b-button @click="deactivate(index)" variant="danger"> {{$t('deactivate') }}</b-button>
-        </b-button-group>
-        <b-button-group  v-if="product.isActive == false">
-          <b-button @click="activate(index)" variant="success">{{$t('activate') }}</b-button>
-          <b-button disabled  variant="danger">{{$t('deactivate') }} </b-button>
-        </b-button-group>
-        <b-col v-if="isManagerInRole"
-          ><b-button pill variant="secondary" @click="edit(index)">{{
-            $t('edit')
-          }}</b-button></b-col
-        >
-      </b-row>
-      <b-row
-        v-if="isManagerInRole == false && product.isActive == true"
-        style="padding: 5px"
+      <b-table
+        :items="productList"
+        :fields="computedFields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filter-included-fields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        stacked="md"
+        :empty-text="$t('listEmpty')"
+        :empty-filtered-text="$t('noFilteredItemsFound')"
+        show-empty
+        striped
+        @filtered="onFiltered"
       >
-        <b-col>{{ product.name }}</b-col>
-        <b-col>{{ $t(product.categoryName) }}</b-col>
-        <b-col>{{ product.stock }}</b-col>
-        <b-col
-          ><b-button pill variant="primary" @click="getDetails(index)">{{
-            $t('details')
-          }}</b-button></b-col
-        >
+        <template #cell(name)="row">
+          {{ row.value }}
+        </template>
+
+        <template #cell(categoryName)="row">
+          {{ $t(row.value) }}
+        </template>
+
+        <template #cell(price)="row">
+          {{
+            new Intl.NumberFormat($i18n.locale, {
+              style: 'currency',
+              currency: 'PLN',
+            }).format(row.value)
+          }}
+        </template>
+
+        <template #cell(actions)="row">
+          <b-button size="sm" variant="primary" @click="getDetails(row.index)"
+            >{{ $t('details') }}
+          </b-button>
+        </template>
+
+        <template #cell(managerActions)="row" v-if="isManagerInRole">
+          <b-button-group v-if="row.item.isActive == true" size="sm">
+            <b-button disabled variant="success">{{ $t('activate') }}</b-button>
+            <b-button @click="deactivate(row.index)" variant="danger">
+              {{ $t('deactivate') }}</b-button
+            >
+          </b-button-group>
+          <b-button-group v-if="row.item.isActive == false" size="sm">
+            <b-button @click="activate(row.index)" variant="success">{{
+              $t('activate')
+            }}</b-button>
+            <b-button disabled variant="danger"
+              >{{ $t('deactivate') }}
+            </b-button>
+          </b-button-group>
+        </template>
+
+        <template #cell(edit)="row" v-if="isManagerInRole">
+          <b-button
+            pill
+            size="sm"
+            variant="secondary"
+            @click="edit(row.index)"
+            >{{ $t('edit') }}</b-button
+          >
+        </template>
+      </b-table>
+      <b-row>
+        <b-col sm="5" md="6" class="my-1">
+          <b-form-group
+            :label="$t('perPage')"
+            label-for="per-page-select"
+            label-cols-sm="6"
+            label-cols-md="4"
+            label-cols-lg="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-form-select
+              id="per-page-select"
+              v-model="perPage"
+              :options="pageOptions"
+              size="sm"
+            ></b-form-select>
+          </b-form-group>
+        </b-col>
+        <b-col sm="7" md="6" class="my-1">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="fill"
+            size="sm"
+            class="my-0"
+          ></b-pagination>
+        </b-col>
       </b-row>
     </b-container>
     <div
@@ -76,6 +175,7 @@
 <script>
 import ProductService from '../services/product.service';
 import Product from '../models/product';
+import Category from '../models/category';
 
 export default {
   name: 'Products',
@@ -84,7 +184,56 @@ export default {
       message: '',
       responseList: [],
       productList: [],
+      productCategories: [],
+      totalRows: 1,
+      currentPage: 1,
+      perPage: 3,
+      pageOptions: [1, 3, 5],
+      sortBy: '',
+      sortDesc: false,
+      sortDirection: 'asc',
+      filter: null,
+      filterOn: [],
       successful: false,
+      fieldSet: [
+        {
+          key: 'name',
+          label: `${this.$t('productName')}`,
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'categoryName',
+          label: `${this.$t('categoryName')}`,
+          sortable: true,
+          class: 'text-center',
+        },
+        {
+          key: 'stock',
+          label: `${this.$t('quantity')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+        {
+          key: 'price',
+          label: `${this.$t('price')}`,
+          sortable: true,
+          sortByFormatted: true,
+          filterByFormatted: true,
+        },
+        { key: 'actions', label: `${this.$t('options')}` },
+        {
+          key: 'managerActions',
+          label: `${this.$t('employeeOperations')}`,
+          requiresEmployee: true,
+        },
+        {
+          key: 'edit',
+          label: '',
+          requiresEmployee: true,
+        },
+      ],
     };
   },
   computed: {
@@ -102,6 +251,16 @@ export default {
         return true;
       }
       return false;
+    },
+    computedFields() {
+      if (!this.isManagerInRole)
+        return this.fieldSet.filter((field) => !field.requiresEmployee);
+      else return this.fieldSet;
+    },
+    sortOptions() {
+      return this.productCategories.map((f) => {
+        return { text: `${this.$t(f.category)}`, value: f.category };
+      });
     },
   },
   mounted() {
@@ -123,6 +282,7 @@ export default {
               )
             );
           });
+          this.totalRows = this.productList.length;
         },
         (error) => {
           this.message = error.response && error.response.data;
@@ -152,6 +312,7 @@ export default {
               )
             );
           });
+          this.totalRows = this.productList.length;
         },
         (error) => {
           this.message = error.response && error.response.data;
@@ -164,6 +325,13 @@ export default {
         }
       );
     }
+
+    ProductService.getAllProductCategories().then((data) => {
+      let responseList = data.data;
+      responseList.map((category) => {
+        this.productCategories.push(new Category(category.categoryName));
+      });
+    });
   },
   methods: {
     edit(index) {
@@ -237,6 +405,10 @@ export default {
         path: '/productDetails',
         params: { productName: this.productList[index].name },
       });
+    },
+    onFiltered(filteredItems) {
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
     },
   },
 };

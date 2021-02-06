@@ -19,6 +19,8 @@ public class ProductEntity {
     private String name;
     @Basic@Column(name = "price", nullable = false, scale = 2)
     private double price;
+    @Basic@Column(name = "description", nullable = true, length = 300)
+    private String description;
     @Basic
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
