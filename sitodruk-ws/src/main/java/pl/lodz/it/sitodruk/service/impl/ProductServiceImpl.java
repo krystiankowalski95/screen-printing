@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.service.impl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Value("${thesis.app.dtoSecret}")
-    private String dtoSecret;
+    @Autowired
+    private Environment env;
 
     @Override
     public void createProduct(ProductDTO productDTO) throws BaseException, SQLException {
@@ -133,6 +134,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public String getVersionHash(ProductEntity productEntity) {
+        String dtoSecret=env.getProperty("thesis.app.dtoSecret");
         return DigestUtils.sha256Hex(productEntity.getId() + dtoSecret+ productEntity.getVersion());
     }
 }

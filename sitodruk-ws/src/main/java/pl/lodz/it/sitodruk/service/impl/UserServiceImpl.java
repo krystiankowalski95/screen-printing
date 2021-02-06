@@ -3,6 +3,7 @@ package pl.lodz.it.sitodruk.service.impl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder encoder;
 
-    @Value("${thesis.app.dtoSecret}")
-    private String dtoSecret;
+    @Autowired
+    private Environment env;
 
     @Override
     public void activateUserAccount(UserDTO userDTO) throws BaseException, SQLException {
@@ -342,11 +343,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public String getVersionHash(UserEntity userEntity) {
+        String dtoSecret=env.getProperty("thesis.app.dtoSecret");
         return DigestUtils.sha256Hex(userEntity.getId() + dtoSecret + userEntity.getVersion());
     }
 
     public String getAccessLevelVersionHash(UserEntity userEntity) {
         StringBuilder hash = new StringBuilder();
+        String dtoSecret=env.getProperty("thesis.app.dtoSecret");
         for (UserAccessLevelEntity ual : userEntity.getUserAccessLevelsById()) {
             hash.append(ual.getId()).append(dtoSecret).append(ual.getVersion());
         }
