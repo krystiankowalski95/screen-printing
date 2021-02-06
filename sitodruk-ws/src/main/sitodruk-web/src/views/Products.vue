@@ -2,7 +2,7 @@
   <div class="container">
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('productList') }}</h3>
-      <div v-if="isManagerInRole" class="navbar-nav ml-auto">
+      <div v-if="isEmployeeInRole" class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/addProduct" class="nav-link">
             <font-awesome-icon icon="plus-square" />{{ $t('addProduct') }}
@@ -103,7 +103,7 @@
           </b-button>
         </template>
 
-        <template #cell(managerActions)="row" v-if="isManagerInRole">
+        <template #cell(managerActions)="row" v-if="isEmployeeInRole">
           <b-button-group v-if="row.item.isActive == true" size="sm">
             <b-button disabled variant="success">{{ $t('activate') }}</b-button>
             <b-button @click="deactivate(row.index)" variant="danger">
@@ -120,7 +120,7 @@
           </b-button-group>
         </template>
 
-        <template #cell(edit)="row" v-if="isManagerInRole">
+        <template #cell(edit)="row" v-if="isEmployeeInRole">
           <b-button
             pill
             size="sm"
@@ -240,8 +240,8 @@ export default {
     currentUserAccessLevel() {
       return this.$store.state.auth.currentAccessLevel;
     },
-    isManagerInRole() {
-      if (this.currentUserAccessLevel == 'MANAGER') {
+    isEmployeeInRole() {
+      if (this.currentUserAccessLevel == "EMPLOYEE") {
         return true;
       }
       return false;
@@ -253,7 +253,7 @@ export default {
       return false;
     },
     computedFields() {
-      if (!this.isManagerInRole)
+      if (!this.isEmployeeInRole)
         return this.fieldSet.filter((field) => !field.requiresEmployee);
       else return this.fieldSet;
     },
@@ -264,7 +264,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isManagerInRole) {
+    if (this.isEmployeeInRole) {
       ProductService.getAllProductsManager().then(
         (data) => {
           this.responseList = data.data;

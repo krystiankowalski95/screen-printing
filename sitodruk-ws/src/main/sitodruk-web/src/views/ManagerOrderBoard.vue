@@ -85,8 +85,8 @@ export default {
     currentUserAccessLevel() {
       return this.$store.state.auth.currentAccessLevel;
     },
-    isManagerInRole() {
-    if (this.currentUserAccessLevel == 'MANAGER') {
+    isEmployeeInRole() {
+      if (this.currentUserAccessLevel == "EMPLOYEE") {
         return true;
       }
       return false;

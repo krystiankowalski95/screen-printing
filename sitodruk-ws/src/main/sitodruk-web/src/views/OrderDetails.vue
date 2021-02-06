@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <header class="jumbotron" style="height: 150px">
-      <h3>{{ $t('orderDetails') }}</h3>
+      <h3>{{ $t("orderDetails") }}</h3>
     </header>
     <form>
       <b-container>
         <b-row>
-          <b-col>{{ $t('productName') }}</b-col>
-          <b-col>{{ $t('categoryName') }}</b-col>
-          <b-col>{{ $t('numberOf') }}</b-col>
+          <b-col>{{ $t("productName") }}</b-col>
+          <b-col>{{ $t("categoryName") }}</b-col>
+          <b-col>{{ $t("numberOf") }}</b-col>
         </b-row>
       </b-container>
       <b-container
@@ -31,7 +31,7 @@
       </b-container>
       <b-container>
         <b-row>
-          <b-col style="font-weight: bold">{{ $t('totalcost') }}</b-col>
+          <b-col style="font-weight: bold">{{ $t("totalcost") }}</b-col>
           <b-col
             ><money
               disabled
@@ -43,7 +43,7 @@
         </b-row>
         <br />
         <b-row>
-          <b-col style="font-weight: bold">{{ $t('status') }}</b-col>
+          <b-col style="font-weight: bold">{{ $t("status") }}</b-col>
           <b-col>{{ $t(order.orderStatus) }}</b-col>
         </b-row>
       </b-container>
@@ -51,7 +51,7 @@
       <b-container>
         <b-row>
           <b-col
-            ><label for="country">{{ $t('country') }}</label></b-col
+            ><label for="country">{{ $t("country") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -63,7 +63,7 @@
               /></div
           ></b-col>
           <b-col
-            ><label for="voivodeship">{{ $t('voivodeship') }}</label></b-col
+            ><label for="voivodeship">{{ $t("voivodeship") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -73,18 +73,15 @@
                 type="text"
                 name="voivodeship"
               />
-              <div
-                v-if="submitted && errors.has('voivodeship')"
-                class="alert-danger"
-              >
-                {{ errors.first('voivodeship') }}
+              <div v-if="submitted && errors.has('voivodeship')" class="alert-danger">
+                {{ errors.first("voivodeship") }}
               </div>
             </div></b-col
           >
         </b-row>
         <b-row>
           <b-col
-            ><label for="city">{{ $t('city') }}</label></b-col
+            ><label for="city">{{ $t("city") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -96,7 +93,7 @@
               /></div
           ></b-col>
           <b-col
-            ><label for="postalCode">{{ $t('postalCode') }}</label></b-col
+            ><label for="postalCode">{{ $t("postalCode") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -110,7 +107,7 @@
         </b-row>
         <b-row>
           <b-col
-            ><label for="street">{{ $t('street') }}</label></b-col
+            ><label for="street">{{ $t("street") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -122,7 +119,7 @@
               /></div
           ></b-col>
           <b-col
-            ><label for="streetNumber">{{ $t('streetNumber') }}</label></b-col
+            ><label for="streetNumber">{{ $t("streetNumber") }}</label></b-col
           >
           <b-col>
             <div class="form-group">
@@ -143,7 +140,7 @@
           <b-col></b-col>
           <b-col
             ><label v-if="order.orderStatus == 'created'" for="blikCode">{{
-              $t('blikCode')
+              $t("blikCode")
             }}</label></b-col
           >
           <b-col>
@@ -151,16 +148,9 @@
               v-if="order.orderStatus == 'created' && isClientInRole"
               class="form-group"
             >
-              <the-mask
-                name="blikCode"
-                :mask="['### ###']"
-                v-model="order.blikCode"
-              />
-              <div
-                v-if="submitted && errors.has('blikCode')"
-                class="alert-danger"
-              >
-                {{ errors.first('blikCode') }}
+              <the-mask name="blikCode" :mask="['### ###']" v-model="order.blikCode" />
+              <div v-if="submitted && errors.has('blikCode')" class="alert-danger">
+                {{ errors.first("blikCode") }}
               </div>
             </div></b-col
           >
@@ -176,7 +166,7 @@
               pill
               variant="primary"
               @click="repeatPayment()"
-              >{{ $t('repeatPayment') }}</b-button
+              >{{ $t("repeatPayment") }}</b-button
             ></b-col
           >
         </b-row>
@@ -184,7 +174,7 @@
     </form>
     <b-col>
       <b-button class="btn btn-primary pill" @click="goBack()">{{
-        $t('goBack')
+        $t("goBack")
       }}</b-button>
     </b-col>
     <div
@@ -198,28 +188,28 @@
 </template>
 
 <script>
-import { Money } from 'v-money';
-import { TheMask } from 'vue-the-mask';
-import Address from '../models/address';
-import Product from '../models/product';
-import Order from '../models/order';
-import OrderService from '../services/order.service';
+import { Money } from "v-money";
+import { TheMask } from "vue-the-mask";
+import Address from "../models/address";
+import Product from "../models/product";
+import Order from "../models/order";
+import OrderService from "../services/order.service";
 
 export default {
   components: { Money, TheMask },
-  name: 'OrderDetails',
+  name: "OrderDetails",
   data() {
     return {
       submitted: false,
       successful: false,
-      message: '',
+      message: "",
       payUOrderId: this.$store.payUOrderId,
       order: {},
       money: {
-        decimal: '.',
-        thousands: '',
-        prefix: '',
-        suffix: ' PLN',
+        decimal: ".",
+        thousands: "",
+        prefix: "",
+        suffix: " PLN",
         precision: 2,
         masked: false,
       },
@@ -229,14 +219,14 @@ export default {
     currentUserAccessLevel() {
       return this.$store.state.auth.currentAccessLevel;
     },
-    isManagerInRole() {
-      if (this.currentUserAccessLevel == 'MANAGER') {
+    isEmployeeInRole() {
+      if (this.currentUserAccessLevel == "EMPLOYEE") {
         return true;
       }
       return false;
     },
     isClientInRole() {
-      if (this.currentUserAccessLevel == 'CLIENT') {
+      if (this.currentUserAccessLevel == "CLIENT") {
         return true;
       }
       return false;
@@ -244,13 +234,13 @@ export default {
   },
   mounted() {
     if (this.payUOrderId == undefined) {
-      if (this.isManagerInRole) {
+      if (this.isEmployeeInRole) {
         this.$router.push({
-          path: '/orders',
+          path: "/orders",
         });
       } else if (this.isClientInRole) {
         this.$router.push({
-          path: '/userOrders',
+          path: "/userOrders",
         });
       }
     } else {
@@ -294,9 +284,9 @@ export default {
         (error) => {
           this.message = error.response && error.response.data;
           if (this.message.status == 401) {
-            this.$store.dispatch('auth/logout');
+            this.$store.dispatch("auth/logout");
             this.$router.push({
-              path: '/login',
+              path: "/login",
             });
           }
         }
@@ -306,40 +296,38 @@ export default {
   methods: {
     goBack() {
       if (this.isClientInRole) {
-        this.$router.push('/userOrders');
-      } else if (this.isManagerInRole) {
-        this.$router.push('/orders');
+        this.$router.push("/userOrders");
+      } else if (this.isEmployeeInRole) {
+        this.$router.push("/orders");
       } else {
-        this.$router.push('/home');
+        this.$router.push("/home");
       }
     },
     repeatPayment() {
       this.order.username = this.$store.state.auth.user.username;
-      this.$confirm(
-        this.$t('areyousure'),
-        this.$t('repeatpayment.msg'),
-        'warning'
-      ).then(() => {
-        OrderService.repeatPayment(this.order).then(
-          (data) => {
-            this.responseList = data.data;
-            this.successful = true;
-            this.$router.push({
-              path: '/userOrders',
-            });
-          },
-          (error) => {
-            this.message = error.response && error.response.data;
-            if (this.message.status == 401) {
-              this.$store.dispatch('auth/logout');
+      this.$confirm(this.$t("areyousure"), this.$t("repeatpayment.msg"), "warning").then(
+        () => {
+          OrderService.repeatPayment(this.order).then(
+            (data) => {
+              this.responseList = data.data;
+              this.successful = true;
               this.$router.push({
-                path: '/login',
+                path: "/userOrders",
               });
+            },
+            (error) => {
+              this.message = error.response && error.response.data;
+              if (this.message.status == 401) {
+                this.$store.dispatch("auth/logout");
+                this.$router.push({
+                  path: "/login",
+                });
+              }
+              this.successful = false;
             }
-            this.successful = false;
-          }
-        );
-      });
+          );
+        }
+      );
     },
   },
 };
