@@ -40,7 +40,7 @@ public class ProductController {
 
 
     @GetMapping("/categories")
-    @PreAuthorize("hasAnyRole('" + SecurityConsts.MANAGER + "')")
+    @PermitAll
     public ResponseEntity<List<CategoryDTO>> getAllProductCategories() {
         try {
             return new ResponseEntity(productCategoryService.getAllProductCategories(), HttpStatus.OK);
