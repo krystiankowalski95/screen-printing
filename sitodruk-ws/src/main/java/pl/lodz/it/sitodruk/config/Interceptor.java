@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import pl.lodz.it.sitodruk.SecurityConsts;
 import pl.lodz.it.sitodruk.exceptions.BaseException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,9 @@ public class Interceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest requestServlet, HttpServletResponse httpServletResponse, Object o) throws Exception {
         HandlerMethod method = (HandlerMethod) o;
         String login = requestServlet.getRemoteUser();
+        if(login == null){
+            login = SecurityConsts.GUEST;
+        }
         transactionId = Long.toString(System.currentTimeMillis()) + ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
         log.info("Transaction ID: " + transactionId + " has been started, account: " + login + ", method " + method.getShortLogMessage());
         return true;
@@ -29,6 +33,9 @@ public class Interceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
         HandlerMethod method = (HandlerMethod) o;
         String login = request.getRemoteUser();
+        if(login == null){
+            login = SecurityConsts.GUEST;
+        }
         log.info("Transaction with ID: " + transactionId + " post handle , account:" + login + ", method " + method.getShortLogMessage());
     }
 
@@ -36,6 +43,9 @@ public class Interceptor extends HandlerInterceptorAdapter {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse httpServletResponse, Object o, Exception exception) throws Exception {
         HandlerMethod method = (HandlerMethod) o;
         String login = request.getRemoteUser();
+        if(login == null){
+            login = SecurityConsts.GUEST;
+        }
         log.info("Transaction with ID: " + transactionId + " after completion, account:" + login + ", method " + method.getShortLogMessage());
     }
 }
