@@ -39,6 +39,8 @@ public class UserOperationsController {
         try {
             userService.confirmUser(tokenRequest.get("token"));
             return ResponseEntity.ok("account.confirmed");
+        } catch (TokenTimeExpiredException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         }catch (TokenExpiredException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
@@ -251,6 +253,8 @@ public class UserOperationsController {
         try {
             userService.setNewPassword(userDTO);
             return ResponseEntity.ok("password.changed");
+        } catch (TokenTimeExpiredException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (TokenExpiredException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {
