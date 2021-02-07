@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByPasswordToken(userDTO.getToken());
         if (user.isPresent()) {
             Integer mins = Integer.valueOf(env.getProperty("thesis.app.email.expiration.time"));
-            if (user.get().getPasswordTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
+            if (LocalDateTime.now().isAfter(user.get().getPasswordTokenCreationDate().plusMinutes(mins))) {
                 throw new TokenTimeExpiredException();
             } else {
                 if (user.get().getIsPasswordTokenExpired()) {
@@ -336,7 +336,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
             Integer mins = Integer.valueOf(env.getProperty("thesis.app.email.expiration.time"));
-            if (user.get().getTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
+            if (LocalDateTime.now().isAfter(user.get().getTokenCreationDate().plusMinutes(mins))) {
                 throw new TokenTimeExpiredException();
             } else {
                 if (user.get().getIsTokenExpired()) {
