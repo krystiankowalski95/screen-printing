@@ -235,7 +235,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException {
-        Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
+        Optional<UserEntity> user = userRepository.findByPasswordToken(userDTO.getToken());
         if (user.isPresent()) {
             Integer mins = Integer.valueOf(env.getProperty("thesis.app.email.expiration.time"));
             if (user.get().getPasswordTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
@@ -274,7 +274,7 @@ public class UserServiceImpl implements UserService {
                 user.get().setPasswordTokenCreationDate(LocalDateTime.now());
                 user.get().setIsPasswordTokenExpired(false);
                 userRepository.saveAndFlush(user.get());
-                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), user.get().getRegisteredLang());
+                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getPasswordToken(), user.get().getRegisteredLang());
             } else {
                 throw new UserNotActiveException();
             }
@@ -324,7 +324,7 @@ public class UserServiceImpl implements UserService {
                 user.get().setPasswordTokenCreationDate(LocalDateTime.now());
                 user.get().setIsPasswordTokenExpired(false);
                 userRepository.saveAndFlush(user.get());
-                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), userDTO.getLanguage());
+                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getPasswordToken(), userDTO.getLanguage());
             } else {
                 throw new UserNotActiveException();
             }
