@@ -359,7 +359,7 @@ export default {
       this.$validator.validate().then((isValid) => {
         if (isValid) {
           this.$bvModal
-            .msgBoxConfirm(this.$t('repeatpayment.msg'), {
+            .msgBoxConfirm(this.$t('placeorder.msg'), {
               title: this.$t('areyousure'),
               size: 'sm',
               buttonSize: 'sm',
