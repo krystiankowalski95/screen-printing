@@ -20,7 +20,6 @@ import UserList from './views/UserList.vue';
 import UserDetails from './views/UserDetails.vue';
 import UserEdit from './views/UserEdit.vue';
 import CreateAccount from './views/CreateAccount.vue';
-import ChangeUsersPassword from './views/ChangeUsersPassword.vue';
 
 Vue.use(Router);
 
@@ -39,10 +38,6 @@ export const router = new Router({
     {
       path: '/createUser',
       component: CreateAccount
-    },
-    {
-      path: '/changeUsersPassword',
-      component: ChangeUsersPassword
     },
     {
       path: "/userOrders",

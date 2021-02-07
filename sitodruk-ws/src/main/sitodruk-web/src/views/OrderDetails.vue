@@ -3,7 +3,7 @@
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('orderDetails') }}: {{ order.payUOrderId }}</h3>
     </header>
-    <form>
+    <form @submit.prevent="repeatPayment">
       <b-container fluid>
         <b-table
           :items="order.products"
@@ -82,8 +82,9 @@
                     v-model="order.addressDTO.postalCode"
                   />, {{ order.addressDTO.city }}
                 </b-card-text>
-                 <b-card-text>
-                  {{ $t('street') }}: {{ order.addressDTO.street }}   {{ order.addressDTO.streetNumber }}
+                <b-card-text>
+                  {{ $t('street') }}: {{ order.addressDTO.street }}
+                  {{ order.addressDTO.streetNumber }}
                 </b-card-text>
               </b-card-body>
             </b-col>
@@ -95,10 +96,10 @@
         <b-row>
           <b-col></b-col>
           <b-col></b-col>
-          <b-col
-            ><label v-if="order.orderStatus == 'created'" for="blikCode">{{
-              $t('blikCode')
-            }}</label></b-col
+          <b-col  v-if="order.orderStatus == 'created' && isClientInRole"
+            ><label for="blikCode"
+              >{{ $t('blikCode') }}*
+            </label></b-col
           >
           <b-col>
             <div
@@ -107,6 +108,7 @@
             >
               <the-mask
                 name="blikCode"
+                v-validate="'required'"
                 :mask="['### ###']"
                 v-model="order.blikCode"
               />
@@ -141,7 +143,7 @@
         $t('goBack')
       }}</b-button>
     </b-col>
-     <br />
+    <br />
     <div
       v-if="message"
       class="alert"
@@ -186,14 +188,7 @@ export default {
         },
         {
           key: 'stock',
-          label: `${this.$t('quantity')}`,
-          sortable: true,
-          sortByFormatted: true,
-          filterByFormatted: true,
-        },
-        {
-          key: 'price',
-          label: `${this.$t('price')}`,
+          label: `${this.$t('quantityInOrder')}`,
           sortable: true,
           sortByFormatted: true,
           filterByFormatted: true,
@@ -261,7 +256,8 @@ export default {
                 productDTO.dtoVersion,
                 productDTO.quantity,
                 productDTO.stock,
-                productDTO.isActive
+                productDTO.isActive,
+                productDTO.description
               )
             );
           });
@@ -291,30 +287,68 @@ export default {
     },
     repeatPayment() {
       this.order.username = this.$store.state.auth.user.username;
-      this.$confirm(
-        this.$t('areyousure'),
-        this.$t('repeatpayment.msg'),
-        'warning'
-      ).then(() => {
-        OrderService.repeatPayment(this.order).then(
-          (data) => {
-            this.responseList = data.data;
-            this.successful = true;
-            this.$router.push({
-              path: '/userOrders',
-            });
-          },
-          (error) => {
-            this.message = error.response && error.response.data;
-            if (this.message.status == 401) {
-              this.$store.dispatch('auth/logout');
-              this.$router.push({
-                path: '/login',
+      this.submitted = true;
+      this.$validator.validate().then((isValid) => {
+        if (isValid) {
+          this.$bvModal
+            .msgBoxConfirm(this.$t('repeatpayment.msg'), {
+              title: this.$t('areyousure'),
+              size: 'sm',
+              buttonSize: 'sm',
+              okVariant: 'danger',
+              okTitle: this.$t('yes'),
+              cancelTitle: this.$t('no'),
+              footerClass: 'p-2',
+              hideHeaderClose: false,
+              centered: true,
+            })
+            .then((value) => {
+              if (value == true) {
+                OrderService.repeatPayment(this.order).then(
+                  (data) => {
+                    this.responseList = data.data;
+                    this.successful = true;
+                    this.$bvModal
+                      .msgBoxOk(this.$t(this.responseList), {
+                        title: '',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        headerClass: 'p-2 border-bottom-0',
+                        footerClass: 'p-2 border-top-0',
+                        centered: true,
+                      }).then((val) => {
+                        if(val == true){
+                          this.$router.push("/userOrders");
+                        }
+                      });
+                  },
+                  (error) => {
+                    this.message = error.response && error.response.data;
+                    if (this.message.status == 401) {
+                      this.$store.dispatch('auth/logout');
+                      this.$router.push({
+                        path: '/login',
+                      });
+                    }
+                    this.successful = false;
+                  }
+                );
+              }
+            })
+            .catch((err) => {
+              this.message = err.response && err.response.data;
+              this.$bvModal.msgBoxConfirm(this.$t(this.message), {
+                title: '',
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'error',
+                headerClass: 'p-2 border-bottom-0',
+                footerClass: 'p-2 border-top-0',
+                centered: true,
               });
-            }
-            this.successful = false;
-          }
-        );
+            });
+        }
       });
     },
   },

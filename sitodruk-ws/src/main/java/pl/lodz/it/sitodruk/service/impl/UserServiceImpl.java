@@ -22,6 +22,8 @@ import pl.lodz.it.sitodruk.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -84,17 +86,17 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                if(userDTO.getAccessLevelDtoVersion().equals(getAccessLevelVersionHash(user.get()))){
+                if (userDTO.getAccessLevelDtoVersion().equals(getAccessLevelVersionHash(user.get()))) {
                     for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
                         if (userAccessLevelEntity.getAccessLevelName().equalsIgnoreCase(appRoleName)) {
                             userAccessLevelEntity.setActive(true);
                         }
                     }
                     userRepository.saveAndFlush(user.get());
-                }else{
+                } else {
                     throw new ApplicationOptimisticLockException();
                 }
-             } else {
+            } else {
                 throw new ApplicationOptimisticLockException();
             }
         } else throw new UserNotFoundException();
@@ -113,7 +115,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> user = userRepository.findByUsername(userDTO.getUsername());
         if (user.isPresent()) {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
-                if(userDTO.getAccessLevelDtoVersion().equalsIgnoreCase(getAccessLevelVersionHash(user.get()))){
+                if (userDTO.getAccessLevelDtoVersion().equalsIgnoreCase(getAccessLevelVersionHash(user.get()))) {
                     List<UserAccessLevelEntity> list = user.get().getUserAccessLevelsById().stream().filter(UserAccessLevelEntity::getActive).collect(Collectors.toList());
                     if (list.size() > 1) {
                         for (UserAccessLevelEntity userAccessLevelEntity : user.get().getUserAccessLevelsById()) {
@@ -125,7 +127,7 @@ public class UserServiceImpl implements UserService {
                     } else {
                         throw new UserAccessLevelDeactivationException();
                     }
-                }else{
+                } else {
                     throw new ApplicationOptimisticLockException();
                 }
             } else {
@@ -174,6 +176,7 @@ public class UserServiceImpl implements UserService {
             if (userDTO.getDtoVersion().equals(getVersionHash(user.get()))) {
                 user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
                 user.get().setIsTokenExpired(false);
+                user.get().setTokenCreationDate(LocalDateTime.now());
                 userRepository.saveAndFlush(user.get());
                 emailSenderService.sendRegistrationEmail(user.get().getEmail(), requestUrl, user.get().getToken(), user.get().getRegisteredLang());
             } else {
@@ -234,12 +237,17 @@ public class UserServiceImpl implements UserService {
     public void setNewPassword(UserDTO userDTO) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByToken(userDTO.getToken());
         if (user.isPresent()) {
-            if (user.get().getIsTokenExpired()) {
-                throw new TokenExpiredException();
+            Integer mins = Integer.valueOf(env.getProperty("thesis.app.email.expiration.time"));
+            if (user.get().getPasswordTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
+                throw new TokenTimeExpiredException();
             } else {
-                user.get().setPassword(encoder.encode(userDTO.getPassword()));
-                user.get().setIsTokenExpired(true);
-                userRepository.saveAndFlush(user.get());
+                if (user.get().getIsTokenExpired()) {
+                    throw new TokenExpiredException();
+                } else {
+                    user.get().setPassword(encoder.encode(userDTO.getPassword()));
+                    user.get().setIsPasswordTokenExpired(true);
+                    userRepository.saveAndFlush(user.get());
+                }
             }
         } else throw new UserNotFoundException();
     }
@@ -253,6 +261,22 @@ public class UserServiceImpl implements UserService {
                 userRepository.saveAndFlush(user.get());
             } else {
                 throw new ApplicationOptimisticLockException();
+            }
+        } else throw new UserNotFoundException();
+    }
+
+    @Override
+    public void changeUsersPassword(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException,SQLException{
+        Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
+        if (user.isPresent()) {
+            if (user.get().getActive()) {
+                user.get().setPasswordToken(UUID.randomUUID().toString().replace("-", ""));
+                user.get().setPasswordTokenCreationDate(LocalDateTime.now());
+                user.get().setIsPasswordTokenExpired(false);
+                userRepository.saveAndFlush(user.get());
+                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), user.get().getRegisteredLang());
+            } else {
+                throw new UserNotActiveException();
             }
         } else throw new UserNotFoundException();
     }
@@ -295,13 +319,13 @@ public class UserServiceImpl implements UserService {
     public void resetPassword(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByEmail(userDTO.getEmail());
         if (user.isPresent()) {
-            if(user.get().getActive()){
-                user.get().setToken(UUID.randomUUID().toString().replace("-", ""));
-
-            user.get().setIsTokenExpired(false);
-            userRepository.saveAndFlush(user.get());
-            emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), userDTO.getLanguage());
-            }else{
+            if (user.get().getActive()) {
+                user.get().setPasswordToken(UUID.randomUUID().toString().replace("-", ""));
+                user.get().setPasswordTokenCreationDate(LocalDateTime.now());
+                user.get().setIsPasswordTokenExpired(false);
+                userRepository.saveAndFlush(user.get());
+                emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getToken(), userDTO.getLanguage());
+            } else {
                 throw new UserNotActiveException();
             }
         } else throw new UserNotFoundException();
@@ -311,16 +335,21 @@ public class UserServiceImpl implements UserService {
     public void confirmUser(String token) throws BaseException, SQLException {
         Optional<UserEntity> user = userRepository.findByToken(token);
         if (user.isPresent()) {
-            if (user.get().getConfirmed()) {
-                throw new UserAlreadyConfirmedException();
+            Integer mins = Integer.valueOf(env.getProperty("thesis.app.email.expiration.time"));
+            if (user.get().getTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
+                throw new TokenTimeExpiredException();
             } else {
                 if (user.get().getIsTokenExpired()) {
                     throw new TokenExpiredException();
                 } else {
-                    user.get().setIsTokenExpired(true);
-                    user.get().setConfirmed(true);
-                    user.get().setActive(true);
-                    userRepository.saveAndFlush(user.get());
+                    if (user.get().getConfirmed()) {
+                        throw new UserAlreadyConfirmedException();
+                    } else {
+                        user.get().setIsTokenExpired(true);
+                        user.get().setConfirmed(true);
+                        user.get().setActive(true);
+                        userRepository.saveAndFlush(user.get());
+                    }
                 }
             }
         } else throw new UserNotFoundException();
@@ -343,13 +372,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public String getVersionHash(UserEntity userEntity) {
-        String dtoSecret=env.getProperty("thesis.app.dtoSecret");
+        String dtoSecret = env.getProperty("thesis.app.dtoSecret");
         return DigestUtils.sha256Hex(userEntity.getId() + dtoSecret + userEntity.getVersion());
     }
 
     public String getAccessLevelVersionHash(UserEntity userEntity) {
         StringBuilder hash = new StringBuilder();
-        String dtoSecret=env.getProperty("thesis.app.dtoSecret");
+        String dtoSecret = env.getProperty("thesis.app.dtoSecret");
         for (UserAccessLevelEntity ual : userEntity.getUserAccessLevelsById()) {
             hash.append(ual.getId()).append(dtoSecret).append(ual.getVersion());
         }

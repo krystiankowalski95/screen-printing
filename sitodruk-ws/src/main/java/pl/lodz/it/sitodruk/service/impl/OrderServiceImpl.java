@@ -104,7 +104,6 @@ public class OrderServiceImpl implements OrderService {
                         for (OrderProductEntity orderProductEntity: orderEntity.get().getOrderProductEntities()){
                             if(orderProductEntity.getProductEntity().equals(prdEnt)){
                                 orderProductEntity.getProductEntity().setStock(prdEnt.getStock() + orderProductEntity.getAmount());
-                                orderProductEntity.setAmount(0);
                             }
                         }
                         productRepository.saveAndFlush(prdEnt);
@@ -169,6 +168,7 @@ public class OrderServiceImpl implements OrderService {
             for(OrderProductEntity ope : orderEntity.getOrderProductEntities()){
                 ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
                 productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setStock(ope.getAmount().longValue());
                 productDTO.setQuantity(ope.getAmount().longValue());
                 orderDTO.getProducts().add(productDTO);
             }
@@ -193,6 +193,7 @@ public class OrderServiceImpl implements OrderService {
             for(OrderProductEntity ope : orderEntity.getOrderProductEntities()){
                 ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
                 productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setStock(ope.getAmount().longValue());
                 productDTO.setQuantity(ope.getAmount().longValue());
                 orderDTO.getProducts().add(productDTO);
             }
@@ -216,6 +217,7 @@ public class OrderServiceImpl implements OrderService {
             for(OrderProductEntity ope : orderEntity.get().getOrderProductEntities()){
                 ProductDTO productDTO = ProductMapperMoz.INSTANCE.toProductDTO(ope.getProductEntity());
                 productDTO.setDtoVersion(getProductVersionHash(ope.getProductEntity()));
+                productDTO.setStock(ope.getAmount().longValue());
                 productDTO.setQuantity(ope.getAmount().longValue());
                 dto.getProducts().add(productDTO);
             }

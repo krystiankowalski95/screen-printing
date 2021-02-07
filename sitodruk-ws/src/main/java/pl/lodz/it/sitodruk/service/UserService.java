@@ -41,4 +41,6 @@ public interface UserService {
 
     void sendActivationLink(UserDTO userDTO, HttpServletRequest requestUrl) throws BaseException, SQLException;
 
+    void changeUsersPassword(UserDTO userDTO,HttpServletRequest requestUrl) throws BaseException,SQLException;
+
 }

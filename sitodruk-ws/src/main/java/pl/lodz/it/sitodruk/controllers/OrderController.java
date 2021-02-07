@@ -49,8 +49,6 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         }catch (UserNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        } catch (PaymentException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (SQLException e) {
@@ -116,15 +114,13 @@ public class OrderController {
         try {
             orderDTO.setIpAddress(request.getRemoteAddr());
             orderService.repeatPayment(orderDTO);
-            return ResponseEntity.ok("order.completed");
+            return ResponseEntity.ok("payment.repeated");
         } catch (InvalidOrderStatusException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (OrderNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        } catch (PaymentException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         } catch (BaseException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (SQLException e) {

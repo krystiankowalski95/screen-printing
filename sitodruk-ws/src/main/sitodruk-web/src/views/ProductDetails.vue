@@ -62,7 +62,7 @@
     </b-card>
 
     <b-modal id="modal-scoped">
-      <template #modal-header="{ close }">
+      <template #modal-header="{  }">
         <h3>{{ $t('productadded') }}</h3>
       </template>
 
@@ -81,7 +81,7 @@
           <b-col></b-col>
         </b-row>
       </b-container>
-      <template #modal-footer="{ ok }">
+      <template #modal-footer="{  }">
         <b-button size="sm" variant="success" @click="proceed()">
           {{ $t('ok') }}
         </b-button>

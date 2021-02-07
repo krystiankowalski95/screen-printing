@@ -70,13 +70,13 @@
         </template>
 
         <template #cell(actions)="row">
-          <b-button size="sm" pill variant="primary" @click="getDetails(row.index)"
+          <b-button size="sm" pill variant="primary" @click="getDetails(row.item)"
             >{{ $t('details') }}
           </b-button>
         </template>
 
         <template #cell(managerActions)="row">
-          <b-button pill size="sm" v-if="row.item.orderStatus == 'created'" variant="danger" @click="cancelOrder(row.index)"
+          <b-button pill size="sm" v-if="row.item.orderStatus == 'created'" variant="danger" @click="cancelOrder(row.item)"
             >{{ $t('cancelOrder') }}
           </b-button>
         </template>
@@ -255,11 +255,11 @@ export default {
     );
   },
   methods: {
-    getDetails(index) {
-      this.$store.payUOrderId = this.orderList[index].payUOrderId;
+    getDetails(order) {
+      this.$store.payUOrderId = order.payUOrderId;
       this.$router.push({
         path: '/orderDetails',
-        params: { payUOrderId: this.orderList[index].payUOrderId },
+        params: { payUOrderId: order.payUOrderId },
       });
     },
 
@@ -268,14 +268,14 @@ export default {
       this.currentPage = 1;
     },
 
-    cancelOrder(index) {
+    cancelOrder(order) {
       this.$confirm(
         this.$t('areyousure'),
         this.$t('cancelorder.msg'),
         'warning'
       ).then(() => {
         OrderService.cancelClientOrder(
-          this.orderList[index],
+          order,
           this.$store.state.auth.user
         ).then(
           (data) => {

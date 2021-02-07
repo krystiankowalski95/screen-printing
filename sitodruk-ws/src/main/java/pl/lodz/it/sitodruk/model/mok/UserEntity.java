@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -68,6 +70,23 @@ public class UserEntity implements Serializable {
     private Boolean isTokenExpired;
 
     @Basic
+    @Column(name = "is_password_token_used")
+    private Boolean isPasswordTokenExpired;
+
+    @Basic
+    @Column(name = "password_token", unique = true, length = 32)
+    private String passwordToken;
+
+    @Basic
+    @Column(name = "token_creation_date")
+    private LocalDateTime tokenCreationDate;
+
+    @Basic
+    @Column(name = "password_token_creation_date")
+    private LocalDateTime passwordTokenCreationDate;
+
+
+    @Basic
     @Column(name = "register_lang", length = 4, nullable = true)
     private String registeredLang;
 
@@ -75,6 +94,7 @@ public class UserEntity implements Serializable {
         this.active = true;
         this.version = 1L;
         this.token = UUID.randomUUID().toString().replace("-", "");
+        this.tokenCreationDate = LocalDateTime.now();
     }
 
 }

@@ -1,5 +1,7 @@
 package pl.lodz.it.sitodruk.service.impl;
 
+import org.apache.tomcat.jni.Local;
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import pl.lodz.it.sitodruk.utils.MessageProvider;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -35,7 +39,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String body = "<a href=\"" + link + token + "\">"+ MessageProvider.getTranslatedText("confirm.account.msg",lanuage) + "</a>";
             helper.setText(body, true);
             helper.setTo(to);
-            helper.setSubject(MessageProvider.getTranslatedText("confirm.account.subject",lanuage));
+            helper.setSubject("["+LocalDateTime.now()+"]"+MessageProvider.getTranslatedText("confirm.account.subject", lanuage)  + "  " + LocalTime.now());
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             throw new EmailSendingException();
@@ -52,7 +56,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String body = "<a href=\"" + link + token + "\">"+ MessageProvider.getTranslatedText("reset.password.msg", lanuage) + "</a>";
             helper.setText(body, true);
             helper.setTo(to);
-            helper.setSubject(MessageProvider.getTranslatedText("reset.password.subject", lanuage) );
+            helper.setSubject(MessageProvider.getTranslatedText("reset.password.subject", lanuage) + "  " + LocalTime.now());
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             throw new EmailSendingException();

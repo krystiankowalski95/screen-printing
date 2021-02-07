@@ -70,7 +70,7 @@
         </template>
 
         <template #cell(actions)="row">
-          <b-button size="sm" variant="primary" @click="getDetails(row.index)"
+          <b-button size="sm" variant="primary" @click="getDetails(row.item)"
             >{{ $t('details') }}
           </b-button>
         </template>
@@ -79,7 +79,7 @@
           <b-button-group v-if="row.item.username != currentUser.username">
             <b-button size="sm"
               v-if="row.item.orderStatus == 'paid'"
-              @click="completeOrder(row.index)"
+              @click="completeOrder(row.item)"
               variant="success"
               >{{ $t('completeOrder') }}</b-button
             >
@@ -98,7 +98,7 @@
             <b-button size="sm"
               v-if="row.item.orderStatus == 'created'"
               variant="danger"
-              @click="cancelOrder(row.index)"
+              @click="cancelOrder(row.item)"
               >{{ $t('cancelOrder') }}
             </b-button>
           </b-button-group>
@@ -279,11 +279,11 @@ export default {
     }
   },
   methods: {
-    getDetails(index) {
-      this.$store.payUOrderId = this.orderList[index].payUOrderId;
+    getDetails(order) {
+      this.$store.payUOrderId = order.payUOrderId;
       this.$router.push({
         path: '/orderDetails',
-        params: { payUOrderId: this.orderList[index].payUOrderId },
+        params: { payUOrderId: order.payUOrderId },
       });
     },
 
@@ -292,13 +292,13 @@ export default {
       this.currentPage = 1;
     },
 
-    cancelOrder(index) {
+    cancelOrder(order) {
       this.$confirm(
         this.$t('areyousure'),
         this.$t('cancelorder.msg'),
         'warning'
       ).then(() => {
-        OrderService.cancelOrder(this.orderList[index]).then(
+        OrderService.cancelOrder(order).then(
           (data) => {
             this.responseList = data.data;
             this.successful = true;
@@ -318,13 +318,13 @@ export default {
       });
     },
 
-    completeOrder(index) {
+    completeOrder(order) {
       this.$confirm(
         this.$t('areyousure'),
         this.$t('complete.msg'),
         'warning'
       ).then(() => {
-        OrderService.completeOrder(this.orderList[index]).then(
+        OrderService.completeOrder(order).then(
           (data) => {
             this.responseList = data.data;
             this.successful = true;

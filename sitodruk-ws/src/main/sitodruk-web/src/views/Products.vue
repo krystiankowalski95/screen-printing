@@ -98,7 +98,7 @@
         </template>
 
         <template #cell(actions)="row">
-          <b-button size="sm" variant="primary" @click="getDetails(row.index)"
+          <b-button size="sm" variant="primary" @click="getDetails(row.item)"
             >{{ $t('details') }}
           </b-button>
         </template>
@@ -106,12 +106,12 @@
         <template #cell(managerActions)="row" v-if="isEmployeeInRole">
           <b-button-group v-if="row.item.isActive == true" size="sm">
             <b-button disabled variant="success">{{ $t('activate') }}</b-button>
-            <b-button @click="deactivate(row.index)" variant="danger">
+            <b-button @click="deactivate(row.item)" variant="danger">
               {{ $t('deactivate') }}</b-button
             >
           </b-button-group>
           <b-button-group v-if="row.item.isActive == false" size="sm">
-            <b-button @click="activate(row.index)" variant="success">{{
+            <b-button @click="activate(row.item)" variant="success">{{
               $t('activate')
             }}</b-button>
             <b-button disabled variant="danger"
@@ -125,7 +125,7 @@
             pill
             size="sm"
             variant="secondary"
-            @click="edit(row.index)"
+            @click="edit(row.item)"
             >{{ $t('edit') }}</b-button
           >
         </template>
@@ -336,37 +336,15 @@ export default {
     });
   },
   methods: {
-    edit(index) {
-      this.$store.productName = this.productList[index].name;
+    edit(product) {
+      this.$store.productName =product.name;
       this.$router.push({
         path: '/editProduct',
-        params: { productName: this.productList[index].name },
+        params: { productName: product.name },
       });
     },
-    removeProduct(index) {
-      this.$confirm(
-        this.$t('areyousure'),
-        this.$t('deletingmsg') + this.productList[index].name,
-        'warning'
-      ).then(() => {
-        ProductService.removeProduct(this.productList[index]).then(
-          (data) => {
-            this.responseList = data.data;
-          },
-          (error) => {
-            this.message = error.response && error.response.data;
-            if (this.message.status == 401) {
-              this.$store.dispatch('auth/logout');
-              this.$router.push({
-                path: '/login',
-              });
-            }
-          }
-        );
-      });
-    },
-    activate(index) {
-      ProductService.activateProduct(this.productList[index]).then(
+    activate(product) {
+      ProductService.activateProduct(product).then(
         (data) => {
           this.responseList = data.data;
           this.$router.go();
@@ -383,8 +361,8 @@ export default {
       );
     },
 
-    deactivate(index) {
-      ProductService.deactivateProduct(this.productList[index]).then(
+    deactivate(product) {
+      ProductService.deactivateProduct(product).then(
         (data) => {
           this.responseList = data.data;
           this.$router.go();
@@ -401,11 +379,11 @@ export default {
       );
     },
 
-    getDetails(index) {
-      this.$store.product = this.productList[index];
+    getDetails(product) {
+      this.$store.product = product;
       this.$router.push({
         path: '/productDetails',
-        params: { productName: this.productList[index].name },
+        params: { productName: product.name},
       });
     },
     onFiltered(filteredItems) {

@@ -106,7 +106,13 @@
     "changeSelectedUsersPassword":"Change password",
     "sendEmail":"Send email with activation link",
     "emailSent":"Email with activation link has been sent.",
+    "ChangePasswordEmailSent":"Email with password change instructions has been sent.",
     "change.user.password ":"Password change form for user",
+    "payment.repeated":"Payment is being processed",
+    "quantityInOrder":"Number of products in the order",
+    "description":"Description",
+    "yes":"Yes",
+    "no":"No",
     "role.client":"Client role",
     "role.manager":"Manager role",
     "role.admin":"Admin role",
@@ -156,5 +162,6 @@
     "user.not.active":"Account has been blocked. You cannot proceed to reseting password procedure",
     "orderListEmpty":"Order list is empty",
     "noFilteredOrdersFound":"There are no orders matching uour request",
-    "adresDostawy":"Delivery address"
+    "adresDostawy":"Delivery address",
+    "token.time.expired":"Link that has been sent to you is valid for 15 minutes. If you see this message it means that it's expiration date has passed"
 }

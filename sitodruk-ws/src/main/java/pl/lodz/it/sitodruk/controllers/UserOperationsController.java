@@ -209,10 +209,12 @@ public class UserOperationsController {
 
     @PostMapping("/changePassword")
     @PreAuthorize("hasAnyRole('" + SecurityConsts.ADMIN + "')")
-    public ResponseEntity<?> changePassword(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> changePassword(@RequestBody UserDTO userDTO, HttpServletRequest requestUrl) {
         try {
-            userService.changePassword(userDTO);
-            return ResponseEntity.ok("password.changed");
+            userService.changeUsersPassword(userDTO, requestUrl);
+            return ResponseEntity.ok("email.sent");
+        }catch (UserNotActiveException ex){
+            throw new ResponseStatusException(HttpStatus.LOCKED, ex.getMessage());
         } catch (ApplicationOptimisticLockException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
         } catch (UserNotFoundException ex) {

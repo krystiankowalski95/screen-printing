@@ -25,6 +25,10 @@
             {{ $t(row.value) }}
           </template>
 
+          <template #cell(quantity)="row">
+            {{ $t(row.value) }}
+          </template>
+
           <template #cell(price)="row">
             {{
               new Intl.NumberFormat($i18n.locale, {
@@ -59,7 +63,15 @@
               >
               <b-col>
                 <div class="form-group">
-                  <country-select name="country" countryName="true" usei18n="true" removePlaceholder="true" v-model="address.country" :country="address.country" topCountry="PL" />
+                  <country-select
+                    name="country"
+                    countryName="true"
+                    usei18n="true"
+                    removePlaceholder="true"
+                    v-model="address.country"
+                    :country="address.country"
+                    topCountry="PL"
+                  />
                   <div
                     v-if="submitted && errors.has('country')"
                     class="alert-danger"
@@ -75,7 +87,15 @@
               >
               <b-col>
                 <div class="form-group">
-                   <region-select  name="voivodeship" removePlaceholder="true" regionName="true" v-model="address.voivodeship" :country="address.country" defaultRegion='PL' :region="region" />
+                  <region-select
+                    name="voivodeship"
+                    removePlaceholder="true"
+                    regionName="true"
+                    v-model="address.voivodeship"
+                    :country="address.country"
+                    defaultRegion="PL"
+                    :region="region"
+                  />
                   <div
                     v-if="submitted && errors.has('voivodeship')"
                     class="alert-danger"
@@ -250,9 +270,9 @@ import { TheMask } from 'vue-the-mask';
 import Address from '../models/address';
 import Order from '../models/order';
 import OrderService from '../services/order.service';
-import Vue from 'vue'
-import vueCountryRegionSelect from 'vue-country-region-select'
-Vue.use(vueCountryRegionSelect)
+import Vue from 'vue';
+import vueCountryRegionSelect from 'vue-country-region-select';
+Vue.use(vueCountryRegionSelect);
 
 export default {
   components: { Money, TheMask },
@@ -290,8 +310,8 @@ export default {
           class: 'text-center',
         },
         {
-          key: 'stock',
-          label: `${this.$t('quantity')}`,
+          key: 'quantity',
+          label: `${this.$t('quantityInOrder')}`,
           sortable: true,
           sortByFormatted: true,
           filterByFormatted: true,
@@ -338,45 +358,64 @@ export default {
       this.order.username = this.$store.state.auth.user.username;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
-          this.$confirm(
-            this.$t('areyousure'),
-            this.$t('placingorder'),
-            'info'
-          ).then(() => {
-            OrderService.placeOrder(this.order).then(
-              (data) => {
-                this.responseList = data;
-                this.message = this.responseList.data;
-                this.successful = true;
-                this.$store.dispatch('cart/clearShoppingList');
-                this.$alert(this.$t('order.placed'));
-                this.$router.push('/home');
-                this.$router.go();
-              },
-              (error) => {
-                this.message = error.response && error.response.data;
-                if (this.message.message == 'product.not.available') {
-                  this.$store.dispatch('cart/clearShoppingList');
-                  this.$alert(this.$t('product.not.available'));
-                  this.$router.push('/home');
-                  this.$router.go();
-                }
-                if (this.message.message == 'insufficient.stock') {
-                  this.$store.dispatch('cart/clearShoppingList');
-                  this.$alert(this.$t('insufficient.stock'));
-                  this.$router.push('/home');
-                  this.$router.go();
-                }
-                if (this.message.status == 401) {
-                  this.$store.dispatch('auth/logout');
-                  this.$router.push({
-                    path: '/login',
-                  });
-                }
-                this.successful = false;
+          this.$bvModal
+            .msgBoxConfirm(this.$t('repeatpayment.msg'), {
+              title: this.$t('areyousure'),
+              size: 'sm',
+              buttonSize: 'sm',
+              okVariant: 'danger',
+              okTitle: this.$t('yes'),
+              cancelTitle: this.$t('no'),
+              footerClass: 'p-2',
+              hideHeaderClose: false,
+              centered: true,
+            })
+            .then((value) => {
+              if (value == true) {
+                OrderService.placeOrder(this.order).then(
+                  (data) => {
+                    this.responseList = data;
+                    this.message = this.responseList.data;
+                    this.successful = true;
+                    this.$store.dispatch('cart/clearShoppingList');
+                    this.$alert(this.$t('order.placed'));
+                    this.$router.push('/home');
+                  },
+                  (error) => {
+                    this.message = error.response && error.response.data;
+                    if (this.message.message == 'product.not.available') {
+                      this.$store.dispatch('cart/clearShoppingList');
+                      this.$alert(this.$t('product.not.available'));
+                      this.$router.push('/home');
+                    }
+                    if (this.message.message == 'insufficient.stock') {
+                      this.$store.dispatch('cart/clearShoppingList');
+                      this.$alert(this.$t('insufficient.stock'));
+                      this.$router.push('/home');
+                    }
+                    if (this.message.status == 401) {
+                      this.$store.dispatch('auth/logout');
+                      this.$router.push({
+                        path: '/login',
+                      });
+                    }
+                    this.successful = false;
+                  }
+                );
               }
-            );
-          });
+            })
+            .catch((err) => {
+              this.message = err.response && err.response.data;
+              this.$bvModal.msgBoxConfirm(this.$t(this.message), {
+                title: '',
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'error',
+                headerClass: 'p-2 border-bottom-0',
+                footerClass: 'p-2 border-top-0',
+                centered: true,
+              });
+            });
         }
       });
     },

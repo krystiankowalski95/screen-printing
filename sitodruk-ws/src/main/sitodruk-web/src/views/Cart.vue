@@ -111,7 +111,6 @@ export default {
     setChanges() {
       localStorage.setItem('shoppingList', JSON.stringify(this.productList));
       this.calculatePrice();
-      this.$router.go();
     },
     calculatePrice() {
       this.totalcost = 0.0;

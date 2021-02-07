@@ -22,8 +22,7 @@ class UserService {
   changeOtherUserPassword(user) {
     return axios.post(API_URL + '/changePassword', {
       username: user.username,
-      password: user.password,
-      confirmPassword: user.confirmPassword,
+      email: user.email,
       dtoVersion: user.dtoVersion
     }, { headers: authHeader() });
   }

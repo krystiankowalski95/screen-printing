@@ -51,12 +51,14 @@
             <b-dropdown-item @click="editUser(index)">{{
               $t('edit')
             }}</b-dropdown-item>
-            <b-dropdown-item @click="changePassword(index)">{{
+            <b-dropdown-item v-if="user.active" @click="changePassword(index)">{{
               $t('changeSelectedUsersPassword')
             }}</b-dropdown-item>
-           <b-dropdown-item v-if="user.confirmed == false" @click="sendEmail(index)">{{
-              $t('sendEmail')
-            }}</b-dropdown-item>
+            <b-dropdown-item
+              v-if="user.confirmed == false"
+              @click="sendEmail(index)"
+              >{{ $t('sendEmail') }}</b-dropdown-item
+            >
           </b-dropdown>
         </b-col>
       </b-row>
@@ -146,21 +148,26 @@ export default {
       });
     },
 
-     changePassword(index) {
+    changePassword(index) {
       this.$store.selectedUser = this.userList[index];
-      this.$router.push({
-        path: '/changeUsersPassword',
-        params: { selectedUser: this.userList[index] },
-      });
-    },
-
-    sendEmail(index) {
-      this.$store.selectedUser = this.userList[index];
-      UserService.sendActivationLink(this.userList[index]).then(
+      UserService.changeOtherUserPassword(this.userList[index]).then(
         (data) => {
           this.responseList = data.data;
-           this.$alert(this.$t('emailSent'));
-           this.$router.go();
+          this.$bvModal
+            .msgBoxOk(this.$t('ChangePasswordEmailSent'), {
+              title: '',
+              size: 'sm',
+              buttonSize: 'sm',
+              okVariant: 'success',
+              headerClass: 'p-2 border-bottom-0',
+              footerClass: 'p-2 border-top-0',
+              centered: true,
+            })
+            .then((val) => {
+              if (val == true) {
+                this.$router.go();
+              }
+            });
         },
         (error) => {
           this.message = error.response && error.response.data;
@@ -174,6 +181,25 @@ export default {
       );
     },
 
+    sendEmail(index) {
+      this.$store.selectedUser = this.userList[index];
+      UserService.sendActivationLink(this.userList[index]).then(
+        (data) => {
+          this.responseList = data.data;
+          this.$alert(this.$t('emailSent'));
+          this.$router.go();
+        },
+        (error) => {
+          this.message = error.response && error.response.data;
+          if (this.message.status == 401) {
+            this.$store.dispatch('auth/logout');
+            this.$router.push({
+              path: '/login',
+            });
+          }
+        }
+      );
+    },
 
     editUser(index) {
       this.$store.selectedUser = this.userList[index];
