@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
             if (user.get().getPasswordTokenCreationDate().plusMinutes(mins).isAfter(LocalDateTime.now())) {
                 throw new TokenTimeExpiredException();
             } else {
-                if (user.get().getIsTokenExpired()) {
+                if (user.get().getIsPasswordTokenExpired()) {
                     throw new TokenExpiredException();
                 } else {
                     user.get().setPassword(encoder.encode(userDTO.getPassword()));
