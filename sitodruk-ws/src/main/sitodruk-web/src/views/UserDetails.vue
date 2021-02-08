@@ -72,15 +72,15 @@
           </b-button-group>
       </div>
       <div class="form-group">
-        <label for="roleManager">{{ $t('role.manager') }}</label>
-         <b-button-group id="roleManager" v-if="hasManagerRole == true">
+        <label for="roleEmployee">{{ $t('role.employee') }}</label>
+         <b-button-group id="roleEmployee" v-if="hasEmployeeRole == true">
             <b-button disabled variant="success">{{ $t('activate') }}</b-button>
-            <b-button @click="deactivateRole('manager')" variant="danger">
+            <b-button @click="deactivateRole('employee')" variant="danger">
               {{ $t('deactivate') }}</b-button
             >
           </b-button-group>
-          <b-button-group v-if="hasManagerRole == false">
-            <b-button @click="activateRole('manager')" variant="success">{{
+          <b-button-group v-if="hasEmployeeRole == false">
+            <b-button @click="activateRole('employee')" variant="success">{{
               $t('activate')
             }}</b-button>
             <b-button disabled variant="danger"
@@ -135,7 +135,7 @@ export default {
       user: new User(),
       message: '',
       hasAdminRole: false,
-      hasManagerRole: false,
+      hasEmployeeRole: false,
       hasClientRole: false
     };
   },
@@ -176,14 +176,11 @@ export default {
               data.data.accessLevelDtoVersion,
             );
             this.hasClientRole = this.user.roles.includes("ROLE_CLIENT");
-            this.hasManagerRole = this.user.roles.includes("ROLE_MANAGER");
+            this.hasEmployeeRole = this.user.roles.includes("ROLE_EMPLOYEE");
             this.hasAdminRole = this.user.roles.includes("ROLE_ADMIN");
           },
           (error) => {
             this.message = error.response && error.response.data;
-            if (this.message.message == "optimistic.lock") {
-                this.message.message = "optimistic.lock.proceed.to.list";
-              }
             if (this.message.status == 401) {
               this.$store.dispatch('auth/logout');
               this.$router.push({
@@ -207,6 +204,9 @@ export default {
         },
         (error) => {
           this.message = error.response && error.response.data;
+          if (this.message.message == "optimistic.lock") {
+                this.message.message = "optimistic.lock.proceed.to.list";
+              }
           if (this.message.status == 401) {
             this.$store.dispatch('auth/logout');
             this.$router.push({
@@ -224,6 +224,9 @@ export default {
         },
         (error) => {
           this.message = error.response && error.response.data;
+          if (this.message.message == "optimistic.lock") {
+                this.message.message = "optimistic.lock.proceed.to.list";
+              }
           if (this.message.status == 401) {
             this.$store.dispatch('auth/logout');
             this.$router.push({
