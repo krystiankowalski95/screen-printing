@@ -31,11 +31,11 @@ import {
   faCartArrowDown,
   faShoppingCart
 } from '@fortawesome/free-solid-svg-icons';
-
+import vueCountryRegionSelect from 'vue-country-region-select';
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faHouseUser,faGifts,faFlag,faPlusSquare,faKey,faCartPlus,faCartArrowDown,faShoppingCart);
 
 Vue.config.productionTip = false;
-
+Vue.use(vueCountryRegionSelect);
 Vue.use(VueNumberInput);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(VueSimpleAlert);

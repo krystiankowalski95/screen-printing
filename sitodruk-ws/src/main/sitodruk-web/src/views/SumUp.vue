@@ -15,7 +15,6 @@
           :empty-text="$t('listEmpty')"
           show-empty
           striped
-          @filtered="onFiltered"
         >
           <template #cell(name)="row">
             {{ row.value }}
@@ -65,9 +64,9 @@
                 <div class="form-group">
                   <country-select
                     name="country"
-                    countryName="true"
-                    usei18n="true"
-                    removePlaceholder="true"
+                    :countryName="true"
+                    :usei18n="true"
+                    :removePlaceholder="true"
                     v-model="address.country"
                     :country="address.country"
                     topCountry="PL"
@@ -87,14 +86,12 @@
               >
               <b-col>
                 <div class="form-group">
-                  <region-select
-                    name="voivodeship"
-                    removePlaceholder="true"
-                    regionName="true"
+                  <input
                     v-model="address.voivodeship"
-                    :country="address.country"
-                    defaultRegion="PL"
-                    :region="region"
+                    v-validate="'required|min:3|max:100'"
+                    type="text"
+                    class="form-control"
+                    name="voivodeship"
                   />
                   <div
                     v-if="submitted && errors.has('voivodeship')"
@@ -270,9 +267,7 @@ import { TheMask } from 'vue-the-mask';
 import Address from '../models/address';
 import Order from '../models/order';
 import OrderService from '../services/order.service';
-import Vue from 'vue';
-import vueCountryRegionSelect from 'vue-country-region-select';
-Vue.use(vueCountryRegionSelect);
+
 
 export default {
   components: { Money, TheMask },

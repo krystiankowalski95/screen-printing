@@ -39,7 +39,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             String body = "<a href=\"" + link + token + "\">"+ MessageProvider.getTranslatedText("confirm.account.msg",lanuage) + "</a>";
             helper.setText(body, true);
             helper.setTo(to);
-            helper.setSubject("["+LocalDateTime.now()+"]"+MessageProvider.getTranslatedText("confirm.account.subject", lanuage)  + "  " + LocalTime.now());
+            helper.setSubject(MessageProvider.getTranslatedText("confirm.account.subject", lanuage)  + "  " + LocalTime.now());
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             throw new EmailSendingException();
@@ -57,6 +57,22 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             helper.setText(body, true);
             helper.setTo(to);
             helper.setSubject(MessageProvider.getTranslatedText("reset.password.subject", lanuage) + "  " + LocalTime.now());
+            emailSender.getJavaMailSender().send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new EmailSendingException();
+        }
+    }
+
+
+    @Override
+    public void sendAccountBlockedEmail(String to ,String token,String lanuage) throws EmailSendingException {
+        try {
+            MimeMessage mimeMessage = emailSender.getJavaMailSender().createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            String body = MessageProvider.getTranslatedText("reset.password.account.notactive.msg", lanuage);
+            helper.setText(body, true);
+            helper.setTo(to);
+            helper.setSubject(MessageProvider.getTranslatedText("reset.password.account.notactive.subject", lanuage) + "  " + LocalTime.now());
             emailSender.getJavaMailSender().send(mimeMessage);
         } catch (MessagingException e) {
             throw new EmailSendingException();

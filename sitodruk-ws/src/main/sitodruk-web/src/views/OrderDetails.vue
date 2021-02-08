@@ -59,7 +59,7 @@
       </b-container>
       <br />
       <b-container>
-        <b-card no-body class="overflow-hidden" style="max-width: 740px">
+        <b-card no-body class="overflow-hidden" style="max-width: 750px">
           <b-row no-gutters>
             <b-col md="6">
               <b-card-img
@@ -71,8 +71,7 @@
             <b-col md="6">
               <b-card-body :title="$t('adresDostawy')">
                 <b-card-text>
-                  {{ order.addressDTO.country }},
-                  {{ order.addressDTO.voivodeship }}
+                 {{$t(order.addressDTO.country)}}, {{order.addressDTO.voivodeship}}
                 </b-card-text>
                 <b-card-text>
                   <the-mask

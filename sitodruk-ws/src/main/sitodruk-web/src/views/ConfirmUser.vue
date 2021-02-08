@@ -25,7 +25,6 @@ export default {
   },
   mounted() {
     let token = this.$route.query.token;
-    console.log(token);
     UserService.confirmAccount(token).then(
       response => {
         this.message = response.data;
@@ -34,7 +33,7 @@ export default {
               this.$router.push("/login");
       },
       error => {
-              this.message =
+              this.message = 
                 (error.response && error.response.data);
               this.successful = false;
             }

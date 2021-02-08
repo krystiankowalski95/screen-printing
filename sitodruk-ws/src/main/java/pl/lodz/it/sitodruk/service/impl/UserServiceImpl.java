@@ -276,6 +276,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.saveAndFlush(user.get());
                 emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getPasswordToken(), user.get().getRegisteredLang());
             } else {
+                emailSenderService.sendAccountBlockedEmail(user.get().getEmail(), user.get().getPasswordToken(), user.get().getRegisteredLang());
                 throw new UserNotActiveException();
             }
         } else throw new UserNotFoundException();
@@ -326,6 +327,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.saveAndFlush(user.get());
                 emailSenderService.sendPasswordChangeEmail(user.get().getEmail(), requestUrl, user.get().getPasswordToken(), userDTO.getLanguage());
             } else {
+                emailSenderService.sendAccountBlockedEmail(user.get().getEmail(), user.get().getPasswordToken(), userDTO.getLanguage());
                 throw new UserNotActiveException();
             }
         } else throw new UserNotFoundException();

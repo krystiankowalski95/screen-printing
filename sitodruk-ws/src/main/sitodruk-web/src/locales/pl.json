@@ -66,7 +66,8 @@
     "placeorder.msg":"Czy jesteś pewien ,że chcesz złożyć zamówienie i je opłacić",
     "placingorder":"Złóż zamówienie i zapłać",
     "optimistic.lock":"Wystąpił problem. Odśwież stronę i spróbuj jeszcze raz.",
-    "optimistic.lock.proceed.to.list":"Wystąpił problem. Powróć do listy i spróbuj jeszcze raz.",
+    "optimistic.lock.proceed.to.list":"Wystąpił problem. Powróć do listy produktów i spróbuj jeszcze raz.",
+    "optimistic.lock.proceed.to.list.users":"Wystąpił problem. Powróć do listy użytkowników i spróbuj jeszcze raz.",
     "account.notconfirmed":"Konto nie zostało jeszcze potwierdzone",
     "account.notactive":"Konto zostało zablokowane",
     "unexpected.error":"Wystąpił nieoczekiwany błąd.",
@@ -415,5 +416,5 @@
     "Yemen":"Yemen",
     "Zambia":"Zambia",
     "Zimbabwe":"Zimbabwe",
-    "token.time.expired":"Wysłany link ważny jest przez 15 minut. Jeśli widzisz tą wiadomość oznacza to, że jego ważność wygasła"
+    "token.time.expired":"Wysłany link ważny jest przez 5 minut. Jeśli widzisz tę wiadomość oznacza to, że jego ważność wygasła"
 }
