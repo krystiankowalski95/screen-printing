@@ -4,7 +4,7 @@
       <form name="form" @submit.prevent="handleEdit">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="firstname">{{ $t('firstname') }}*</label>
+            <label for="firstname">{{ $t("firstname") }}*</label>
             <input
               v-model="user.firstname"
               v-validate="'required|min:3|max:64'"
@@ -12,15 +12,12 @@
               class="form-control"
               name="firstname"
             />
-            <div
-              v-if="submitted && errors.has('firstname')"
-              class="alert-danger"
-            >
-              {{ errors.first('firstname') }}
+            <div v-if="submitted && errors.has('firstname')" class="alert-danger">
+              {{ errors.first("firstname") }}
             </div>
           </div>
           <div class="form-group">
-            <label for="lastname">{{ $t('lastname') }}*</label>
+            <label for="lastname">{{ $t("lastname") }}*</label>
             <input
               v-model="user.lastname"
               v-validate="'required|min:3|max:100'"
@@ -28,15 +25,12 @@
               class="form-control"
               name="lastname"
             />
-            <div
-              v-if="submitted && errors.has('lastname')"
-              class="alert-danger"
-            >
-              {{ errors.first('lastname') }}
+            <div v-if="submitted && errors.has('lastname')" class="alert-danger">
+              {{ errors.first("lastname") }}
             </div>
           </div>
           <div class="form-group">
-            <label for="username">{{ $t('username') }}</label>
+            <label for="username">{{ $t("username") }}</label>
             <input
               v-model="user.username"
               disabled
@@ -46,7 +40,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="email">{{ $t('email') }}</label>
+            <label for="email">{{ $t("email") }}</label>
             <input
               v-model="user.email"
               disabled
@@ -55,7 +49,7 @@
               name="email"
             />
             <div class="form-group">
-              <label for="phoneNumber">{{ $t('phoneNumber') }}*</label>
+              <label for="phoneNumber">{{ $t("phoneNumber") }}*</label>
               <input
                 v-model="user.phoneNumber"
                 v-validate="{ required: true, digits: 9 }"
@@ -63,29 +57,26 @@
                 class="form-control"
                 name="phoneNumber"
               />
-              <div
-                v-if="submitted && errors.has('phoneNumber')"
-                class="alert-danger"
-              >
-                {{ errors.first('phoneNumber') }}
+              <div v-if="submitted && errors.has('phoneNumber')" class="alert-danger">
+                {{ errors.first("phoneNumber") }}
               </div>
             </div>
             <div class="form-group">
               <button class="btn btn-primary btn-block">
-                {{ $t('edit') }}
+                {{ $t("edit") }}
               </button>
             </div>
           </div>
         </div>
       </form>
-       <div class="form-group">
+      <div class="form-group">
         <button
           class="btn btn-primary btn-block swal2-confirm swal2-styled"
           @click="goBack()"
         >
-          {{ $t('goBack') }}
+          {{ $t("goBack") }}
         </button>
-       </div>
+      </div>
       <div
         v-if="message"
         class="alert"
@@ -98,23 +89,23 @@
 </template>
 
 <script>
-import User from '../models/user';
-import UserService from '../services/user.service';
+import User from "../models/user";
+import UserService from "../services/user.service";
 
 export default {
-  name: 'EditUser',
+  name: "EditUser",
   data() {
     return {
-      user: new User('', '', '', '', '', '', '', '', '', '', ''),
+      user: new User("", "", "", "", "", "", "", "", "", "", ""),
       submitted: false,
       successful: false,
-      message: '',
+      message: "",
     };
   },
   mounted() {
     if (this.$store.selectedUser == undefined) {
       this.$router.push({
-        path: '/users',
+        path: "/users",
       });
     } else {
       UserService.findAccount(this.$store.selectedUser).then(
@@ -138,9 +129,9 @@ export default {
         (error) => {
           this.message = error.response && error.response.data;
           if (this.message.status == 401) {
-            this.$store.dispatch('auth/logout');
-           this.$alert(this.$t('session.timed.out'));
-                this.$router.push('/login');
+            this.$store.dispatch("auth/logout");
+            this.$alert(this.$t("session.timed.out"));
+            this.$router.push("/login");
           }
         }
       );
@@ -148,10 +139,10 @@ export default {
   },
   methods: {
     goBack() {
-      this.$router.push('/users');
+      this.$router.push("/users");
     },
     handleEdit() {
-      this.message = '';
+      this.message = "";
       this.submitted = true;
       this.$validator.validate().then((isValid) => {
         if (isValid) {
@@ -159,18 +150,18 @@ export default {
             (data) => {
               this.message = data.message;
               this.successful = true;
-              this.$alert(this.$t('account.has.been.edited'));
-              this.$router.push('/users');
+              this.$alert(this.$t("account.has.been.edited"));
+              this.$router.push("/users");
             },
             (error) => {
               this.message = error.response && error.response.data;
-              if(this.message == 'optimistic.lock'){
-                this.message = 'optimistic.lock.proceed.to.list';
+              if (this.message.message == "optimistic.lock") {
+                this.message.message = "optimistic.lock.proceed.to.list";
               }
               if (this.message.status == 401) {
-                this.$store.dispatch('auth/logout');
-                this.$alert(this.$t('session.timed.out'));
-                this.$router.push('/login');
+                this.$store.dispatch("auth/logout");
+                this.$alert(this.$t("session.timed.out"));
+                this.$router.push("/login");
               }
               this.successful = false;
             }

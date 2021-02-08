@@ -181,8 +181,8 @@ export default {
             },
             (error) => {
               this.message = error.response && error.response.data;
-              if(this.message == 'optimistic.lock'){
-                this.message = 'optimistic.lock.proceed.to.list';
+              if(this.message.message == 'optimistic.lock'){
+                this.message.message = 'optimistic.lock.proceed.to.list';
               }
               if (this.message.status == 401) {
                 this.$store.dispatch('auth/logout');
