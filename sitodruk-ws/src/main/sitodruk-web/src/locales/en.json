@@ -164,7 +164,9 @@
     "employeeOperations":"Employee operations",
     "user.not.active":"Account has been blocked. You cannot proceed to reseting password procedure",
     "orderListEmpty":"Order list is empty",
-    "noFilteredOrdersFound":"There are no orders matching uour request",
+    "noFilteredOrdersFound":"There are no orders matching your request",
     "adresDostawy":"Delivery address",
-    "token.time.expired":"Link that has been sent to you is valid for 5 minutes. If you see this message it means that it's expiration date has passed"
+    "token.time.expired":"Link that has been sent to you is valid for 5 minutes. If you see this message it means that it's expiration date has passed",
+    "noFilteredUserFound":"There are no users matching your request",
+    "userListEmpty":"User list is empty"
 }

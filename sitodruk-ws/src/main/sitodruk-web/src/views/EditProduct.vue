@@ -126,10 +126,10 @@ export default {
       successful: false,
       message: '',
       money: {
-        decimal: '.',
+        decimal: this.$i18n.locale == 'pl' ? ',':'.' ,
         thousands: '',
-        prefix: '',
-        suffix: ' PLN',
+        prefix: this.$i18n.locale == 'en' ? 'PLN ':'',
+        suffix: this.$i18n.locale == 'pl' ? 'zł':'',
         precision: 2,
         masked: false,
       },

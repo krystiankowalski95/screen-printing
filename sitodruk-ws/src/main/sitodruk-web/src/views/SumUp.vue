@@ -42,14 +42,16 @@
         <b-row>
           <b-col style="font-weight: bold">{{ $t('totalcost') }}</b-col>
           <b-col
-            ><money
-              disabled
-              v-model="totalcost"
-              v-bind="money"
-              v-validate="'required'"
-              class="form-input"
-              name="price"
-          /></b-col>
+            > {{
+              new Intl.NumberFormat($i18n.locale, {
+                style: 'currency',
+                currency: 'PLN',
+              }).format(totalcost)
+            }}
+            </b-col>
+            <b-col></b-col>
+            <b-col></b-col>
+            <b-col></b-col>
         </b-row>
       </b-container>
       <br />
@@ -262,7 +264,6 @@
 </template>
 
 <script>
-import { Money } from 'v-money';
 import { TheMask } from 'vue-the-mask';
 import Address from '../models/address';
 import Order from '../models/order';
@@ -270,7 +271,7 @@ import OrderService from '../services/order.service';
 
 
 export default {
-  components: { Money, TheMask },
+  components: { TheMask },
   name: 'SumUp',
   data() {
     return {
@@ -281,14 +282,6 @@ export default {
       totalcost: 0.0,
       order: new Order('', '', '', '', '', ''),
       address: new Address('', '', '', '', '', ''),
-      money: {
-        decimal: '.',
-        thousands: '',
-        prefix: '',
-        suffix: ' PLN',
-        precision: 2,
-        masked: false,
-      },
       sortDesc: false,
       sortDirection: 'asc',
       fieldSet: [

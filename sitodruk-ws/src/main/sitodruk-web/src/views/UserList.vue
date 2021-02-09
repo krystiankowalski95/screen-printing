@@ -3,63 +3,131 @@
     <header class="jumbotron" style="height: 150px">
       <h3>{{ $t('user.list') }}</h3>
     </header>
-    <b-container>
+    <b-container fluid>
       <b-row>
-        <b-col>{{ $t('id') }}</b-col>
-        <b-col>{{ $t('username') }}</b-col>
-        <b-col>{{ $t('firstname') }}</b-col>
-        <b-col>{{ $t('lastname') }}</b-col>
-        <b-col></b-col>
-        <b-col></b-col>
-        <b-col></b-col>
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            :label="$t('filter')"
+            label-for="filter-input"
+            label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-input-group size="sm">
+              <b-form-input
+                id="filter-input"
+                v-model="filter"
+                type="search"
+                :placeholder="$t('typeToSearch')"
+              ></b-form-input>
+
+              <b-input-group-append>
+                <b-button :disabled="!filter" @click="filter = ''"
+                  >{{ $t('clearFilter') }}
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
       </b-row>
-    </b-container>
-    <b-container
-      class="bv-example-row"
-      v-for="(user, index) in userList"
-      :key="index"
-    >
-      <b-row style="padding: 5px">
-        <b-col draggable="true">{{ index + 1 }}</b-col>
-        <b-col>{{ user.username }}</b-col>
-        <b-col>{{ user.firstname }}</b-col>
-        <b-col>{{ user.lastname }}</b-col>
-        <b-col>
-          <b-button-group v-if="user.active == true">
+      <b-table
+        :items="userList"
+        :fields="fieldSet"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filter-included-fields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        stacked="md"
+        :empty-text="$t('userListEmpty')"
+        :empty-filtered-text="$t('noFilteredUserFound')"
+        show-empty
+        striped
+        @filtered="onFiltered"
+      >
+        <template #cell(username)="row">
+          {{ row.value }}
+        </template>
+
+        <template #cell(firstname)="row">
+          {{ $t(row.value) }}
+        </template>
+
+        <template #cell(lastname)="row">
+          {{ $t(row.value) }}
+        </template>
+
+        <template #cell(actions)="row">
+          <b-button-group v-if="row.item.active == true">
             <b-button disabled variant="success">{{ $t('activate') }}</b-button>
-            <b-button @click="deactivate(index)" variant="danger">
+            <b-button @click="deactivate(row.item)" variant="danger">
               {{ $t('deactivate') }}</b-button
             >
           </b-button-group>
-          <b-button-group v-if="user.active == false">
-            <b-button @click="activate(index)" variant="success">{{
+          <b-button-group v-if="row.item.active == false">
+            <b-button @click="activate(row.item)" variant="success">{{
               $t('activate')
             }}</b-button>
             <b-button disabled variant="danger"
               >{{ $t('deactivate') }}
             </b-button>
           </b-button-group>
-        </b-col>
-        <b-col>
+        </template>
+
+        <template #cell(actionMenu)="row">
           <b-dropdown id="dd" class="m-md-2">
             <template #button-content>
               {{ $t('user.actions') }}
             </template>
-            <b-dropdown-item @click="getDetails(index)">{{
+            <b-dropdown-item @click="getDetails(row.item)">{{
               $t('details')
             }}</b-dropdown-item>
-            <b-dropdown-item @click="editUser(index)">{{
+            <b-dropdown-item @click="editUser(row.item)">{{
               $t('edit')
             }}</b-dropdown-item>
-            <b-dropdown-item v-if="user.active" @click="changePassword(index)">{{
+            <b-dropdown-item v-if="row.item.active" @click="changePassword(row.item)">{{
               $t('changeSelectedUsersPassword')
             }}</b-dropdown-item>
             <b-dropdown-item
-              v-if="user.confirmed == false"
-              @click="sendEmail(index)"
+              v-if="row.item.confirmed == false"
+              @click="sendEmail(row.item)"
               >{{ $t('sendEmail') }}</b-dropdown-item
             >
           </b-dropdown>
+        </template>
+      </b-table>
+      <b-row>
+        <b-col sm="5" md="6" class="my-1">
+          <b-form-group
+            :label="$t('perPage')"
+            label-for="per-page-select"
+            label-cols-sm="6"
+            label-cols-md="4"
+            label-cols-lg="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-form-select
+              id="per-page-select"
+              v-model="perPage"
+              :options="pageOptions"
+              size="sm"
+            ></b-form-select>
+          </b-form-group>
+        </b-col>
+        <b-col sm="7" md="6" class="my-1">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="fill"
+            size="sm"
+            class="my-0"
+          ></b-pagination>
         </b-col>
       </b-row>
     </b-container>
@@ -86,6 +154,41 @@ export default {
       message: '',
       content: '',
       successful: false,
+      totalRows: 1,
+      currentPage: 1,
+      perPage: 5,
+      pageOptions: [5, 10, 15],
+      sortBy: '',
+      sortDesc: false,
+      sortDirection: 'asc',
+      filter: null,
+      filterOn: [],
+      fieldSet: [
+        {
+          key: 'username',
+          label: `${this.$t('username')}`,
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'firstname',
+          label: `${this.$t('firstname')}`,
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'lastname',
+          label: `${this.$t('lastname')}`,
+          sortable: true,
+          class: 'text-center',
+        },
+
+        { key: 'actions', label: ""},
+        {
+          key: 'actionMenu',
+          label: "",
+        },
+      ],
     };
   },
   computed: {
@@ -122,6 +225,7 @@ export default {
               )
             );
           });
+          this.totalRows = this.userList.length;
         },
         (error) => {
           this.message = error.response && error.response.data;
@@ -140,17 +244,21 @@ export default {
     }
   },
   methods: {
-    getDetails(index) {
-      this.$store.selectedUser = this.userList[index];
+    getDetails(user) {
+      this.$store.selectedUser = user;
       this.$router.push({
         path: '/userDetails',
-        params: { selectedUser: this.userList[index] },
+        params: { selectedUser: user },
       });
     },
+    onFiltered(filteredItems) {
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    },
 
-    changePassword(index) {
-      this.$store.selectedUser = this.userList[index];
-      UserService.changeOtherUserPassword(this.userList[index]).then(
+    changePassword(user) {
+      this.$store.selectedUser = user;
+      UserService.changeOtherUserPassword(user).then(
         (data) => {
           this.responseList = data.data;
           this.$bvModal
@@ -181,13 +289,26 @@ export default {
       );
     },
 
-    sendEmail(index) {
-      this.$store.selectedUser = this.userList[index];
-      UserService.sendActivationLink(this.userList[index]).then(
+    sendEmail(user) {
+      this.$store.selectedUser = user;
+      UserService.sendActivationLink(user).then(
         (data) => {
           this.responseList = data.data;
-          this.$alert(this.$t('emailSent'));
-          this.$router.go();
+          this.$bvModal
+            .msgBoxOk(this.$t('emailSent'), {
+              title: '',
+              size: 'sm',
+              buttonSize: 'sm',
+              okVariant: 'success',
+              headerClass: 'p-2 border-bottom-0',
+              footerClass: 'p-2 border-top-0',
+              centered: true,
+            })
+            .then((val) => {
+              if (val == true) {
+                this.$router.go();
+              }
+            });
         },
         (error) => {
           this.message = error.response && error.response.data;
@@ -201,16 +322,16 @@ export default {
       );
     },
 
-    editUser(index) {
-      this.$store.selectedUser = this.userList[index];
+    editUser(user) {
+      this.$store.selectedUser = user;
       this.$router.push({
         path: '/userEdit',
-        params: { selectedUser: this.userList[index] },
+        params: { selectedUser: user },
       });
     },
 
-    activate(index) {
-      UserService.activateAccount(this.userList[index]).then(
+    activate(user) {
+      UserService.activateAccount(user).then(
         (data) => {
           this.responseList = data.data;
           this.$router.go();
@@ -227,8 +348,8 @@ export default {
       );
     },
 
-    deactivate(index) {
-      UserService.deactivateAccount(this.userList[index]).then(
+    deactivate(user) {
+      UserService.deactivateAccount(user).then(
         (data) => {
           this.responseList = data.data;
           this.$router.go();

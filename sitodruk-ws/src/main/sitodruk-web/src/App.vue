@@ -174,11 +174,13 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
-      this.$router.go();
     },
     changeAccessLevel(roleName) {
       this.$store.dispatch('auth/changeAccessLevel', roleName);
       this.$router.push('/home');
+      if (roleName == 'ADMIN') {
+        this.$router.go();
+      }
     },
   },
 };

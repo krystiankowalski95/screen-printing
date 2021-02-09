@@ -43,14 +43,12 @@
         <b-row>
           <b-col style="font-weight: bold">{{ $t('totalcost') }}</b-col>
           <b-col
-            ><money
-              disabled
-              v-model="totalcost"
-              v-bind="money"
-              v-validate="'required'"
-              class="form-input"
-              name="price"
-          /></b-col>
+            > {{
+              new Intl.NumberFormat($i18n.locale, {
+                style: 'currency',
+                currency: 'PLN',
+              }).format(totalcost)
+            }}</b-col>
           <b-col />
           <b-col />
           <b-col />
@@ -67,23 +65,13 @@
 </template>
 
 <script>
-import { Money } from 'v-money';
 
 export default {
-  components: { Money },
   name: 'Products',
   data() {
     return {
       productList: [],
       totalcost: 0.0,
-      money: {
-        decimal: ',',
-        thousands: '',
-        prefix: '',
-        suffix: ' PLN',
-        precision: 2,
-        masked: false,
-      },
     };
   },
   mounted(){

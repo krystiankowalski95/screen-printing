@@ -25,7 +25,8 @@ class ProductService {
       price: product.price,
       quantity: product.quantity,
       stock: product.stock,
-      dtoVersion: product.dtoVersion
+      dtoVersion: product.dtoVersion,
+      description: product.description
     }, { headers: authHeader() }
     );
   }
@@ -37,6 +38,7 @@ class ProductService {
       price: product.price,
       quantity: product.quantity,
       stock: product.stock,
+      description: product.description
     }, { headers: authHeader() }
     );
   }

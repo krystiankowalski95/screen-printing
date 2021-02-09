@@ -416,5 +416,7 @@
     "Yemen":"Yemen",
     "Zambia":"Zambia",
     "Zimbabwe":"Zimbabwe",
-    "token.time.expired":"Wysłany link ważny jest przez 5 minut. Jeśli widzisz tę wiadomość oznacza to, że jego ważność wygasła"
+    "token.time.expired":"Wysłany link ważny jest przez 5 minut. Jeśli widzisz tę wiadomość oznacza to, że jego ważność wygasła",
+    "noFilteredUserFound":"Żaden użytkownik nie spełnia warunków wyszukiwania",
+    "userListEmpty":"Lista użytkowników jest pusta"
 }

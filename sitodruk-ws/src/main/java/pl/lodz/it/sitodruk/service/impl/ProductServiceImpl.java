@@ -43,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             ProductEntity productEntity = ProductMapper.INSTANCE.createNewProduct(productDTO);
             productEntity.setPrice(productDTO.getPrice());
+            productEntity.setDescription(productDTO.getDescription());
             productEntity.setStock(productDTO.getStock());
             productRepository.saveAndFlush(productEntity);
         }
@@ -55,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
             if (String.valueOf(productDTO.getDtoVersion()).equals(getVersionHash(productEntity.get()))) {
                 productEntity.get().setPrice(productDTO.getPrice());
                 productEntity.get().setStock(productDTO.getStock());
+                productEntity.get().setDescription(productDTO.getDescription());
                 productRepository.save(productEntity.get());
             } else {
                 throw new ApplicationOptimisticLockException();
