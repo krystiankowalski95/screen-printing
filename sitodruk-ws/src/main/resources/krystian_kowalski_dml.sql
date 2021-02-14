@@ -1,4 +1,4 @@
-sINSERT INTO public.order_statuses (id, status_name) VALUES (1, 'created');
+INSERT INTO public.order_statuses (id, status_name) VALUES (1, 'created');
 INSERT INTO public.order_statuses (id, status_name) VALUES (2, 'paid');
 INSERT INTO public.order_statuses (id, status_name) VALUES (3, 'pending');
 INSERT INTO public.order_statuses (id, status_name) VALUES (4, 'cancelled');
