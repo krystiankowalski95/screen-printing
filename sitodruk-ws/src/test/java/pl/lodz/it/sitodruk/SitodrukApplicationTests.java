@@ -76,8 +76,6 @@ public class SitodrukApplicationTests {
         order.getPayMethods().setPayMethod(payMethod);
         HttpEntity<?> paymentEntity = new HttpEntity<>(order, paymentHeaders);
         ResponseEntity<Map> paymentResponseEntity = restTemplate.exchange(payuApiUrl+"/orders",HttpMethod.POST,paymentEntity,Map.class);
-//        String status = paymentResponseEntity.getBody().toString().substring(paymentResponseEntity.getBody().toString().indexOf("status="),paymentResponseEntity.getBody().toString().indexOf(", products=")).replace("status=","");
-        System.out.println(paymentResponseEntity.getBody().toString());
         Assert.hasText("statusCode=SUCCESS",paymentResponseEntity.getBody().toString());
     }
 
@@ -97,7 +95,6 @@ public class SitodrukApplicationTests {
         HttpEntity<?> httpEntity = new HttpEntity<>(orderStatusHeaders);
         ResponseEntity<Map> orderStatusResponse = restTemplate.exchange(payuApiUrl+"/orders/MBDVTS34LR210121GUEST000P01",HttpMethod.GET,httpEntity,Map.class);
         String status = orderStatusResponse.getBody().get("orders").toString().substring(orderStatusResponse.getBody().get("orders").toString().indexOf("status="),orderStatusResponse.getBody().get("orders").toString().indexOf(", products=")).replace("status=","");
-        System.out.println(status);
         Assert.isTrue(status.equalsIgnoreCase("canceled"));
 
     }
