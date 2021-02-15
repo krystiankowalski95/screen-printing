@@ -3,15 +3,12 @@ package pl.lodz.it.sitodruk.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.it.sitodruk.controllers.PayUController;
 import pl.lodz.it.sitodruk.dto.OrderDTO;
 import pl.lodz.it.sitodruk.dto.ProductDTO;
 import pl.lodz.it.sitodruk.dto.mappers.AddressMapper;
@@ -48,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private UserRepositoryMoz userRepository;
 
     @Autowired
-    private PayUController payUController;
+    private PayUService payUController;
 
     @Autowired
     private Environment env;

@@ -1,4 +1,4 @@
-package pl.lodz.it.sitodruk.controllers;
+package pl.lodz.it.sitodruk.service.impl;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 @Data
-public class PayUController {
+public class PayUService {
 
     @Value("${thesis.app.payu.client.id}")
     private String client_id;
